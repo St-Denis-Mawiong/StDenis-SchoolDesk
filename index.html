@@ -437,9 +437,13 @@ function renderStudents() {
     ? filtered.map(s =>
         '<tr><td><div class="student-cell"><div class="mini-avatar">' +
         esc(initials(s.Name)) +
-        '</div><div><strong>' + esc(s.Name) +
-        '</strong><small>ID: ' + esc(shortId(s.StudentID)) +
-        '</small></div></div></td><td>' + esc(s.Class || '—') +
+       
+'<div><strong class="student-name" data-act="view-student" data-id="' +
+esc(String(s.StudentID || '')) + '" style="cursor:pointer;color:var(--blue)">' +
+esc(s.Name) +
+'</strong><small>ID: ' + esc(shortId(s.StudentID)) +
+'</small></div></div></td><td>' + esc(s.Class || '—') +
+
         '</td><td>' + esc(s.Gender || '—') +
         '</td><td>' + esc(s.Guardian || '—') +
         '</td><td><span class="pill ' +
@@ -558,13 +562,34 @@ btn.classList.add('selected');
     refreshData();
   });
 
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('[data-act="edit-student"]');
-    if (!btn) return;
+ 
+document.addEventListener('click', function(e) {
+  const profileBtn = e.target.closest('[data-act="view-student"]');
+  if (profileBtn) {
+    const id = profileBtn.dataset.id;
+    const student = state.students.find(
+      s => String(s.StudentID) === String(id)
+    );
 
-    const id = btn.dataset.id;
-    editStudent(id);
-  });
+    if (student) {
+      alert(
+        'Student Profile\n\n' +
+        'Name: ' + student.Name + '\n' +
+        'Class: ' + (student.Class || '—') + '\n' +
+        'Gender: ' + (student.Gender || '—') + '\n' +
+        'Parent: ' + (student.Guardian || '—') + '\n' +
+        'Phone: ' + (student.Phone || '—')
+      );
+    }
+    return;
+  }
+
+  const btn = e.target.closest('[data-act="edit-student"]');
+  if (!btn) return;
+
+  editStudent(btn.dataset.id);
+});
+
 </script> 
 <script>
   if ('serviceWorker' in navigator) {
