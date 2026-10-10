@@ -294,19 +294,57 @@
     if(page==='reports') renderReports();
   }
   document.querySelectorAll('.nav').forEach(el=>el.addEventListener('click',()=>showPage(el.dataset.page)));
-  function callServer(fn, args, success, failure) {
-    if(!window.google || !google.script || !google.script.run) {
-      showMessage('This page is not deployed as a Google Apps Script web app yet. Deploy it as a web app to connect Google Sheets.',true);
+ function callServer(fn, args, success, failure) {
+  const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
+
+  const callbackName =
+    'schoolDeskCallback_' + Date.now() + '_' +
+    Math.floor(Math.random() * 100000);
+
+  const params = new URLSearchParams({
+    api: 'schoolDesk',
+    action: fn,
+    args: JSON.stringify(args || []),
+    callback: callbackName
+  });
+
+  const script = document.createElement('script');
+  script.src = endpoint + '?' + params.toString();
+  script.async = true;
+
+  let finished = false;
+
+  function cleanup() {
+    if (finished) return;
+    finished = true;
+    delete window[callbackName];
+    script.remove();
+  }
+
+  window[callbackName] = function(result) {
+    cleanup();
+
+    if (result && result.success === false) {
+      const err = new Error(result.error || 'Request failed');
+      showMessage(err.message, true);
+      if (failure) failure(err);
+      toast('Could not complete the request.');
       return;
     }
-    let runner = google.script.run.withSuccessHandler(success || (()=>{})).withFailureHandler(err=>{
-      const msg = err && err.message ? err.message : String(err || 'Unknown error');
-      showMessage(msg,true);
-      if(failure) failure(err);
-      toast('Could not complete the request.');
-    });
-    runner[fn].apply(runner,args || []);
-  }
+
+    if (success) success(result);
+  };
+
+  script.onerror = function() {
+    cleanup();
+    const err = new Error('Could not connect to the SchoolDesk server.');
+    showMessage(err.message, true);
+    if (failure) failure(err);
+    toast('Could not complete the request.');
+  };
+
+  document.head.appendChild(script);
+}
   function refreshData() {
     showMessage('Connecting to your Google Sheets database…',false);
     callServer('getAppData',[],data=>{
