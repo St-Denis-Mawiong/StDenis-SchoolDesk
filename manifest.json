@@ -2,7 +2,7 @@
 {
   "id": "./",
   "name": "St Denis School Manager",
-  "short_name": "School Manager",
+  "short_name": "St Denis School Manager",
   "description": "St Denis school management",
   "start_url": "./",
   "scope": "./",
