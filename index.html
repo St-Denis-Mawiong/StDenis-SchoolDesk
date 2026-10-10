@@ -23,6 +23,25 @@
     aside { width:235px; flex-shrink:0; background:var(--navy); color:#dce5ff; padding:25px 15px; }
     .brand { display:flex; align-items:center; gap:11px; padding:0 10px 30px; }
     .logo { width:40px; height:40px; display:grid; place-items:center; border-radius:13px; background:#fff; color:var(--blue); font-size:22px; font-weight:bold; }
+    ```css
+.logo {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #fff;
+  color: var(--blue);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
     .brand strong { color:#fff; font-size:19px; letter-spacing:-.5px; }
     .brand small { display:block; color:#aab9df; font-size:11px; margin-top:2px; }
     .nav-label { color:#8192c1; font-size:10px; letter-spacing:1.5px; font-weight:bold; padding:12px 12px 9px; }
