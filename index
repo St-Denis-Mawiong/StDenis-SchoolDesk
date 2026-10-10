@@ -498,10 +498,17 @@ function renderStudents() {
       return '<div class="attendance-row"><div class="student-cell"><div class="mini-avatar">'+esc(initials(s.Name))+'</div><div><strong>'+esc(s.Name)+'</strong><small>ID: '+esc(shortId(s.StudentID))+'</small></div></div><div class="status-group">'+['Present','Absent'].map(st=>'<button class="status-btn '+st+(status===st?' selected':'')+'" onclick="markAttendance('+JSON.stringify(String(s.StudentID))+','+JSON.stringify(st)+',this)">'+st+'</button>').join('')+'</div></div>';
     }).join('') : '<div class="empty">No active students in this class. Add students and assign them to this class first.</div>';
   }
-  function markAttendance(id,status,btn) {
-    state.marks[id]=status;
-    btn.parentElement.querySelectorAll('.status-btn').forEach(b=>b.classList.toggle('selected',b.classList.contains(status)));
-  }
+  ```javascript
+function markAttendance(id, status, btn) {
+  state.marks[id] = status;
+
+  btn.parentElement.querySelectorAll('.status-btn').forEach(b => {
+    b.classList.toggle('selected', b === btn);
+  });
+
+  console.log('Attendance marked:', id, status);
+}
+```
   function setAllAttendance(status) {
     const cls=$('a-class').value;
     if(!cls) { toast('Choose a class first.'); return; }
