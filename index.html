@@ -500,13 +500,16 @@ function renderStudents() {
   }
   
 function markAttendance(id, status, btn) {
-  state.marks[id] = status;
+state.marks[id] = status;
 
-  btn.parentElement.querySelectorAll('.status-btn').forEach(b => {
-    b.classList.toggle('selected', b === btn);
-  });
+const row = btn.closest('.attendance-row');
+if (!row) return;
 
-  console.log('Attendance marked:', id, status);
+row.querySelectorAll('.status-btn').forEach(b => {
+b.classList.remove('selected');
+});
+
+btn.classList.add('selected');
 }
   function setAllAttendance(status) {
     const cls=$('a-class').value;
