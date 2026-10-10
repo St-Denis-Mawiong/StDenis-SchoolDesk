@@ -453,10 +453,9 @@ function renderStudents() {
 
   $('student-rows').innerHTML = filtered.length
     ? filtered.map(s =>
-        '<tr><td><div class="student-cell"><div class="mini-avatar">' +
-        esc(initials(s.Name)) +
-       
-'<div><strong class="student-name" data-act="view-student" data-id="' +
+        '<tr><td><div class="student-cell"><div class="mini-avatar">' +   
+esc(initials(s.Name)) +
+'</div><div><strong class="student-name" data-act="view-student" data-id="' +
 esc(String(s.StudentID || '')) + '" style="cursor:pointer;color:var(--blue)">' +
 esc(s.Name) +
 '</strong><small>ID: ' + esc(shortId(s.StudentID)) +
