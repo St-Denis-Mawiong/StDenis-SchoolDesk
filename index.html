@@ -157,7 +157,7 @@
   </aside>
   <main>
     <header>
-      <div class="crumb">SchoolDesk&nbsp; / &nbsp;<strong id="crumb">Dashboard</strong></div>
+      <div class="crumb">St. Denis&nbsp; / &nbsp;<strong id="crumb">Dashboard</strong></div>
       <div class="profile"><div class="avatar">A</div><div><strong>Teachers</strong><small>of St. Denis</small></div></div>
     </header>
     <div class="content">
@@ -165,17 +165,17 @@
       <section id="page-dashboard">
         <div class="page-title"><div><h1>Khublei ia phi ki Nonghikai 👋</h1><p class="muted">Ka Record jong ka Skul.</p></div><button class="btn" onclick="refreshData()">↻ Refresh</button></div>
         <div class="stats">
-          <div class="stat"><div class="stat-top">Total Students <span class="stat-icon blue">♙</span></div><div class="stat-num" id="stat-students">—</div><div class="stat-foot">Student records</div></div>
-          <div class="stat"><div class="stat-top">Classes <span class="stat-icon mint">▤</span></div><div class="stat-num" id="stat-classes">—</div><div class="stat-foot">Classes registered</div></div>
-          <div class="stat"><div class="stat-top">Present Today <span class="stat-icon gold">✓</span></div><div class="stat-num" id="stat-present">—</div><div class="stat-foot">Attendance marked present</div></div>
-          <div class="stat"><div class="stat-top">Absent Today <span class="stat-icon pink">!</span></div><div class="stat-num" id="stat-absent">—</div><div class="stat-foot">Attendance marked absent</div></div>
+          <div class="stat"><div class="stat-top">Total Students <span class="stat-icon blue">♙</span></div><div class="stat-num" id="stat-students">—</div><div class="stat-foot">Record jong ki Khynnah</div></div>
+          <div class="stat"><div class="stat-top">Classes <span class="stat-icon mint">▤</span></div><div class="stat-num" id="stat-classes">—</div><div class="stat-foot">Ki registered Class</div></div>
+          <div class="stat"><div class="stat-top">Present Today <span class="stat-icon gold">✓</span></div><div class="stat-num" id="stat-present">—</div><div class="stat-foot">Kiba Present baroh</div></div>
+          <div class="stat"><div class="stat-top">Absent Today <span class="stat-icon pink">!</span></div><div class="stat-num" id="stat-absent">—</div><div class="stat-foot">Kiba Absent baroh</div></div>
         </div>
         <div class="grid2">
           <div class="panel">
             <div class="panel-head"><h2>Quick actions</h2><span class="muted small">Get things done</span></div>
             <div class="quick-grid">
-              <button class="quick" onclick="showPage('students');setTimeout(()=>showStudentForm(),0)"><span class="qico">👤</span><strong>Add student</strong><small>Register a student</small></button>
-              <button class="quick" onclick="showPage('attendance')"><span class="qico">☑️</span><strong>Take attendance</strong><small>Mark today's attendance</small></button>
+              <button class="quick" onclick="showPage('students');setTimeout(()=>showStudentForm(),0)"><span class="qico">👤</span><strong>Add student</strong><small>Pynrung khynnah thymmai</small></button>
+              <button class="quick" onclick="showPage('attendance')"><span class="qico">☑️</span><strong>Shim Attendance</strong><small>Mark attendance mynta ka sngi</small></button>
               <button class="quick" onclick="showPage('classes');setTimeout(()=>showClassForm(),0)"><span class="qico">🏫</span><strong>Add a class</strong><small>Set up a class</small></button>
               <button class="quick" onclick="showPage('reports')"><span class="qico">📊</span><strong>View reports</strong><small>Review attendance records</small></button>
             </div>
@@ -200,9 +200,9 @@
             <div class="form-grid">
               <div class="field"><label for="s-name">Kyrteng pura *</label><input id="s-name" required maxlength="120" placeholder="e.g. Alex Sharma"></div>
               <div class="field"><label for="s-class">Class</label><select id="s-class"><option value="">Jied ia ka class</option></select></div>
-              <div class="field"><label for="s-gender">Gender</label><select id="s-gender"><option value="">Not specified</option><option>Female</option><option>Male</option><option></option></select></div>
+              <div class="field"><label for="s-gender">Kynthei ne Shynrang</label><select id="s-gender"><option>Kynthei</option><option>Shynrang</option></select></div>
               <div class="field"><label for="s-dob">Sngi Kha</label><input id="s-dob" type="date"></div>
-              <div class="field"><label for="s-guardian">Kmie/Kpa</label><input id="s-guardian" maxlength="120"></div>
+              <div class="field"><label for="s-guardian">Kyrteng Kmie/Kpa</label><input id="s-guardian" maxlength="120"></div>
               <div class="field"><label for="s-phone">Contact phone</label><input id="s-phone" type="tel" maxlength="30"></div>
               <div class="field"><label for="s-status">Status</label><select id="s-status"><option>Active</option><option>Inactive</option></select></div>
             </div>
@@ -211,7 +211,7 @@
         </div>
         <div class="panel">
           <div class="toolbar"><input id="student-search" class="search" placeholder="Search name, ID or class…" oninput="renderStudents()"><span class="muted small" id="student-count" style="align-self:center"></span></div>
-          <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>CLASS</th><th>GENDER</th><th>GUARDIAN</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="student-rows"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>KYRTENG KHYNNAH</th><th>CLASS</th><th>GENDER</th><th>KYRTENG KMIE/KPA</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="student-rows"></tbody></table></div>
         </div>
       </section>
 
