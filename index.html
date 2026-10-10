@@ -534,7 +534,6 @@ function markAttendance(id, status, btn) {
     $('r-total').textContent=all.length;
     $('r-present').textContent=all.filter(a=>a.Status==='Present').length;
     $('r-absent').textContent=all.filter(a=>a.Status==='Absent').length;
-    $('r-late').textContent=all.filter(a=>a.Status==='Late').length;
     const q=($('report-search')?.value||'').toLowerCase();
     const rows=[...all].sort((a,b)=>String(b.Date).localeCompare(String(a.Date))).filter(a=>[a.Date,a.StudentName,a.Class,a.Status,a.Remarks].some(v=>String(v||'').toLowerCase().includes(q)));
     $('report-rows').innerHTML=rows.length ? rows.map(a=>
