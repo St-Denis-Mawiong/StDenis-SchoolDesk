@@ -722,6 +722,13 @@ btn.classList.add('selected');
 
  
 document.addEventListener('click', function(e) {
+  
+const closeBtn = e.target.closest('[data-act="close-profile"]');
+if (closeBtn) {
+  $('student-profile-modal').classList.remove('active');
+  return;
+}
+
   const profileBtn = e.target.closest('[data-act="view-student"]');
   if (profileBtn) {
     const id = profileBtn.dataset.id;
