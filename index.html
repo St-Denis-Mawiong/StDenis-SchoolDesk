@@ -1270,6 +1270,110 @@ photo.src = photoId
   editStudent(btn.dataset.id);
 });
 
+</script> 
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('SchoolDesk service worker registered'))
+        .catch(error => console.error('Service worker registration failed:', error));
+    });
+  }
+</script>
+
+<div id="student-profile-modal" class="profile-modal">
+  <div class="profile-backdrop" data-act="close-profile"></div>
+  <div class="profile-card">
+    <button type="button" class="profile-close" data-act="close-profile" aria-label="Close profile">&times;</button>
+   
+<div class="profile-header profile-header-centered">
+  <div id="profile-avatar" class="profile-avatar">DM</div>
+  <div class="profile-title">
+    <h2 id="profile-name">Student Name</h2>
+    <p id="profile-pen">Student ID: —</p>
+  </div>
+</div>
+   <div class="profile-details">
+ <div>
+    <span class="profile-detail-icon">🏫</span>
+    <small>Class</small>
+    <strong id="profile-class">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">👤</span>
+    <small>Gender</small>
+    <strong id="profile-gender">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">👨‍👩‍👦</span>
+    <small>Parent / Guardian</small>
+    <strong id="profile-guardian">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">📞</span>
+    <small>Phone</small>
+    <strong id="profile-phone">—</strong>
+  </div>
+
+  <div>
+    <span class="profile-detail-icon">🎂</span>
+    <small>Date of Birth</small>
+    <strong id="profile-dob">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">✅</span>
+    <small>Status</small>
+    <strong id="profile-status">Active</strong>
+  </div>
+</div>
+
+<button type="button" id="contact-parent-btn" class="contact-parent-btn">
+  📞 Contact Parent
+</button>
+
+<div class="student-documents-section">
+  <h3>📁 Student Documents</h3>
+  <p>Keep important student documents safely in one place.</p>
+
+  <button
+    type="button"
+    id="view-student-documents-btn"
+    class="contact-parent-btn">
+    📂 View Documents
+  </button>
+
+  <div id="student-documents-panel" hidden>
+    <label for="student-document-type">Document Type</label>
+    <select id="student-document-type">
+      <option value="Birth Certificate">Birth Certificate</option>
+      <option value="Transfer Certificate">Transfer Certificate</option>
+      <option value="Admission Form">Admission Form</option>
+      <option value="Report Card">Report Card</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="student-document-file">Choose a document</label>
+    <input
+      type="file"
+      id="student-document-file"
+      accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+
+    <button
+      type="button"
+      id="upload-student-document-btn"
+      class="contact-parent-btn">
+      ⬆️ Upload Document
+    </button>
+
+    <p id="student-document-message" role="status"></p>
+
+    <div id="student-document-list"></div>
+  </div>
+</div>
+
+</div> <!-- closes profile-card -->
+</div> <!-- closes student-profile-modal -->
+  <script>
 $('upload-student-document-btn').addEventListener('click', async function () {
   const student = state.currentDocumentStudent;
   const fileInput = $('student-document-file');
@@ -1430,110 +1534,7 @@ $('upload-student-document-btn').addEventListener('click', async function () {
     uploadBtn.disabled = false;
   }
 });
-
-</script> 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('SchoolDesk service worker registered'))
-        .catch(error => console.error('Service worker registration failed:', error));
-    });
-  }
-</script>
-
-<div id="student-profile-modal" class="profile-modal">
-  <div class="profile-backdrop" data-act="close-profile"></div>
-  <div class="profile-card">
-    <button type="button" class="profile-close" data-act="close-profile" aria-label="Close profile">&times;</button>
-   
-<div class="profile-header profile-header-centered">
-  <div id="profile-avatar" class="profile-avatar">DM</div>
-  <div class="profile-title">
-    <h2 id="profile-name">Student Name</h2>
-    <p id="profile-pen">Student ID: —</p>
-  </div>
-</div>
-   <div class="profile-details">
- <div>
-    <span class="profile-detail-icon">🏫</span>
-    <small>Class</small>
-    <strong id="profile-class">—</strong>
-  </div>
-  <div>
-    <span class="profile-detail-icon">👤</span>
-    <small>Gender</small>
-    <strong id="profile-gender">—</strong>
-  </div>
-  <div>
-    <span class="profile-detail-icon">👨‍👩‍👦</span>
-    <small>Parent / Guardian</small>
-    <strong id="profile-guardian">—</strong>
-  </div>
-  <div>
-    <span class="profile-detail-icon">📞</span>
-    <small>Phone</small>
-    <strong id="profile-phone">—</strong>
-  </div>
-
-  <div>
-    <span class="profile-detail-icon">🎂</span>
-    <small>Date of Birth</small>
-    <strong id="profile-dob">—</strong>
-  </div>
-  <div>
-    <span class="profile-detail-icon">✅</span>
-    <small>Status</small>
-    <strong id="profile-status">Active</strong>
-  </div>
-</div>
-
-<button type="button" id="contact-parent-btn" class="contact-parent-btn">
-  📞 Contact Parent
-</button>
-
-<div class="student-documents-section">
-  <h3>📁 Student Documents</h3>
-  <p>Keep important student documents safely in one place.</p>
-
-  <button
-    type="button"
-    id="view-student-documents-btn"
-    class="contact-parent-btn">
-    📂 View Documents
-  </button>
-
-  <div id="student-documents-panel" hidden>
-    <label for="student-document-type">Document Type</label>
-    <select id="student-document-type">
-      <option value="Birth Certificate">Birth Certificate</option>
-      <option value="Transfer Certificate">Transfer Certificate</option>
-      <option value="Admission Form">Admission Form</option>
-      <option value="Report Card">Report Card</option>
-      <option value="Other">Other</option>
-    </select>
-
-    <label for="student-document-file">Choose a document</label>
-    <input
-      type="file"
-      id="student-document-file"
-      accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
-
-    <button
-      type="button"
-      id="upload-student-document-btn"
-      class="contact-parent-btn">
-      ⬆️ Upload Document
-    </button>
-
-    <p id="student-document-message" role="status"></p>
-
-    <div id="student-document-list"></div>
-  </div>
-</div>
-
-</div> <!-- closes profile-card -->
-</div> <!-- closes student-profile-modal -->
+  </script>
 </body>
 </html>
 
