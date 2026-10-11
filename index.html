@@ -1057,7 +1057,26 @@ if (closeBtn) {
 
   
 if (student) {
-  $('profile-avatar').textContent = initials(student.Name);
+  
+const avatar = $('profile-avatar');
+avatar.textContent = initials(student.Name);
+
+if (student.PhotoURL) {
+  const photo = document.createElement('img');
+  photo.src = student.PhotoURL;
+  photo.alt = student.Name || 'Student photo';
+  photo.style.width = '100%';
+  photo.style.height = '100%';
+  photo.style.objectFit = 'cover';
+  photo.style.borderRadius = 'inherit';
+
+  photo.onerror = function() {
+    photo.remove();
+    avatar.textContent = initials(student.Name);
+  };
+
+  avatar.replaceChildren(photo);
+}
   $('profile-name').textContent = student.Name || 'Unnamed Student';
   $('profile-pen').textContent = student.PEN || student.StudentID || '—';
   $('profile-class').textContent = student.Class || '—';
