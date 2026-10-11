@@ -748,31 +748,15 @@ function refreshData() {
       });
 
       
+
 const uploadResult = await new Promise((resolve, reject) => {
-  const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
-
-  fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-    },
-    body: new URLSearchParams({
-      payload: JSON.stringify({
-        action: 'uploadStudentPhoto',
-        args: [dataUrl, photoFile.name]
-      })
-    })
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Photo upload request failed.');
-      }
-      return response.json();
-    })
-    .then(resolve)
-    .catch(reject);
+  callServer(
+    'uploadStudentPhoto',
+    [dataUrl, photoFile.name],
+    resolve,
+    reject
+  );
 });
-
 
       if (!uploadResult || !uploadResult.success) {
         throw new Error(uploadResult?.error || 'Photo upload failed.');
