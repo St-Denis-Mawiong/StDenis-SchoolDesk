@@ -579,6 +579,20 @@
           <div class="panel-head"><h2 id="attendance-heading">Students in selected class</h2><span class="muted small" id="attendance-count"></span></div>
           <div id="attendance-list"><div class="empty">Choose a class to load students.</div></div>
           <div class="form-actions"><button class="btn primary" onclick="saveAttendanceNow()">Save attendance</button><button class="btn" onclick="setAllAttendance('Present')">Mark all present</button></div>
+          <div id="attendance-save-progress" class="hidden" style="margin: 16px 0; padding: 14px; background: #f0f7f3; border-radius: 12px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
+    <strong id="attendance-progress-title" style="color: #173b32;">Saving attendance...</strong>
+    <span id="attendance-progress-spinner" style="color: #18865b;">●</span>
+  </div>
+
+  <div style="height: 8px; background: #d8e5dd; border-radius: 20px; overflow: hidden;">
+    <div id="attendance-progress-bar" style="height: 100%; width: 10%; background: #18865b; border-radius: 20px; transition: width 0.4s ease;"></div>
+  </div>
+
+  <p id="attendance-progress-message" style="margin: 8px 0 0; color: #52665b; font-size: 13px;">
+    Please wait while attendance is saved to the school database.
+  </p>
+</div>
         </div>
       </section>
 
@@ -1003,18 +1017,66 @@ btn.classList.add('selected');
     state.students.filter(s=>s.Class===cls && s.Status!=='Inactive').forEach(s=>state.marks[s.StudentID]=status);
     loadAttendance();
   }
-  function saveAttendanceNow() {
-    const cls=$('a-class').value, date=$('a-date').value || today();
-    if(!cls) { toast('Choose a class first.'); return; }
-    const students=state.students.filter(s=>s.Class===cls && s.Status!=='Inactive');
-    if(!students.length) { toast('There are no students to save.'); return; }
-    const records=students.map(s=>({
-      Date:date, StudentID:s.StudentID, StudentName:s.Name,
-      Class:s.Class, Status:state.marks[s.StudentID]||'Present', Remarks:''
+function saveAttendanceNow() {
+    const cls = $('a-class').value;
+    const date = $('a-date').value || today();
+
+    if (!cls) {
+      toast('Choose a class first.');
+      return;
+    }
+
+    const students = state.students.filter(
+      s => s.Class === cls && s.Status !== 'Inactive'
+    );
+
+    if (!students.length) {
+      toast('There are no students to save.');
+      return;
+    }
+
+    const records = students.map(s => ({
+      Date: date,
+      StudentID: s.StudentID,
+      StudentName: s.Name,
+      Class: s.Class,
+      Status: state.marks[s.StudentID] || 'Present',
+      Remarks: ''
     }));
-    callServer('saveAttendance',[records],result=>{
-      toast(result.message || 'Attendance saved.');
-      refreshData();
+
+    const progressBox = $('attendance-save-progress');
+    const progressTitle = $('attendance-progress-title');
+    const progressMessage = $('attendance-progress-message');
+    const progressBar = $('attendance-progress-bar');
+    const progressSpinner = $('attendance-progress-spinner');
+    const saveButton = document.querySelector(
+      '#page-attendance .form-actions .btn.primary'
+    );
+
+    progressBox.classList.remove('hidden');
+    progressTitle.textContent = 'Saving attendance...';
+    progressMessage.textContent =
+      'Sending attendance to the school database. Please wait.';
+    progressBar.style.width = '35%';
+    progressSpinner.textContent = '●';
+
+    if (saveButton) saveButton.disabled = true;
+
+    callServer('saveAttendance', [records], result => {
+      progressBar.style.width = '100%';
+      progressTitle.textContent = 'Attendance saved successfully!';
+      progressMessage.textContent =
+        result.message || 'Your attendance records have been saved.';
+      progressSpinner.textContent = '✓';
+
+      toast(result.message || 'Attendance saved successfully.');
+
+      setTimeout(() => {
+        progressBox.classList.add('hidden');
+        progressBar.style.width = '10%';
+        if (saveButton) saveButton.disabled = false;
+        refreshData();
+      }, 1500);
     });
   }
   function renderReports() {
