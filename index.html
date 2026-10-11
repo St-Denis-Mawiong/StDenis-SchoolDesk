@@ -769,6 +769,8 @@ if (student) {
   $('profile-gender').textContent = student.Gender || '—';
   $('profile-guardian').textContent = student.Guardian || '—';
   $('profile-phone').textContent = student.Phone || '—';
+  $('profile-dob').textContent = student.DateOfBirth || '—';
+  $('profile-status').textContent = student.Status || 'Active';
 
   $('student-profile-modal').classList.add('active');
 }
@@ -805,14 +807,16 @@ if (student) {
     <p id="profile-pen">Student ID: —</p>
   </div>
 </div>
-
-    <div class="profile-details">
-      <div><small>Class</small><strong id="profile-class">—</strong></div>
-      <div><small>Gender</small><strong id="profile-gender">—</strong></div>
-      <div><small>Parent / Guardian</small><strong id="profile-guardian">—</strong></div>
-      <div><small>Phone</small><strong id="profile-phone">—</strong></div>
-    </div>
-  </div>
+   
+<div class="profile-details">
+  <div><small>Class</small><strong id="profile-class">—</strong></div>
+  <div><small>Gender</small><strong id="profile-gender">—</strong></div>
+  <div><small>Parent / Guardian</small><strong id="profile-guardian">—</strong></div>
+  <div><small>Phone</small><strong id="profile-phone">—</strong></div>
+  <div><small>Date of Birth</small><strong id="profile-dob">—</strong></div>
+  <div><small>Status</small><strong id="profile-status">Active</strong></div>
+</div>
+</div>
 </div>
 
 </body>
