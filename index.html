@@ -696,6 +696,10 @@ function refreshData() {
 
   callServer('getAppData', [], data => {
     state.students = data.students || [];
+    console.log('Student photo URL check:', state.students.map(s => ({
+  name: s.Name,
+  photo: s.PhotoURL
+})));
     state.classes = data.classes || [];
     state.attendance = data.attendance || [];
 
