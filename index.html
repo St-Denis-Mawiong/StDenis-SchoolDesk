@@ -723,16 +723,19 @@ document.addEventListener('click', function(e) {
       s => String(s.StudentID) === String(id)
     );
 
-    if (student) {
-      alert(
-        'Student Profile\n\n' +
-        'Name: ' + student.Name + '\n' +
-        'Class: ' + (student.Class || '—') + '\n' +
-        'Gender: ' + (student.Gender || '—') + '\n' +
-        'Parent: ' + (student.Guardian || '—') + '\n' +
-        'Phone: ' + (student.Phone || '—')
-      );
-    }
+  
+if (student) {
+  $('profile-avatar').textContent = initials(student.Name);
+  $('profile-name').textContent = student.Name || 'Unnamed Student';
+  $('profile-pen').textContent = student.PEN || student.StudentID || '—';
+  $('profile-class').textContent = student.Class || '—';
+  $('profile-gender').textContent = student.Gender || '—';
+  $('profile-guardian').textContent = student.Guardian || '—';
+  $('profile-phone').textContent = student.Phone || '—';
+
+  $('student-profile-modal').classList.add('active');
+}
+
     return;
   }
 
