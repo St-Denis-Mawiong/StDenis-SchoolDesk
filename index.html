@@ -1067,7 +1067,10 @@ avatar.textContent = initials(student.Name);
 
 if (student.PhotoURL) {
   const photo = document.createElement('img');
-  photo.src = student.PhotoURL;
+  const photoId = student.PhotoURL.match(/\/d\/([^/]+)/)?.[1];
+photo.src = photoId
+  ? 'https://drive.google.com/thumbnail?id=' + photoId + '&sz=w400'
+  : student.PhotoURL;
   photo.alt = student.Name || 'Student photo';
   photo.style.width = '100%';
   photo.style.height = '100%';
