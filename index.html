@@ -820,6 +820,19 @@ if (student) {
   $('profile-status').textContent = student.Status || 'Active';
 
   $('student-profile-modal').classList.add('active');
+  
+  const contactBtn = $('contact-parent-btn');
+  const phone = String(student.Phone || '').trim();
+
+  contactBtn.onclick = function() {
+    if (!phone) {
+      toast('No parent phone number is saved.');
+      return;
+    }
+
+    window.location.href = 'tel:' + phone.replace(/[^\d+]/g, '');
+  };
+
 }
 
     return;
@@ -875,6 +888,7 @@ if (student) {
     <small>Phone</small>
     <strong id="profile-phone">—</strong>
   </div>
+
   <div>
     <span class="profile-detail-icon">🎂</span>
     <small>Date of Birth</small>
@@ -886,7 +900,13 @@ if (student) {
     <strong id="profile-status">Active</strong>
   </div>
 </div>
-</div>
-</div>
+
+<button type="button" id="contact-parent-btn" class="contact-parent-btn">
+  📞 Contact Parent
+</button>
+
+</div> <!-- closes profile-card -->
+</div> <!-- closes student-profile-modal -->
 </body>
 </html>
+
