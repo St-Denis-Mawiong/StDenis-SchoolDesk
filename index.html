@@ -273,10 +273,11 @@
 .profile-details strong {
   display: block;
   overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .profile-details small {
-  margin-bottom: 7px;
+  margin-bottom: 4px;
   color: #64748b;
   font-size: 12px;
 }
@@ -284,7 +285,6 @@
 .profile-details strong {
   font-size: 14px;
 }
-
 @media (max-width: 480px) {
   .profile-card {
     padding: 22px 18px;
@@ -335,16 +335,17 @@
   text-align: center;
 }
 .profile-detail-icon {
-display: flex;
-align-items: center;
-justify-content: center;
-width: 34px;
-height: 34px;
-margin-bottom: 10px;
-border-radius: 11px;
-background: rgba(23, 59, 50, 0.09);
-color: #173b32;
-font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 31px;
+  width: 31px;
+  height: 31px;
+  margin: 0;
+  border-radius: 10px;
+  background: rgba(23, 59, 50, 0.09);
+  color: #173b32;
+  font-size: 16px;
 }
 
 .profile-details > div {
