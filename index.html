@@ -745,18 +745,102 @@ function refreshData() {
         reader.onload = () => resolve(reader.result);
         reader.onerror = () => reject(new Error('Could not read the photo.'));
         reader.readAsDataURL(photoFile);
-      });
-
-      
+      });   
 
 const uploadResult = await new Promise((resolve, reject) => {
-  callServer(
-    'uploadStudentPhoto',
-    [dataUrl, photoFile.name],
-    resolve,
-    reject
-  );
+  const token = Date.now() + '_' +
+    Math.random().toString(36).slice(2);
+
+  const iframe = document.createElement('iframe');
+  iframe.name = 'photoUploadFrame_' + token;
+  iframe.style.display = 'none';
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  const uploadEndpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
+form.action = uploadEndpoint;
+  form.target = iframe.name;
+  form.style.display = 'none';
+
+  const payload = {
+    action: 'uploadStudentPhoto',
+    args: [dataUrl, photoFile.name],
+    token: token
+  };
+
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'payload';
+  input.value = JSON.stringify(payload);
+  form.appendChild(input);
+
+  document.body.appendChild(iframe);
+  document.body.appendChild(form);
+
+  let finished = false;
+  let attempts = 0;
+
+  function cleanup() {
+    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+    if (form.parentNode) form.parentNode.removeChild(form);
+  }
+
+  function checkStatus() {
+    if (finished) return;
+
+    attempts++;
+
+    callServer(
+      'getPhotoUploadStatus',
+      [token],
+      function (result) {
+        if (finished) return;
+
+        if (result && result.success) {
+          finished = true;
+          cleanup();
+          resolve(result);
+          return;
+        }
+
+        if (result && result.pending && attempts < 40) {
+          setTimeout(checkStatus, 1500);
+          return;
+        }
+
+        finished = true;
+        cleanup();
+        reject(new Error(
+          result && result.error
+            ? result.error
+            : 'Photo upload failed or timed out. Please try again.'
+        ));
+      },
+      function (error) {
+        if (finished) return;
+
+        if (attempts < 40) {
+          setTimeout(checkStatus, 1500);
+        } else {
+          finished = true;
+          cleanup();
+          reject(error);
+        }
+      }
+    );
+  }
+
+  form.submit();
+  setTimeout(checkStatus, 1500);
+
+  setTimeout(function () {
+    if (finished) return;
+    finished = true;
+    cleanup();
+    reject(new Error('Photo upload timed out. Please try again.'));
+  }, 60000);
 });
+
 
       if (!uploadResult || !uploadResult.success) {
         throw new Error(uploadResult?.error || 'Photo upload failed.');
