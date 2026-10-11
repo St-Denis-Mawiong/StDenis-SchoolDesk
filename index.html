@@ -518,16 +518,23 @@
   const script = document.createElement('script');
   script.src = endpoint + '?' + params.toString();
   script.async = true;
+const timeoutId = setTimeout(function() {
+  cleanup();
+  const err = new Error('Google server took too long to respond. Please try Refresh again.');
+  showMessage(err.message, true);
+  if (failure) failure(err);
+  toast('Request timed out.');
+}, 15000);
 
   let finished = false;
 
   function cleanup() {
-    if (finished) return;
-    finished = true;
-    delete window[callbackName];
-    script.remove();
-  }
-
+if (finished) return;
+finished = true;
+clearTimeout(timeoutId);
+delete window[callbackName];
+script.remove();
+}
   window[callbackName] = function(result) {
     cleanup();
 
