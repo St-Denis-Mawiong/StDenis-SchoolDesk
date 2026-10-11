@@ -522,6 +522,22 @@
     <small class="muted">Choose a clear passport-size photo.</small>
   </div>
 </div>
+            
+<div id="photo-upload-progress" class="hidden" style="margin: 16px 0; padding: 14px; background: #f0f7f3; border-radius: 12px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
+    <strong id="photo-upload-title" style="color: #173b32;">Preparing photo...</strong>
+    <span id="photo-upload-spinner" style="color: #18865b;">●</span>
+  </div>
+
+  <div style="height: 8px; background: #d8e5dd; border-radius: 20px; overflow: hidden;">
+    <div id="photo-upload-bar" style="height: 100%; width: 0%; background: #18865b; border-radius: 20px; transition: width 0.4s ease;"></div>
+  </div>
+
+  <p id="photo-upload-message" style="margin: 8px 0 0; color: #52665b; font-size: 13px;">
+    Please wait while your photo is uploaded.
+  </p>
+</div>
+
 <div class="form-actions">
   <button class="btn primary" type="submit">Save student</button>
   <button class="btn" type="button" onclick="hideStudentForm()">Cancel</button>
@@ -722,7 +738,17 @@ function refreshData() {
   function hideStudentForm() { $('student-form-panel').classList.add('hidden'); }
   $('student-form').addEventListener('submit', async e => {
   e.preventDefault();
+  const progressBox = document.getElementById('photo-upload-progress');
+const progressTitle = document.getElementById('photo-upload-title');
+const progressMessage = document.getElementById('photo-upload-message');
+const progressBar = document.getElementById('photo-upload-bar');
 
+function updatePhotoProgress(title, message, width) {
+  progressBox.classList.remove('hidden');
+  progressTitle.textContent = title;
+  progressMessage.textContent = message;
+  progressBar.style.width = width + '%';
+}
   const photoInput = $('s-photo');
   const photoFile = photoInput.files[0];
 
@@ -740,6 +766,7 @@ function refreshData() {
 
   try {
     if (photoFile) {
+      updatePhotoProgress('Preparing photo...', 'Reading the selected student photo.', 15);
       const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
@@ -829,7 +856,7 @@ form.action = uploadEndpoint;
       }
     );
   }
-
+  updatePhotoProgress('Uploading photo...', 'Please wait while the photo is being sent to Google Drive.', 45);
   form.submit();
   setTimeout(checkStatus, 1500);
 
@@ -847,22 +874,33 @@ form.action = uploadEndpoint;
       }
 
       student.PhotoURL = uploadResult.url;
+      updatePhotoProgress('Saving student...', 'Photo uploaded. Now saving student details to Google Sheets.', 80);
     }
 
     
+
 callServer('saveStudent', [student], result => {
-  hideStudentForm();
+  updatePhotoProgress('Saved successfully!', 'Student details and photo have been saved.', 100);
   toast('Student saved to Google Sheets.');
   refreshData();
+  setTimeout(() => {
+    progressBox.classList.add('hidden');
+    progressBar.style.width = '0%';
+    hideStudentForm();
+  }, 1200);
 }, err => {
+  progressBox.classList.add('hidden');
+  progressBar.style.width = '0%';
   toast(err.message || 'Could not save student.');
 });
-
-
-  } catch (err) {
+ 
+} catch (err) {
+    progressBox.classList.add('hidden');
+    progressBar.style.width = '0%';
     toast(err.message || 'Could not save student.');
   }
 });
+
 
 function renderStudents() {
   const q = ($('student-search')?.value || '').toLowerCase();
