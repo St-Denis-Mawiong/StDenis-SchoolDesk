@@ -472,18 +472,62 @@
           <div class="panel-head"><h2 id="student-form-title">Add student</h2><button class="btn" onclick="hideStudentForm()">Cancel</button></div>
           <form id="student-form">
             <input type="hidden" id="s-id">
-            <div class="form-grid">
-              <div class="field"><label for="s-name">Kyrteng pura *</label><input id="s-name" required maxlength="120" placeholder="e.g. Daman Marbaniang"></div>
-              <div class="field"><label for="s-class">Class</label><select id="s-class"><option value="">Jied ia ka class</option></select></div>
-              <div class="field"><label for="s-gender">Kynthei ne Shynrang</label><select id="s-gender"><option>Kynthei</option><option>Shynrang</option></select></div>
-              <div class="field"><label for="s-dob">Sngi Kha</label><input id="s-dob" type="date"></div>
-              <div class="field"><label for="s-guardian">Kyrteng Kmie/Kpa</label><input id="s-guardian" maxlength="120"></div>
-              <div class="field"><label for="s-phone">Contact phone</label><input id="s-phone" type="tel" maxlength="30"></div>
-              <div class="field"><label for="s-status">Status</label><select id="s-status"><option>Active</option><option>Inactive</option></select></div>
-            </div>
-            <div class="form-actions"><button class="btn primary" type="submit">Save student</button><button class="btn" type="button" onclick="hideStudentForm()">Cancel</button></div>
-          </form>
-        </div>
+<div class="form-grid">
+  <div class="field">
+    <label for="s-name">Kyrteng pura *</label>
+    <input id="s-name" required maxlength="120" placeholder="e.g. Daman Marbaniang">
+  </div>
+
+  <div class="field">
+    <label for="s-class">Class</label>
+    <select id="s-class">
+      <option value="">Jied ia ka class</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="s-gender">Kynthei ne Shynrang</label>
+    <select id="s-gender">
+      <option>Kynthei</option>
+      <option>Shynrang</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="s-dob">Sngi Kha</label>
+    <input id="s-dob" type="date">
+  </div>
+
+  <div class="field">
+    <label for="s-guardian">Kyrteng Kmie/Kpa</label>
+    <input id="s-guardian" maxlength="120">
+  </div>
+
+  <div class="field">
+    <label for="s-phone">Contact phone</label>
+    <input id="s-phone" type="tel" maxlength="30">
+  </div>
+
+  <div class="field">
+    <label for="s-status">Status</label>
+    <select id="s-status">
+      <option>Active</option>
+      <option>Inactive</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="s-photo">Student Passport Photo</label>
+    <input id="s-photo" type="file" accept="image/*">
+    <small class="muted">Choose a clear passport-size photo.</small>
+  </div>
+</div>
+<div class="form-actions">
+  <button class="btn primary" type="submit">Save student</button>
+  <button class="btn" type="button" onclick="hideStudentForm()">Cancel</button>
+</div>
+</form>
+</div>
         <div class="panel">
           <div class="toolbar"><input id="student-search" class="search" placeholder="Search name, ID or class…" oninput="renderStudents()"><span class="muted small" id="student-count" style="align-self:center"></span></div>
           <div class="table-wrap"><table><thead><tr><th>KYRTENG KHYNNAH</th><th>CLASS</th><th>GENDER</th><th>KYRTENG KMIE/KPA</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="student-rows"></tbody></table></div>
@@ -629,18 +673,22 @@ script.remove();
   };
 
   document.head.appendChild(script);
-}
-  function refreshData() {
-    showMessage('Connecting to your Google Sheets database…',false);
-    callServer('getAppData',[],data=>{
-      state.students = data.students || [];
-      state.classes = data.classes || [];
-      state.attendance = data.attendance || [];
-      clearMessage();
-      renderAll();
-      toast('Ki data baroh lah refresh');
-    });
   }
+  
+function refreshData() {
+  showMessage('Connecting to your Google Sheets database…', false);
+
+  callServer('getAppData', [], data => {
+    state.students = data.students || [];
+    state.classes = data.classes || [];
+    state.attendance = data.attendance || [];
+
+    clearMessage();
+    renderAll();
+    toast('Ki data baroh lah refresh');
+  });
+}
+
   function renderAll() {
     renderDashboard(); renderStudents(); renderClasses(); populateClassSelectors(); renderReports();
   }
@@ -667,23 +715,68 @@ script.remove();
     $('s-phone').value = student ? student.Phone || '' : '';
     $('s-status').value = student ? student.Status || 'Active' : 'Active';
     $('student-form-title').textContent = student ? 'Edit student' : 'Add student';
-    $('student-form-panel').classList.remove('hidden');
-    $('student-form-panel').scrollIntoView({behavior:'smooth',block:'start'});
+   $('student-form-panel').classList.remove('hidden');
+    $('student-form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     populateClassSelectors();
   }
   function hideStudentForm() { $('student-form-panel').classList.add('hidden'); }
-  $('student-form').addEventListener('submit',e=>{
-    e.preventDefault();
-    const student = {
-      StudentID:$('s-id').value, Name:$('s-name').value.trim(), Class:$('s-class').value,
-      Gender:$('s-gender').value, DateOfBirth:$('s-dob').value,
-      Guardian:$('s-guardian').value.trim(), Phone:$('s-phone').value.trim(), Status:$('s-status').value
-    };
-    callServer('saveStudent',[student],result=>{
-      hideStudentForm(); toast('Student saved to Google Sheets.');
-      refreshData();
-    });
-  });
+  $('student-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const photoInput = $('s-photo');
+  const photoFile = photoInput.files[0];
+
+  const student = {
+    StudentID: $('s-id').value,
+    Name: $('s-name').value.trim(),
+    Class: $('s-class').value,
+    Gender: $('s-gender').value,
+    DateOfBirth: $('s-dob').value,
+    Guardian: $('s-guardian').value.trim(),
+    Phone: $('s-phone').value.trim(),
+    Status: $('s-status').value,
+    PhotoURL: ''
+  };
+
+  try {
+    if (photoFile) {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Could not read the photo.'));
+        reader.readAsDataURL(photoFile);
+      });
+
+      const uploadResult = await new Promise((resolve, reject) => {
+  callServer(
+    'uploadStudentPhoto',
+    [dataUrl, photoFile.name],
+    resolve,
+    reject
+  );
+});
+
+      if (!uploadResult || !uploadResult.success) {
+        throw new Error(uploadResult?.error || 'Photo upload failed.');
+      }
+
+      student.PhotoURL = uploadResult.url;
+    }
+
+    
+callServer('saveStudent', [student], result => {
+  hideStudentForm();
+  toast('Student saved to Google Sheets.');
+  refreshData();
+}, err => {
+  toast(err.message || 'Could not save student.');
+});
+
+
+  } catch (err) {
+    toast(err.message || 'Could not save student.');
+  }
+});
 
 function renderStudents() {
   const q = ($('student-search')?.value || '').toLowerCase();
