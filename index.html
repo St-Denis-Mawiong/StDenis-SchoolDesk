@@ -1058,27 +1058,41 @@ function saveAttendanceNow() {
     progressMessage.textContent =
       'Sending attendance to the school database. Please wait.';
     progressBar.style.width = '35%';
+    progressBar.style.background = '#18865b';
     progressSpinner.textContent = '●';
 
     if (saveButton) saveButton.disabled = true;
 
-    callServer('saveAttendance', [records], result => {
-      progressBar.style.width = '100%';
-      progressTitle.textContent = 'Attendance saved successfully!';
-      progressMessage.textContent =
-        result.message || 'Your attendance records have been saved.';
-      progressSpinner.textContent = '✓';
+   callServer('saveAttendance', [records], result => {
+  progressBar.style.width = '100%';
+  progressTitle.textContent = 'Attendance saved successfully!';
+  progressMessage.textContent =
+    result.message || 'Your attendance records have been saved.';
+  progressSpinner.textContent = '✓';
 
-      toast(result.message || 'Attendance saved successfully.');
+  toast(result.message || 'Attendance saved successfully.');
 
-      setTimeout(() => {
-        progressBox.classList.add('hidden');
-        progressBar.style.width = '10%';
-        if (saveButton) saveButton.disabled = false;
-        refreshData();
-      }, 1500);
-    });
-  }
+  setTimeout(() => {
+    progressBox.classList.add('hidden');
+    progressBar.style.width = '10%';
+    if (saveButton) saveButton.disabled = false;
+    refreshData();
+  }, 1500);
+
+}, err => {
+  progressBar.style.width = '100%';
+  progressBar.style.background = '#dc2626';
+  progressTitle.textContent = 'Attendance save status uncertain';
+  progressMessage.textContent =
+    'We could not confirm the save. Check your internet connection, then refresh Attendance and verify the records before trying again.';
+  progressSpinner.textContent = '!';
+  progressSpinner.style.color = '#dc2626';
+
+  if (saveButton) saveButton.disabled = false;
+
+  toast('Could not confirm attendance was saved.');
+});
+}
   function renderReports() {
     const all=state.attendance;
     $('r-total').textContent=all.length;
