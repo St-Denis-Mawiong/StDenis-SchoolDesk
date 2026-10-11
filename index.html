@@ -334,7 +334,27 @@
 .profile-header-centered .profile-title p {
   text-align: center;
 }
+.profile-detail-icon {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 34px;
+height: 34px;
+margin-bottom: 10px;
+border-radius: 11px;
+background: rgba(23, 59, 50, 0.09);
+color: #173b32;
+font-size: 18px;
+}
 
+.profile-details > div {
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-details > div {
+transform: translateY(-2px);
+box-shadow: 0 6px 18px rgba(23, 59, 50, 0.08);
+}
   </style>
 </head>
 <body>
@@ -814,17 +834,39 @@ if (student) {
     <p id="profile-pen">Student ID: —</p>
   </div>
 </div>
-   
-<div class="profile-details">
-  <div><small>Class</small><strong id="profile-class">—</strong></div>
-  <div><small>Gender</small><strong id="profile-gender">—</strong></div>
-  <div><small>Parent / Guardian</small><strong id="profile-guardian">—</strong></div>
-  <div><small>Phone</small><strong id="profile-phone">—</strong></div>
-  <div><small>Date of Birth</small><strong id="profile-dob">—</strong></div>
-  <div><small>Status</small><strong id="profile-status">Active</strong></div>
+   <div class="profile-details">
+ <div>
+    <span class="profile-detail-icon">🏫</span>
+    <small>Class</small>
+    <strong id="profile-class">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">👤</span>
+    <small>Gender</small>
+    <strong id="profile-gender">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">👨‍👩‍👦</span>
+    <small>Parent / Guardian</small>
+    <strong id="profile-guardian">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">📞</span>
+    <small>Phone</small>
+    <strong id="profile-phone">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">🎂</span>
+    <small>Date of Birth</small>
+    <strong id="profile-dob">—</strong>
+  </div>
+  <div>
+    <span class="profile-detail-icon">✅</span>
+    <small>Status</small>
+    <strong id="profile-status">Active</strong>
+  </div>
 </div>
 </div>
 </div>
-
 </body>
 </html>
