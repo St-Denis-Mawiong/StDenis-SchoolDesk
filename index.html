@@ -1340,7 +1340,11 @@ function saveAttendanceNow() {
   });
 
       document.addEventListener('click', async function(e) {
-        
+     const closeProfileBtn = e.target.closest('[data-act="close-profile"]');
+  if (closeProfileBtn) {
+    $('student-profile-modal').classList.remove('active');
+    return;
+  }        
   const documentsBtn = e.target.closest('#view-student-documents-btn');
   if (documentsBtn) {
     const student = state.currentDocumentStudent;
