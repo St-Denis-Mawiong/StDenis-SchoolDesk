@@ -523,7 +523,40 @@
     <small class="muted">Choose a clear passport-size photo.</small>
   </div>
 </div>
-            
+ </div>
+
+<!-- Student Document Upload -->
+<div class="field" style="grid-column: 1 / -1;">
+  <label for="student-document-type">📁 Student Documents</label>
+
+  <select id="student-document-type">
+    <option value="Birth Certificate">Birth Certificate</option>
+    <option value="Transfer Certificate">Transfer Certificate</option>
+    <option value="Admission Form">Admission Form</option>
+    <option value="Report Card">Report Card</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <label for="student-document-file" style="margin-top: 10px;">
+    Choose a document
+  </label>
+
+  <input
+    type="file"
+    id="student-document-file"
+    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+  >
+
+  <small class="muted">
+    PDF, JPG or PNG. Maximum file size: 10 MB.
+  </small>
+
+  <p id="student-document-message"
+     role="status"
+     style="margin: 8px 0 0; font-size: 13px;">
+  </p>
+</div>
+
 <div id="photo-upload-progress" class="hidden" style="margin: 16px 0; padding: 14px; background: #f0f7f3; border-radius: 12px;">
   <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
     <strong id="photo-upload-title" style="color: #173b32;">Preparing photo...</strong>
