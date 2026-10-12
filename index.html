@@ -1339,6 +1339,8 @@ function saveAttendanceNow() {
     refreshData();
   });
 
+      document.addEventListener('click', async function(e) {
+        
   const documentsBtn = e.target.closest('#view-student-documents-btn');
   if (documentsBtn) {
     const student = state.currentDocumentStudent;
@@ -1347,70 +1349,74 @@ function saveAttendanceNow() {
       toast('Please open a student profile first.');
       return;
     }
-const panel = $('student-documents-panel');
-panel.hidden = !panel.hidden;
 
-if (!panel.hidden) {
-  const message = $('student-document-message');
-  const list = $('student-document-list');
+    const panel = $('student-documents-panel');
+    panel.hidden = !panel.hidden;
 
-  message.textContent = '⏳ Ap shiphang.... dang shim documents na School Server';
-  list.replaceChildren();
-   await new Promise(resolve => setTimeout(resolve, 100));
-  callServer(
-    'getStudentDocuments',
-    [student.StudentID],
-    function(result) {
-      if (!result || !result.success) {
-        message.textContent =
-          result && result.error
-            ? result.error
-            : 'Could not load documents.';
-        return;
-      }
+    if (!panel.hidden) {
+      const message = $('student-document-message');
+      const list = $('student-document-list');
 
+      message.textContent = '⏳ Ap shiphang.... dang shim documents na School Server';
       list.replaceChildren();
 
-      if (!result.documents || result.documents.length === 0) {
-        list.textContent = 'No documents uploaded yet.';
-      } else {
-        result.documents.forEach(function(doc) {
-          const item = document.createElement('div');
-          const link = document.createElement('a');
-          const detail = document.createElement('p');
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-          link.href = doc.url;
-          link.target = '_blank';
-          link.rel = 'noopener';
-          link.textContent = doc.name;
+      callServer(
+        'getStudentDocuments',
+        [student.StudentID],
+        function(result) {
+          if (!result || !result.success) {
+            message.textContent =
+              result && result.error
+                ? result.error
+                : 'Could not load documents.';
+            return;
+          }
 
-          detail.textContent =
-            (doc.type || 'Other') +
-            (doc.uploadedAt
-              ? ' · ' + new Date(doc.uploadedAt).toLocaleDateString()
-              : '');
+          list.replaceChildren();
 
-          item.appendChild(link);
-          item.appendChild(detail);
-          list.appendChild(item);
-        });
-      }
+          if (!result.documents || result.documents.length === 0) {
+            list.textContent = 'No documents uploaded yet.';
+          } else {
+            result.documents.forEach(function(doc) {
+              const item = document.createElement('div');
+              const link = document.createElement('a');
+              const detail = document.createElement('p');
 
-      message.textContent =
-        'Documents for ' + (student.Name || 'this student');
-    },
-    function(error) {
-      message.textContent =
-        error && error.message
-          ? error.message
-          : 'Could not load documents.';
+              link.href = doc.url;
+              link.target = '_blank';
+              link.rel = 'noopener';
+              link.textContent = doc.name;
+
+              detail.textContent =
+                (doc.type || 'Other') +
+                (doc.uploadedAt
+                  ? ' · ' + new Date(doc.uploadedAt).toLocaleDateString()
+                  : '');
+
+              item.appendChild(link);
+              item.appendChild(detail);
+              list.appendChild(item);
+            });
+          }
+
+          message.textContent =
+            'Documents for ' + (student.Name || 'this student');
+        },
+        function(error) {
+          message.textContent =
+            error && error.message
+              ? error.message
+              : 'Could not load documents.';
+        }
+      );
     }
-  );
-}
+
     return;
   }
 
-  const profileBtn = e.target.closest('[data-act="view-student"]');
+    const profileBtn = e.target.closest('[data-act="view-student"]');
   if (profileBtn) {
     const id = profileBtn.dataset.id;
     const student = state.students.find(
