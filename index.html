@@ -1365,8 +1365,14 @@ if (!panel.hidden) {
   const message = $('student-document-message');
   const list = $('student-document-list');
 
- message.textContent = '⏳ Ap shiphang, dang shim documents na School Server......';
-  list.replaceChildren();
+ message.textContent = '⏳ Ap shiphang.... dang shim documents na School Server';
+list.replaceChildren();
+
+await new Promise(resolve =>
+  requestAnimationFrame(() => resolve())
+);
+
+callServer(
 
   callServer(
     'getStudentDocuments',
