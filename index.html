@@ -1340,7 +1340,7 @@ function saveAttendanceNow() {
   });
 
  
-document.addEventListener('click', function(e) {
+document.addEventListener('click', async function(e) {
   
 const closeBtn = e.target.closest('[data-act="close-profile"]');
 if (closeBtn) {
@@ -1371,9 +1371,6 @@ list.replaceChildren();
 await new Promise(resolve =>
   requestAnimationFrame(() => resolve())
 );
-
-callServer(
-
   callServer(
     'getStudentDocuments',
     [student.StudentID],
