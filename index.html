@@ -550,7 +550,7 @@
     PDF, JPG or PNG. Maximum file size: 10 MB.
   </small>
 
-  <p id="student-document-message"
+  <p id="student-document-upload-message"
      role="status"
      style="margin: 8px 0 0; font-size: 13px;">
   </p>
@@ -1339,15 +1339,6 @@ function saveAttendanceNow() {
     refreshData();
   });
 
- 
-document.addEventListener('click', async function(e) {
-  
-const closeBtn = e.target.closest('[data-act="close-profile"]');
-if (closeBtn) {
-  $('student-profile-modal').classList.remove('active');
-  return;
-}
-
   const documentsBtn = e.target.closest('#view-student-documents-btn');
   if (documentsBtn) {
     const student = state.currentDocumentStudent;
@@ -1356,21 +1347,16 @@ if (closeBtn) {
       toast('Please open a student profile first.');
       return;
     }
+const panel = $('student-documents-panel');
+panel.hidden = !panel.hidden;
 
-    const panel = $('student-documents-panel');
-    panel.hidden = !panel.hidden;
-
-    
 if (!panel.hidden) {
   const message = $('student-document-message');
   const list = $('student-document-list');
 
- message.textContent = '⏳ Ap shiphang.... dang shim documents na School Server';
-list.replaceChildren();
-
-await new Promise(resolve =>
-  requestAnimationFrame(() => resolve())
-);
+  message.textContent = '⏳ Ap shiphang.... dang shim documents na School Server';
+  list.replaceChildren();
+   await new Promise(resolve => setTimeout(resolve, 100));
   callServer(
     'getStudentDocuments',
     [student.StudentID],
@@ -1421,8 +1407,6 @@ await new Promise(resolve =>
     }
   );
 }
-
-
     return;
   }
 
@@ -1564,7 +1548,13 @@ photo.src = photoId
 </button>
 
 <div id="student-documents-panel" hidden>
+  <p id="student-document-message"
+     role="status"
+     style="margin: 10px 0; font-size: 14px; color: #173b32; font-weight: 600;">
+  </p>
+
   <div id="student-document-list"></div>
+</div>>
 </div>
 </div> <!-- closes student-documents-section -->
 </div> <!-- closes profile-card -->
