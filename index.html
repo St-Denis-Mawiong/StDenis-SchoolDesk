@@ -1343,7 +1343,23 @@ function saveAttendanceNow() {
      const closeProfileBtn = e.target.closest('[data-act="close-profile"]');
   if (closeProfileBtn) {
     $('student-profile-modal').classList.remove('active');
-    return;
+    const panel = $('student-documents-panel');
+if (panel) {
+  panel.hidden = true;
+}
+
+const list = $('student-document-list');
+if (list) {
+  list.replaceChildren();
+}
+
+const message = $('student-document-message');
+if (message) {
+  message.textContent = '';
+}
+
+state.currentDocumentStudent = null;
+return;
   }        
   const documentsBtn = e.target.closest('#view-student-documents-btn');
   if (documentsBtn) {
@@ -1549,7 +1565,7 @@ photo.src = photoId
 
 <div class="student-documents-section">
   <h3>📁 Student Documents</h3>
-  <p>Keep important student documents safely in one place.</p>
+  <p>Ki Documents baroh ki don lut hangne</p>
 <button
   type="button"
   id="view-student-documents-btn"
