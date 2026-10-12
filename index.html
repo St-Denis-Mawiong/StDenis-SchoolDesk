@@ -1367,43 +1367,17 @@ photo.src = photoId
 <div class="student-documents-section">
   <h3>📁 Student Documents</h3>
   <p>Keep important student documents safely in one place.</p>
+<button
+  type="button"
+  id="view-student-documents-btn"
+  class="contact-parent-btn">
+  📂 View Documents
+</button>
 
-  <button
-    type="button"
-    id="view-student-documents-btn"
-    class="contact-parent-btn">
-    📂 View Documents
-  </button>
-
-  <div id="student-documents-panel" hidden>
-    <label for="student-document-type">Document Type</label>
-    <select id="student-document-type">
-      <option value="Birth Certificate">Birth Certificate</option>
-      <option value="Transfer Certificate">Transfer Certificate</option>
-      <option value="Admission Form">Admission Form</option>
-      <option value="Report Card">Report Card</option>
-      <option value="Other">Other</option>
-    </select>
-
-    <label for="student-document-file">Choose a document</label>
-    <input
-      type="file"
-      id="student-document-file"
-      accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
-
-    <button
-      type="button"
-      id="upload-student-document-btn"
-      class="contact-parent-btn">
-      ⬆️ Upload Document
-    </button>
-
-    <p id="student-document-message" role="status"></p>
-
-    <div id="student-document-list"></div>
-  </div>
+<div id="student-documents-panel" hidden>
+  <div id="student-document-list"></div>
 </div>
-
+</div> <!-- closes student-documents-section -->
 </div> <!-- closes profile-card -->
 </div> <!-- closes student-profile-modal -->
   <script>
