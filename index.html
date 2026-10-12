@@ -1117,7 +1117,12 @@ callServer('saveStudent', [student], async result => {
   toast(err.message || 'Could not save student.');
 });
 
-
+  } catch (err) {
+    progressBox.classList.add('hidden');
+    progressBar.style.width = '0%';
+    toast(err.message || 'Could not save student.');
+  }
+});
 
 function renderStudents() {
   const q = ($('student-search')?.value || '').toLowerCase();
