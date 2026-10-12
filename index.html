@@ -930,27 +930,189 @@ form.action = uploadEndpoint;
 
     
 
-callServer('saveStudent', [student], result => {
-  updatePhotoProgress('Saved successfully!', 'Student details and photo have been saved.', 100);
-  toast('Student saved to Google Sheets.');
-  refreshData();
-  setTimeout(() => {
+
+callServer('saveStudent', [student], async result => {
+  if (!result || !result.success || !result.student) {
     progressBox.classList.add('hidden');
     progressBar.style.width = '0%';
-    hideStudentForm();
-  }, 1200);
+    toast('Student save could not be confirmed.');
+    return;
+  }
+
+  const savedStudent = result.student;
+  const documentInput = $('student-document-file');
+  const documentFile = documentInput ? documentInput.files[0] : null;
+
+  try {
+    if (documentFile) {
+      updatePhotoProgress(
+        'Uploading document...',
+        'Student saved. Sending document to Google Drive...',
+        85
+      );
+
+      const allowedTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/png'
+      ];
+
+      if (!allowedTypes.includes(documentFile.type)) {
+        throw new Error('Only PDF, JPG, JPEG, and PNG files are allowed.');
+      }
+
+      if (documentFile.size > 10 * 1024 * 1024) {
+        throw new Error('Please choose a document smaller than 10 MB.');
+      }
+
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(
+          new Error('Could not read the document.')
+        );
+        reader.readAsDataURL(documentFile);
+      });
+
+      const token = Date.now() + '_' +
+        Math.random().toString(36).slice(2);
+
+      const uploadResult = await new Promise((resolve, reject) => {
+        const iframe = document.createElement('iframe');
+        iframe.name = 'documentUploadFrame_' + token;
+        iframe.style.display = 'none';
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action =
+          'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
+        form.target = iframe.name;
+        form.style.display = 'none';
+
+        const payload = {
+          action: 'uploadStudentDocument',
+          args: [
+            savedStudent.StudentID,
+            savedStudent.Name,
+            documentFile.name,
+            $('student-document-type').value,
+            dataUrl
+          ],
+          token: token
+        };
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'payload';
+        input.value = JSON.stringify(payload);
+        form.appendChild(input);
+
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+
+        let finished = false;
+        let attempts = 0;
+        let timeoutId;
+
+        function cleanup() {
+          clearTimeout(timeoutId);
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          if (form.parentNode) form.parentNode.removeChild(form);
+        }
+
+        function checkStatus() {
+          if (finished) return;
+          attempts++;
+
+          callServer(
+            'getStudentDocumentUploadStatus',
+            [token],
+            status => {
+              if (finished) return;
+
+              if (status && status.success) {
+                finished = true;
+                cleanup();
+                resolve(status);
+              } else if (status && status.pending && attempts < 40) {
+                setTimeout(checkStatus, 1500);
+              } else {
+                finished = true;
+                cleanup();
+                reject(new Error(
+                  status && status.error
+                    ? status.error
+                    : 'Document upload failed or timed out.'
+                ));
+              }
+            },
+            error => {
+              if (finished) return;
+
+              if (attempts < 40) {
+                setTimeout(checkStatus, 1500);
+              } else {
+                finished = true;
+                cleanup();
+                reject(error);
+              }
+            }
+          );
+        }
+
+        form.submit();
+        setTimeout(checkStatus, 1500);
+
+        timeoutId = setTimeout(() => {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          reject(new Error('Document upload timed out. Please try again.'));
+        }, 90000);
+      });
+
+      if (!uploadResult || !uploadResult.success) {
+        throw new Error(uploadResult?.error || 'Document upload failed.');
+      }
+
+      documentInput.value = '';
+      $('student-document-message').textContent =
+        'Document uploaded successfully!';
+    }
+
+    updatePhotoProgress(
+      'Saved successfully!',
+      documentFile
+        ? 'Student details and document have been saved.'
+        : 'Student details have been saved.',
+      100
+    );
+
+    toast(documentFile
+      ? 'Student and document saved successfully.'
+      : 'Student saved to Google Sheets.');
+
+    refreshData();
+
+    setTimeout(() => {
+      progressBox.classList.add('hidden');
+      progressBar.style.width = '0%';
+      hideStudentForm();
+    }, 1200);
+
+  } catch (err) {
+    progressTitle.textContent = 'Student saved; document upload failed';
+    progressMessage.textContent =
+      err.message || 'Could not upload the document.';
+    progressBar.style.width = '85%';
+    toast(err.message || 'Document upload failed.');
+  }
 }, err => {
   progressBox.classList.add('hidden');
   progressBar.style.width = '0%';
   toast(err.message || 'Could not save student.');
 });
- 
-} catch (err) {
-    progressBox.classList.add('hidden');
-    progressBar.style.width = '0%';
-    toast(err.message || 'Could not save student.');
-  }
-});
+
 
 
 function renderStudents() {
@@ -1379,168 +1541,6 @@ photo.src = photoId
 </div> <!-- closes student-documents-section -->
 </div> <!-- closes profile-card -->
 </div> <!-- closes student-profile-modal -->
-  <script>
-$('upload-student-document-btn').addEventListener('click', async function () {
-  const student = state.currentDocumentStudent;
-  const fileInput = $('student-document-file');
-  const message = $('student-document-message');
-  const uploadBtn = $('upload-student-document-btn');
-
-  if (!student) {
-    message.textContent = 'Please open a student profile first.';
-    return;
-  }
-
-  const file = fileInput.files[0];
-
-  if (!file) {
-    message.textContent = 'Please choose a document first.';
-    return;
-  }
-
-  const allowedTypes = [
-    'application/pdf',
-    'image/jpeg',
-    'image/png'
-  ];
-
-  if (!allowedTypes.includes(file.type)) {
-    message.textContent = 'Only PDF, JPG, JPEG, and PNG files are allowed.';
-    return;
-  }
-
-  if (file.size > 10 * 1024 * 1024) {
-    message.textContent = 'Please choose a file smaller than 10 MB.';
-    return;
-  }
-
-  uploadBtn.disabled = true;
-  message.textContent = 'Preparing document…';
-
-  try {
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Could not read the document.'));
-      reader.readAsDataURL(file);
-    });
-
-    message.textContent = 'Uploading document to Google Drive…';
-
-    const result = await new Promise((resolve, reject) => {
-      const token = Date.now() + '_' +
-        Math.random().toString(36).slice(2);
-
-      const iframe = document.createElement('iframe');
-      iframe.name = 'documentUploadFrame_' + token;
-      iframe.style.display = 'none';
-
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
-      form.target = iframe.name;
-      form.style.display = 'none';
-
-      const payload = {
-        action: 'uploadStudentDocument',
-        args: [
-          student.StudentID,
-          student.Name,
-          file.name,
-          $('student-document-type').value,
-          dataUrl
-        ],
-        token: token
-      };
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'payload';
-      input.value = JSON.stringify(payload);
-      form.appendChild(input);
-
-      document.body.appendChild(iframe);
-      document.body.appendChild(form);
-
-      let finished = false;
-      let attempts = 0;
-      let timeoutId;
-
-      function cleanup() {
-        clearTimeout(timeoutId);
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-        if (form.parentNode) form.parentNode.removeChild(form);
-      }
-
-      function checkStatus() {
-        if (finished) return;
-        attempts++;
-
-        callServer(
-          'getStudentDocumentUploadStatus',
-          [token],
-          function (status) {
-            if (finished) return;
-
-            if (status && status.success) {
-              finished = true;
-              cleanup();
-              resolve(status);
-              return;
-            }
-
-            if (status && status.pending && attempts < 40) {
-              setTimeout(checkStatus, 1500);
-              return;
-            }
-
-            finished = true;
-            cleanup();
-            reject(new Error(
-              status && status.error
-                ? status.error
-                : 'Document upload failed or timed out.'
-            ));
-          },
-          function (error) {
-            if (finished) return;
-
-            if (attempts < 40) {
-              setTimeout(checkStatus, 1500);
-            } else {
-              finished = true;
-              cleanup();
-              reject(error);
-            }
-          }
-        );
-      }
-
-      form.submit();
-      setTimeout(checkStatus, 1500);
-
-      timeoutId = setTimeout(function () {
-        if (finished) return;
-        finished = true;
-        cleanup();
-        reject(new Error('Document upload timed out. Please try again.'));
-      }, 90000);
-    });
-
-    if (!result || !result.success) {
-      throw new Error(result?.error || 'Document upload failed.');
-    }
-
-    message.textContent = 'Document uploaded successfully!';
-    fileInput.value = '';
-
-  } catch (error) {
-    message.textContent = error.message || 'Document upload failed.';
-  } finally {
-    uploadBtn.disabled = false;
-  }
-});
-  </script>
-</body>
+ </body>
 </html>
 
