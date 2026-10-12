@@ -943,13 +943,17 @@ callServer('saveStudent', [student], async result => {
   const documentInput = $('student-document-file');
   const documentFile = documentInput ? documentInput.files[0] : null;
 
-  try {
-    if (documentFile) {
-      updatePhotoProgress(
-        'Uploading document...',
-        'Student saved. Sending document to Google Drive...',
-        85
-      );
+ try {
+  if (documentFile) {
+    updatePhotoProgress(
+      'Uploading document...',
+      'Student saved. Sending document to Google Drive...',
+      85
+    );
+
+    await new Promise(resolve =>
+      requestAnimationFrame(() => resolve())
+    );
 
       const allowedTypes = [
         'application/pdf',
