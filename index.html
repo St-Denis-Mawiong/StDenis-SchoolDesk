@@ -1454,29 +1454,41 @@ if (student) {
 const avatar = $('profile-avatar');
 avatar.textContent = initials(student.Name);
 
+
 if (student.PhotoURL) {
-  const photo = document.createElement('img');
-  const photoId = student.PhotoURL.match(/\/d\/([^/]+)/)?.[1];
-  photo.src = photoId
-  ? 'https://drive.google.com/uc?export=view&id=' + photoId
-  : student.PhotoURL;
-  photo.alt = student.Name || 'Student photo';
-  photo.style.width = '100%';
-  photo.style.height = '100%';
-  photo.style.objectFit = 'cover';
-  photo.style.borderRadius = 'inherit';
+  const photoId = student.PhotoURL.match(
+    /\/d\/([^/]+)/
+  )?.[1] || student.PhotoURL.match(
+    /[?&]id=([^&]+)/
+  )?.[1];
 
-  photo.onload = function() {
-  console.log('Profile photo loaded:', photo.src);
-};
+  if (photoId) {
+    callServer('getStudentPhoto', [photoId], function(result) {
+      // Ignore a delayed response if another profile was opened.
+      if (state.currentDocumentStudent !== student) return;
 
-photo.onerror = function() {
-  console.error('Profile photo failed to load:', photo.src);
-  avatar.textContent = initials(student.Name);
-};
+      if (!result || !result.success || !result.dataUrl) {
+        console.error('Could not retrieve student photo.');
+        return;
+      }
 
-  avatar.replaceChildren(photo);
+      const photo = document.createElement('img');
+      photo.alt = student.Name || 'Student photo';
+      photo.style.width = '100%';
+      photo.style.height = '100%';
+      photo.style.objectFit = 'cover';
+      photo.style.borderRadius = 'inherit';
+
+      photo.onerror = function() {
+        avatar.textContent = initials(student.Name);
+      };
+
+      photo.src = result.dataUrl;
+      avatar.replaceChildren(photo);
+    });
+  }
 }
+
   $('profile-name').textContent = student.Name || 'Unnamed Student';
   $('profile-pen').textContent = student.PEN || student.StudentID || '—';
   $('profile-class').textContent = student.Class || '—';
