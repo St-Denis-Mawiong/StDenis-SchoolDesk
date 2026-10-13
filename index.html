@@ -821,7 +821,7 @@ function updatePhotoProgress(title, message, width) {
     Guardian: $('s-guardian').value.trim(),
     Phone: $('s-phone').value.trim(),
     Status: $('s-status').value,
-    PhotoURL: ''
+  PhotoURL: (state.students.find(s => String(s.StudentID) === String($('s-id').value)) || {}).PhotoURL || ''
   };
 
   try {
