@@ -425,79 +425,481 @@
   border-radius: 3px;
 }
 
-/* SchoolDesk — Premium Student Attendance Design */
 
-#page-student-activity .panel {
-  background: #ffffff;
-  border: 1px solid #e2ebe5;
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 6px 24px rgba(23, 59, 50, 0.06);
+/* SchoolDesk — Premium Student Attendance Dashboard */
+
+#page-student-activity {
+  --activity-green: #176b4d;
+  --activity-dark: #123b2e;
+  --activity-muted: #78877e;
+  color: #20372c;
+  padding-bottom: 28px;
 }
 
-#page-student-activity .page-title h1 {
-  color: #173b32;
-  font-weight: 750;
-  letter-spacing: -0.5px;
+#page-student-activity .activity-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 28px;
+  margin-bottom: 28px;
+  border-radius: 22px;
+  color: #fff;
+  background: linear-gradient(120deg, #123b2e 0%, #176b4d 65%, #25835c 100%);
+  box-shadow: 0 12px 28px rgba(18, 59, 46, .18);
+  position: relative;
+  overflow: hidden;
 }
 
-#page-student-activity .page-title .muted {
-  color: #718078;
+#page-student-activity .activity-hero::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  right: 10%;
+  top: -125px;
+  box-shadow: 0 0 0 25px rgba(255,255,255,.035),
+              0 0 0 50px rgba(255,255,255,.025);
+  pointer-events: none;
 }
 
-#page-student-activity #activity-month {
-  min-height: 44px;
-  border: 1px solid #d5e3da;
-  border-radius: 10px;
-  padding: 10px 14px;
-  background: #f8fbf9;
-  color: #173b32;
+#page-student-activity .activity-hero-top {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+#page-student-activity .activity-avatar {
+  width: 66px;
+  height: 66px;
+  flex: 0 0 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+#page-student-activity .activity-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #c9ead8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+#page-student-activity .activity-hero h1 {
+  margin: 0 0 7px;
+  color: #fff;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+#page-student-activity .activity-hero p {
+  margin: 0;
+  color: #d9eee2;
   font-size: 14px;
 }
 
-#page-student-activity #activity-pie {
-  border: 8px solid #ffffff;
-  box-shadow: 0 4px 18px rgba(23, 59, 50, 0.12);
+#page-student-activity .activity-back {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.3);
+  color: white;
+  border-radius: 11px;
+  padding: 11px 15px;
+  transition: background .2s, transform .2s;
 }
 
-#page-student-activity #activity-present,
-#page-student-activity #activity-absent,
-#page-student-activity #activity-total,
+#page-student-activity .activity-back:hover {
+  background: rgba(255,255,255,.22);
+  transform: translateY(-1px);
+}
+
+#page-student-activity .activity-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 0 2px 18px;
+}
+
+#page-student-activity .activity-toolbar h2 {
+  margin: 0 0 6px;
+  color: #173b2e;
+  font-size: 21px;
+}
+
+#page-student-activity .activity-toolbar p,
+#page-student-activity .activity-section-heading p,
+#page-student-activity .activity-insight-heading p {
+  margin: 0;
+  color: var(--activity-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#page-student-activity .activity-period {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 190px;
+}
+
+#page-student-activity .activity-period label {
+  color: #718278;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+#page-student-activity #activity-month {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid #dbe7df;
+  border-radius: 11px;
+  background: #fff;
+  color: #173b2e;
+  font: inherit;
+  outline: none;
+}
+
+#page-student-activity #activity-month:focus {
+  border-color: #25835c;
+  box-shadow: 0 0 0 3px rgba(37,131,92,.12);
+}
+
+#page-student-activity .activity-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, .95fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+#page-student-activity .activity-chart-card,
+#page-student-activity .activity-side-panel {
+  background: #fff;
+  border: 1px solid #e4ece6;
+  border-radius: 20px;
+  padding: 23px;
+  box-shadow: 0 7px 24px rgba(23,59,46,.055);
+}
+
+#page-student-activity .activity-section-heading,
+#page-student-activity .activity-insight-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#page-student-activity .activity-section-heading h3,
+#page-student-activity .activity-insight-heading h3 {
+  margin: 0 0 6px;
+  color: #1b3d30;
+  font-size: 16px;
+}
+
+#page-student-activity .activity-chart-icon,
+#page-student-activity .activity-insight-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #edf6f0;
+  color: #176b4d;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+#page-student-activity .activity-chart-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 27px 0 24px;
+}
+
+#page-student-activity #activity-pie {
+  width: 208px !important;
+  height: 208px !important;
+  max-width: 100%;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(23,59,46,.12);
+  animation: activity-chart-appear .55s ease-out both;
+}
+
+#page-student-activity .activity-chart-center {
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #edf2ee;
+}
+
 #page-student-activity #activity-percentage {
-  color: #173b32;
-  font-size: 20px;
-  font-weight: 750;
+  color: #173b2e;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+#page-student-activity .activity-chart-center span {
+  margin-top: 6px;
+  color: #87948b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+#page-student-activity .activity-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  border-top: 1px solid #edf1ee;
+  padding-top: 19px;
+}
+
+#page-student-activity .activity-legend > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #65756b;
+  font-size: 13px;
+}
+
+#page-student-activity .activity-legend strong {
+  margin-left: auto;
+  color: #20372c;
+  font-size: 17px;
+}
+
+#page-student-activity .activity-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 10px;
+}
+
+#page-student-activity .present-dot {
+  background: #20a464;
+}
+
+#page-student-activity .absent-dot {
+  background: #e05252;
+}
+
+#page-student-activity .activity-insight-heading {
+  justify-content: flex-start;
+  margin-bottom: 19px;
+}
+
+#page-student-activity .activity-stat-card {
+  padding: 16px 17px;
+  border-radius: 15px;
+  margin-top: 12px;
+  border: 1px solid transparent;
+  transition: transform .2s, box-shadow .2s;
+}
+
+#page-student-activity .activity-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(23,59,46,.07);
+}
+
+#page-student-activity .present-stat {
+  background: #f0faf4;
+  border-color: #d9f0e1;
+}
+
+#page-student-activity .absent-stat {
+  background: #fff5f4;
+  border-color: #f8e0dd;
+}
+
+#page-student-activity .total-stat {
+  background: #f2f6ff;
+  border-color: #dfe7fa;
+}
+
+#page-student-activity .activity-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #63736a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#page-student-activity .activity-stat-symbol {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255,255,255,.8);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#page-student-activity .present-stat .activity-stat-symbol {
+  color: #16824f;
+}
+
+#page-student-activity .absent-stat .activity-stat-symbol {
+  color: #d74747;
+}
+
+#page-student-activity .total-stat .activity-stat-symbol {
+  color: #4169b0;
+}
+
+#page-student-activity .activity-stat-card > strong {
+  display: block;
+  margin: 8px 0 3px;
+  color: #20372c;
+  font-size: 29px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+#page-student-activity .activity-stat-card small {
+  color: #829087;
+  font-size: 11px;
+}
+
+#page-student-activity .activity-note-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid #dcebe0;
+  border-radius: 15px;
+  background: #f5faf6;
+}
+
+#page-student-activity .activity-note-icon {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dcefe2;
+  color: #176b4d;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 #page-student-activity #activity-note {
-  margin-top: 16px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #f3f7f4;
-  color: #53665a;
-  line-height: 1.6;
+  margin: 2px 0 0;
+  color: #5d7064;
+  font-size: 13px;
+  line-height: 1.65;
 }
 
-#page-student-activity .btn {
-  border-radius: 10px;
+@keyframes activity-chart-appear {
+  from { opacity: .5; transform: scale(.94); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-@media (max-width: 600px) {
-  #page-student-activity .panel {
-    padding: 16px;
-    border-radius: 14px;
+@media (max-width: 760px) {
+  #page-student-activity .activity-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #page-student-activity .activity-hero {
+    padding: 21px;
+    border-radius: 18px;
+  }
+
+  #page-student-activity .activity-toolbar {
+    align-items: stretch;
+  }
+
+  #page-student-activity .activity-period {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  #page-student-activity .activity-hero {
+    gap: 16px;
+    padding: 18px;
+  }
+
+  #page-student-activity .activity-hero-top {
+    gap: 12px;
+  }
+
+  #page-student-activity .activity-avatar {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+    border-radius: 15px;
+    font-size: 18px;
+  }
+
+  #page-student-activity .activity-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  #page-student-activity .activity-back {
+    width: 100%;
+  }
+
+  #page-student-activity .activity-chart-card,
+  #page-student-activity .activity-side-panel {
+    padding: 17px;
+    border-radius: 16px;
   }
 
   #page-student-activity #activity-pie {
-    width: 150px !important;
-    height: 150px !important;
+    width: 184px !important;
+    height: 184px !important;
   }
 
-  #page-student-activity #activity-present,
-  #page-student-activity #activity-absent,
-  #page-student-activity #activity-total,
   #page-student-activity #activity-percentage {
-    font-size: 18px;
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-student-activity #activity-pie,
+  #page-student-activity .activity-stat-card,
+  #page-student-activity .activity-back {
+    animation: none;
+    transition: none;
   }
 }
 
@@ -758,43 +1160,119 @@
         </div>
       </section>
       
-      <section id="page-student-activity" class="hidden">
-        <div class="page-title">
-          <div>
-            <h1 id="activity-student-name">Student Attendance</h1>
-            <p class="muted" id="activity-student-class">Personal attendance summary</p>
-          </div>
-          <button class="btn" onclick="showPage('reports')">← Back to Reports</button>
+      
+<section id="page-student-activity" class="hidden">
+
+  <div class="activity-hero">
+    <div class="activity-hero-top">
+      <div class="activity-avatar" aria-hidden="true">SD</div>
+      <div class="activity-hero-text">
+        <span class="activity-eyebrow">SCHOOLDESK · STUDENT INSIGHTS</span>
+        <h1 id="activity-student-name">Student Attendance</h1>
+        <p id="activity-student-class">Personal attendance summary</p>
+      </div>
+    </div>
+    <button class="btn activity-back" onclick="showPage('reports')">
+      ← Back to Reports
+    </button>
+  </div>
+
+  <div class="activity-toolbar">
+    <div>
+      <h2>Attendance Overview</h2>
+      <p>Track attendance and review school days.</p>
+    </div>
+    <div class="activity-period">
+      <label for="activity-month">REPORTING PERIOD</label>
+      <select id="activity-month" onchange="renderStudentActivity()">
+        <option value="all">All time</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="activity-main-grid">
+
+    <div class="activity-chart-card">
+      <div class="activity-section-heading">
+        <div>
+          <h3>Attendance Rate</h3>
+          <p>Based on recorded present and absent days</p>
         </div>
+        <span class="activity-chart-icon" aria-hidden="true">◔</span>
+      </div>
 
-        <div class="panel">
-          <div class="toolbar">
-            <div class="field" style="min-width:200px;flex:1;">
-              <label for="activity-month">Attendance period</label>
-              <select id="activity-month" onchange="renderStudentActivity()">
-                <option value="all">All time</option>
-              </select>
-            </div>
+      <div class="activity-chart-wrap">
+        <div id="activity-pie" role="img"
+             aria-label="Present and absent attendance chart">
+          <div class="activity-chart-center">
+            <strong id="activity-percentage">0%</strong>
+            <span>ATTENDANCE</span>
           </div>
-
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:24px;padding:20px 0;">
-            <div id="activity-pie"
-                 role="img"
-                 aria-label="Present and absent attendance chart"
-                 style="width:190px;height:190px;max-width:100%;border-radius:50%;background:#e5e7eb;flex-shrink:0;">
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:14px;">
-              <div><span style="color:#16a34a;">●</span> Present: <strong id="activity-present">0</strong></div>
-              <div><span style="color:#dc2626;">●</span> Absent: <strong id="activity-absent">0</strong></div>
-              <div>Total days: <strong id="activity-total">0</strong></div>
-              <div>Attendance: <strong id="activity-percentage">0%</strong></div>
-            </div>
-          </div>
-
-          <p class="muted small" id="activity-note"></p>
         </div>
-      </section>
+      </div>
+
+      <div class="activity-legend">
+        <div>
+          <span class="activity-legend-dot present-dot"></span>
+          <span>Present</span>
+          <strong id="activity-present">0</strong>
+        </div>
+        <div>
+          <span class="activity-legend-dot absent-dot"></span>
+          <span>Absent</span>
+          <strong id="activity-absent">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-side-panel">
+      <div class="activity-insight-heading">
+        <span class="activity-insight-icon">▦</span>
+        <div>
+          <h3>Attendance Summary</h3>
+          <p>A quick look at the selected period</p>
+        </div>
+      </div>
+
+      <div class="activity-stat-card present-stat">
+        <div class="activity-stat-top">
+          <span>Days Present</span>
+          <span class="activity-stat-symbol">✓</span>
+        </div>
+        <strong id="activity-present-copy">0</strong>
+        <small>Recorded attendance</small>
+      </div>
+
+      <div class="activity-stat-card absent-stat">
+        <div class="activity-stat-top">
+          <span>Days Absent</span>
+          <span class="activity-stat-symbol">×</span>
+        </div>
+        <strong id="activity-absent-copy">0</strong>
+        <small>Recorded absences</small>
+      </div>
+
+      <div class="activity-stat-card total-stat">
+        <div class="activity-stat-top">
+          <span>Total School Days</span>
+          <span class="activity-stat-symbol">▤</span>
+        </div>
+        <strong id="activity-total">0</strong>
+        <small>Distinct saved attendance dates</small>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="activity-note-card">
+    <span class="activity-note-icon" aria-hidden="true">i</span>
+    <p id="activity-note">
+      School days are counted from saved attendance dates, excluding recorded holidays.
+    </p>
+  </div>
+
+</section>
+
 
     </div>
   </main>
@@ -942,6 +1420,8 @@ function renderStudentActivity() {
 
   $('activity-present').textContent = present;
   $('activity-absent').textContent = absent;
+  $('activity-present-copy').textContent = present;
+  $('activity-absent-copy').textContent = absent;
   $('activity-total').textContent = total;
   $('activity-percentage').textContent = percentage.toFixed(2) + '%';
 
