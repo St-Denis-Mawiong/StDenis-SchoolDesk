@@ -1570,6 +1570,9 @@ function renderStudentActivity() {
 }
   function showPage(page) {
     state.page = page;
+    if (page === 'student-activity') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
     document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.toggle('hidden',el.id!=='page-'+page));
     document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
     $('crumb').textContent = ({dashboard:'Dashboard',students:'Students',classes:'Classes',attendance:'Attendance',reports:'Reports','student-activity':'Student Attendance'})[page] || page;
