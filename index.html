@@ -2148,7 +2148,44 @@
     transition: none !important;
   }
 }
+/* School name is the main heading */
+.dash-hero-content .dash-school-title {
+  margin: 0 0 9px;
+  color: #ffffff;
+  font-size: clamp(27px, 3.5vw, 38px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+}
 
+/* Small SchoolDesk label */
+.dash-hero-content .dash-eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  opacity: 0.82;
+}
+
+/* Khasi greeting — smaller and elegant */
+.dash-hero-content .dash-khasi-greeting {
+  margin: 0 0 5px;
+  color: #d9f2e2;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* Khasi subtitle — soft italic styling */
+.dash-hero-content .dash-khasi-subtitle {
+  margin: 0;
+  color: #c2dfcd;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.6;
+}
   </style>
 </head>
 <body>
@@ -2187,10 +2224,17 @@
   <div class="dash-hero">
     <div class="dash-hero-decoration" aria-hidden="true"></div>
 
-    <div class="dash-hero-content">
-      <span class="dash-eyebrow">ST. DENIS SECONDARY SCHOOL · SCHOOLDESK</span>
-      <h1>Khublei ia phi ki Nonghikai <span>👋</span></h1>
-      <p>Ka Record jong ka Skul.</p>
+   
+<div class="dash-hero-content">
+  <h1 class="dash-school-title">St. Denis Secondary School</h1>
+
+  <span class="dash-eyebrow">SCHOOLDESK · SCHOOL MANAGEMENT</span>
+
+  <p class="dash-khasi-greeting">Khublei iaphi ki Nonghikai 👋</p>
+
+  <p class="dash-khasi-subtitle">Ka record jong ka skul.</p>
+</div>
+
       <div class="dash-welcome-tag">
         <span class="dash-online-dot"></span>
         Your school workspace
