@@ -1117,11 +1117,13 @@ if (uploadMessage) {
 
     refreshData();
 
-    setTimeout(() => {
-      progressBox.classList.add('hidden');
-      progressBar.style.width = '0%';
-      hideStudentForm();
-    }, 1200);
+    
+setTimeout(() => {
+  progressBox.classList.add('hidden');
+  progressBar.style.width = '0%';
+  hideStudentForm();
+}, 2500);
+
 
   } catch (err) {
     progressTitle.textContent = 'Student saved; document upload failed';
