@@ -1464,10 +1464,14 @@ if (student.PhotoURL) {
   photo.style.objectFit = 'cover';
   photo.style.borderRadius = 'inherit';
 
-  photo.onerror = function() {
-    photo.remove();
-    avatar.textContent = initials(student.Name);
-  };
+  photo.onload = function() {
+  console.log('Profile photo loaded:', photo.src);
+};
+
+photo.onerror = function() {
+  console.error('Profile photo failed to load:', photo.src);
+  avatar.textContent = initials(student.Name);
+};
 
   avatar.replaceChildren(photo);
 }
