@@ -903,6 +903,95 @@
   }
 }
 
+/* SchoolDesk motion engine — attendance dashboard */
+
+@property --activity-present-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+#page-student-activity #activity-pie {
+  --activity-present-angle: 0deg;
+  background: conic-gradient(
+    #20a464 0deg var(--activity-present-angle),
+    #e05252 var(--activity-present-angle) 360deg
+  );
+  transition: --activity-present-angle .85s cubic-bezier(.22, 1, .36, 1);
+  will-change: background;
+}
+
+#page-student-activity .activity-stat-card {
+  animation: activity-card-enter .55s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+#page-student-activity .activity-stat-card:nth-of-type(2) {
+  animation-delay: .08s;
+}
+
+#page-student-activity .activity-stat-card:nth-of-type(3) {
+  animation-delay: .16s;
+}
+
+#page-student-activity .activity-stat-card:nth-of-type(4) {
+  animation-delay: .24s;
+}
+
+#page-student-activity .activity-chart-card,
+#page-student-activity .activity-side-panel,
+#page-student-activity .activity-note-card {
+  animation: activity-panel-enter .5s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+#page-student-activity .activity-side-panel {
+  animation-delay: .08s;
+}
+
+#page-student-activity .activity-note-card {
+  animation-delay: .15s;
+}
+
+#page-student-activity .activity-stat-card {
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+#page-student-activity .activity-back:active {
+  transform: scale(.97);
+}
+
+@keyframes activity-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes activity-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-student-activity *,
+  #page-student-activity *::before,
+  #page-student-activity *::after {
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1366,6 +1455,40 @@ function openStudentActivity(studentId) {
   renderStudentActivity();
 }
 
+function animateActivityNumber(element, target, suffix = '', decimals = 0) {
+  if (!element) return;
+
+  if (element._activityFrame) {
+    cancelAnimationFrame(element._activityFrame);
+  }
+
+  const start = Number(element.dataset.activityValue || 0);
+  const end = Number(target);
+  const duration = 650;
+  let startTime = null;
+
+  element.dataset.activityValue = String(end);
+
+  function step(timestamp) {
+    if (startTime === null) startTime = timestamp;
+
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = start + (end - start) * eased;
+
+    element.textContent = current.toFixed(decimals) + suffix;
+
+    if (progress < 1) {
+      element._activityFrame = requestAnimationFrame(step);
+    } else {
+      element.textContent = end.toFixed(decimals) + suffix;
+      element._activityFrame = null;
+    }
+  }
+
+  element._activityFrame = requestAnimationFrame(step);
+}
+
 function renderStudentActivity() {
   const student = state.currentActivityStudent;
   if (!student) return;
@@ -1418,22 +1541,25 @@ function renderStudentActivity() {
   const recorded = present + absent;
   const percentage = recorded ? (present / recorded) * 100 : 0;
 
-  $('activity-present').textContent = present;
-  $('activity-absent').textContent = absent;
-  $('activity-present-copy').textContent = present;
-  $('activity-absent-copy').textContent = absent;
-  $('activity-total').textContent = total;
-  $('activity-percentage').textContent = percentage.toFixed(2) + '%';
+   animateActivityNumber($('activity-present'), present);
+  animateActivityNumber($('activity-absent'), absent);
+  animateActivityNumber($('activity-present-copy'), present);
+  animateActivityNumber($('activity-absent-copy'), absent);
+  animateActivityNumber($('activity-total'), total);
+  animateActivityNumber($('activity-percentage'), percentage, '%', 2);
 
   const pie = $('activity-pie');
 
   if (recorded === 0) {
+    pie.style.setProperty('--activity-present-angle', '0deg');
     pie.style.background = '#e5e7eb';
   } else {
+    pie.style.background = '';
     const presentAngle = (present / recorded) * 360;
-    pie.style.background =
-      'conic-gradient(#16a34a 0deg ' + presentAngle +
-      'deg, #dc2626 ' + presentAngle + 'deg 360deg)';
+    pie.style.setProperty(
+      '--activity-present-angle',
+      presentAngle + 'deg'
+    );
   }
 
   $('activity-note').textContent = unrecorded
