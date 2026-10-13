@@ -1096,8 +1096,11 @@ callServer('saveStudent', [student], async result => {
       }
 
       documentInput.value = '';
-      $('student-document-message').textContent =
-        'Document uploaded successfully!';
+
+const uploadMessage = $('student-document-upload-message');
+if (uploadMessage) {
+  uploadMessage.textContent = 'Document uploaded successfully!';
+}
     }
 
     updatePhotoProgress(
