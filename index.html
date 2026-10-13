@@ -607,6 +607,28 @@
             <div class="field" style="min-width:180px;flex:1"><label for="a-class">Class</label><select id="a-class"><option value="">Choose a class</option></select></div>
             <button class="btn" style="align-self:end" onclick="loadAttendance()">Load students</button>
           </div>
+          <div id="holiday-controls" class="panel" style="margin-top:16px;">
+  <h3 style="margin-top:0;">School Holiday</h3>
+  <p class="muted small">Mark the selected date as a holiday for the entire school.</p>
+
+  <div class="toolbar">
+    <div class="field" style="min-width:200px;flex:1;">
+      <label for="holiday-name">Holiday name / reason</label>
+      <input
+        id="holiday-name"
+        type="text"
+        placeholder="e.g. Independence Day"
+        maxlength="100"
+      >
+    </div>
+
+    <button
+      type="button"
+      class="btn"
+      onclick="markSchoolHoliday()"
+    >Mark as Holiday</button>
+  </div>
+</div>
           <div class="notice">Jied ia ka Class bad ia ka tarik, sa Mark attendance ia ki khynnah</div>
           <div class="panel-head"><h2 id="attendance-heading">Students in selected class</h2><span class="muted small" id="attendance-count"></span></div>
           <div id="attendance-list"><div class="empty">Choose a class to load students.</div></div>
@@ -749,7 +771,7 @@ function refreshData() {
 })));
     state.classes = data.classes || [];
     state.attendance = data.attendance || [];
-
+    state.holidays = data.holidays || [];
     clearMessage();
     renderAll();
     toast('Ki data baroh lah refresh');
@@ -1208,8 +1230,25 @@ esc(s.Name) +
     });
   }
   function loadAttendance() {
-    const cls=$('a-class').value, date=$('a-date').value || today();
-    if(!cls) { toast('Please choose a class first.'); return; }
+    const cls = $('a-class').value;
+const date = $('a-date').value || today();
+
+const holiday = (state.holidays || []).find(h => h.Date === date);
+
+if (holiday) {
+  $('attendance-heading').textContent = 'School Holiday · ' + holiday.HolidayName;
+  $('attendance-count').textContent = date;
+  $('attendance-list').innerHTML =
+    '<div class="empty">School holiday: ' +
+    esc(holiday.HolidayName) +
+    '. Attendance is not required today.</div>';
+  return;
+}
+
+if (!cls) {
+  toast('Please choose a class first.');
+  return;
+}
     const students=state.students.filter(s=>s.Class===cls && s.Status!=='Inactive');
     $('attendance-heading').textContent=cls+' · '+date;
     $('attendance-count').textContent=students.length+' students';
@@ -1241,18 +1280,62 @@ btn.classList.add('selected');
     state.students.filter(s=>s.Class===cls && s.Status!=='Inactive').forEach(s=>state.marks[s.StudentID]=status);
     loadAttendance();
   }
-function saveAttendanceNow() {
-    const cls = $('a-class').value;
-    const date = $('a-date').value || today();
+  function markSchoolHoliday() {
+  const date = $('a-date').value;
+  const name = $('holiday-name').value.trim();
 
-    if (!cls) {
-      toast('Choose a class first.');
+  if (!date) {
+    toast('Please select the holiday date first.');
+    return;
+  }
+
+  if (!name) {
+    toast('Please enter the name or reason for the holiday.');
+    $('holiday-name').focus();
+    return;
+  }
+
+  const button = document.querySelector(
+    '#holiday-controls button'
+  );
+
+  if (button) button.disabled = true;
+
+  callServer('saveSchoolHoliday', [date, name], result => {
+    if (button) button.disabled = false;
+
+    if (!result || result.success !== true) {
+      toast('Could not confirm the holiday was saved.');
       return;
     }
 
-    const students = state.students.filter(
-      s => s.Class === cls && s.Status !== 'Inactive'
-    );
+    toast(result.message || 'School holiday saved.');
+    $('holiday-name').value = '';
+    refreshData();
+  }, err => {
+    if (button) button.disabled = false;
+    toast('Could not confirm the holiday was saved. Check before trying again.');
+  });
+}
+function saveAttendanceNow() {
+const cls = $('a-class').value;
+const date = $('a-date').value || today();
+
+const holiday = (state.holidays || []).find(h => h.Date === date);
+
+if (holiday) {
+  toast('School holiday: ' + holiday.HolidayName + '. Attendance cannot be saved.');
+  return;
+}
+
+if (!cls) {
+  toast('Choose a class first.');
+  return;
+}
+
+const students = state.students.filter(
+  s => s.Class === cls && s.Status !== 'Inactive'
+);
 
     if (!students.length) {
       toast('There are no students to save.');
