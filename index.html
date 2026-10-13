@@ -1546,6 +1546,609 @@
   }
 }
 
+/* ======================================
+   SCHOOLDESK — PREMIUM DASHBOARD
+   ====================================== */
+
+#page-dashboard {
+  --dash-dark: #173b32;
+  --dash-green: #176b4d;
+  --dash-muted: #78877e;
+  padding-bottom: 30px;
+}
+
+#page-dashboard .dash-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 32px;
+  margin-bottom: 29px;
+  color: #fff;
+  background: linear-gradient(118deg, #123b2e 0%, #176b4d 62%, #27875e 100%);
+  border-radius: 23px;
+  box-shadow: 0 13px 30px rgba(18,59,46,.17);
+  animation: dash-enter .5s ease both;
+}
+
+#page-dashboard .dash-hero-decoration {
+  position: absolute;
+  z-index: -1;
+  width: 235px;
+  height: 235px;
+  right: 12%;
+  top: -150px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 27px rgba(255,255,255,.035),
+              0 0 0 56px rgba(255,255,255,.025);
+  pointer-events: none;
+}
+
+#page-dashboard .dash-hero-content {
+  min-width: 0;
+}
+
+#page-dashboard .dash-eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #c7e8d5;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  line-height: 1.6;
+}
+
+#page-dashboard .dash-hero h1 {
+  margin: 0 0 9px;
+  color: #fff;
+  font-size: clamp(24px, 3vw, 33px);
+  line-height: 1.25;
+  letter-spacing: -.65px;
+}
+
+#page-dashboard .dash-hero h1 span {
+  display: inline-block;
+  animation: dash-wave 2.8s ease-in-out infinite;
+  transform-origin: 70% 80%;
+}
+
+#page-dashboard .dash-hero-content > p {
+  margin: 0;
+  color: #e1f0e6;
+  font-size: 14px;
+}
+
+#page-dashboard .dash-welcome-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 19px;
+  padding: 9px 13px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 30px;
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+#page-dashboard .dash-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #75e4a5;
+  box-shadow: 0 0 0 4px rgba(117,228,165,.12);
+}
+
+#page-dashboard .dash-refresh {
+  position: relative;
+  z-index: 1;
+  padding: 12px 16px;
+  border: 1px solid rgba(255,255,255,.27);
+  border-radius: 11px;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  font-weight: 700;
+  transition: background .2s, transform .2s;
+}
+
+#page-dashboard .dash-refresh:hover {
+  background: rgba(255,255,255,.22);
+  transform: translateY(-1px);
+}
+
+#page-dashboard .dash-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 2px 18px;
+}
+
+#page-dashboard .dash-section-kicker {
+  display: block;
+  margin-bottom: 6px;
+  color: #25835c;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+  line-height: 1.5;
+}
+
+#page-dashboard .dash-section-heading h2 {
+  margin: 0 0 5px;
+  color: #173b32;
+  font-size: 21px;
+}
+
+#page-dashboard .dash-section-heading p {
+  margin: 0;
+  color: var(--dash-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#page-dashboard .dash-heading-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #eaf5ee;
+  color: #176b4d;
+  font-size: 24px;
+}
+
+#page-dashboard .dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 25px;
+}
+
+#page-dashboard .dash-stat {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid #e5ece7;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(23,59,50,.045);
+  transition: transform .22s ease, box-shadow .22s ease;
+  animation: dash-enter .5s ease both;
+}
+
+#page-dashboard .dash-stat:nth-child(2) {
+  animation-delay: .06s;
+}
+
+#page-dashboard .dash-stat:nth-child(3) {
+  animation-delay: .12s;
+}
+
+#page-dashboard .dash-stat:nth-child(4) {
+  animation-delay: .18s;
+}
+
+#page-dashboard .dash-stat:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(23,59,50,.09);
+}
+
+#page-dashboard .dash-stat::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  background: var(--dash-accent);
+}
+
+#page-dashboard .dash-stat-students {
+  --dash-accent: #5379c6;
+  --dash-tint: #eff3ff;
+}
+
+#page-dashboard .dash-stat-classes {
+  --dash-accent: #21845d;
+  --dash-tint: #eaf7ef;
+}
+
+#page-dashboard .dash-stat-present {
+  --dash-accent: #1a9a5b;
+  --dash-tint: #e9f8ef;
+}
+
+#page-dashboard .dash-stat-absent {
+  --dash-accent: #d65353;
+  --dash-tint: #fff0ef;
+}
+
+#page-dashboard .dash-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  color: #718078;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+#page-dashboard .dash-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  border-radius: 13px;
+  background: var(--dash-tint);
+  color: var(--dash-accent);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+#page-dashboard .dash-stat .stat-num {
+  margin: 17px 0 12px;
+  color: #193c30;
+  font-size: clamp(27px, 3vw, 35px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  overflow-wrap: anywhere;
+}
+
+#page-dashboard .dash-stat-foot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #849087;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+#page-dashboard .dash-stat-indicator {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: var(--dash-accent);
+}
+
+#page-dashboard .dash-main-grid {
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+#page-dashboard .dash-panel {
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 23px;
+  border: 1px solid #e3ebe5;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 7px 23px rgba(23,59,50,.05);
+  animation: dash-enter .55s ease both;
+}
+
+#page-dashboard .dash-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+#page-dashboard .dash-panel-heading h2 {
+  margin: 0 0 6px;
+  color: #193c30;
+  font-size: 17px;
+}
+
+#page-dashboard .dash-panel-heading p {
+  margin: 0;
+  color: #849087;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+#page-dashboard .dash-panel-heading-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 13px;
+  background: #edf6f0;
+  color: #176b4d;
+  font-size: 23px;
+}
+
+#page-dashboard .dash-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+#page-dashboard .dash-quick {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 157px;
+  padding: 17px;
+  border: 1px solid var(--quick-border, #e3ebe5);
+  border-radius: 15px;
+  background: var(--quick-bg, #fbfcfb);
+  text-align: left;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+#page-dashboard .dash-quick-student {
+  --quick-bg: #f1f5ff;
+  --quick-border: #e0e8fb;
+  --quick-color: #4d6fbb;
+}
+
+#page-dashboard .dash-quick-attendance {
+  --quick-bg: #edf8f0;
+  --quick-border: #d9eddf;
+  --quick-color: #176b4d;
+}
+
+#page-dashboard .dash-quick-class {
+  --quick-bg: #fff7e8;
+  --quick-border: #f1e6cc;
+  --quick-color: #9a711d;
+}
+
+#page-dashboard .dash-quick-reports {
+  --quick-bg: #fff1ef;
+  --quick-border: #f4dfdc;
+  --quick-color: #c0524d;
+}
+
+#page-dashboard .dash-quick:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 17px rgba(23,59,50,.07);
+  border-color: var(--quick-color);
+}
+
+#page-dashboard .dash-quick .qico {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 2px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.85);
+  color: var(--quick-color);
+  font-size: 22px;
+}
+
+#page-dashboard .dash-quick strong {
+  color: #20372c;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#page-dashboard .dash-quick small {
+  max-width: 100%;
+  color: #78877e;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+#page-dashboard .dash-quick-arrow {
+  position: absolute;
+  top: 17px;
+  right: 15px;
+  color: var(--quick-color);
+  font-size: 17px;
+  opacity: .7;
+  transition: transform .2s;
+}
+
+#page-dashboard .dash-quick:hover .dash-quick-arrow {
+  transform: translate(2px, -2px);
+}
+
+#page-dashboard .dash-view-all {
+  flex: 0 0 auto;
+  padding: 9px 11px;
+  border: 1px solid #dce9df;
+  border-radius: 10px;
+  background: #f3f8f4;
+  color: #176b4d;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+#page-dashboard .dash-view-all:hover {
+  background: #e5f2e9;
+}
+
+#page-dashboard .dash-recent-list {
+  min-width: 0;
+}
+
+#page-dashboard .dash-recent-list .empty {
+  padding: 28px 12px;
+  border: 1px dashed #dce7df;
+  border-radius: 13px;
+  background: #fafcfb;
+  color: #839087;
+  text-align: center;
+  font-size: 13px;
+}
+
+#page-dashboard .dash-school-note {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 22px 24px;
+  border: 1px solid #e5e1cb;
+  border-radius: 18px;
+  background: linear-gradient(115deg, #fffaf0, #fff);
+  box-shadow: 0 5px 17px rgba(91,86,38,.035);
+}
+
+#page-dashboard .dash-school-emblem {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 15px;
+  background: #fff0c7;
+  color: #94620b;
+  font-size: 25px;
+}
+
+#page-dashboard .dash-school-message {
+  flex: 1;
+  min-width: 0;
+}
+
+#page-dashboard .dash-school-message .dash-section-kicker {
+  color: #98782d;
+}
+
+#page-dashboard .dash-school-message h2 {
+  margin: 0 0 6px;
+  color: #4c462c;
+  font-size: 16px;
+}
+
+#page-dashboard .dash-school-message p {
+  margin: 0;
+  color: #827b66;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+#page-dashboard .dash-school-note .pill {
+  flex: 0 0 auto;
+}
+
+@keyframes dash-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dash-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(13deg); }
+  20%, 40% { transform: rotate(-7deg); }
+}
+
+@media (max-width: 950px) {
+  #page-dashboard .dash-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #page-dashboard .dash-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  #page-dashboard .dash-hero {
+    padding: 22px;
+    border-radius: 19px;
+  }
+
+  #page-dashboard .dash-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  #page-dashboard .dash-refresh {
+    width: 100%;
+  }
+
+  #page-dashboard .dash-stats {
+    gap: 11px;
+  }
+
+  #page-dashboard .dash-stat {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  #page-dashboard .dash-stat-top {
+    align-items: flex-start;
+    font-size: 11px;
+  }
+
+  #page-dashboard .dash-stat-icon {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    border-radius: 10px;
+    font-size: 19px;
+  }
+
+  #page-dashboard .dash-stat .stat-num {
+    margin: 14px 0 10px;
+    font-size: 29px;
+  }
+
+  #page-dashboard .dash-stat-foot {
+    font-size: 9px;
+  }
+
+  #page-dashboard .dash-panel {
+    padding: 17px;
+    border-radius: 17px;
+  }
+
+  #page-dashboard .dash-quick-grid {
+    gap: 10px;
+  }
+
+  #page-dashboard .dash-quick {
+    min-height: 150px;
+    padding: 13px;
+  }
+
+  #page-dashboard .dash-quick-arrow {
+    top: 13px;
+    right: 12px;
+  }
+
+  #page-dashboard .dash-school-note {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 18px;
+  }
+
+  #page-dashboard .dash-school-note .pill {
+    margin-left: 65px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-dashboard *,
+  #page-dashboard *::before,
+  #page-dashboard *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1577,34 +2180,175 @@
     </header>
     <div class="content">
       <div id="message" class="notice hidden"></div>
-      <section id="page-dashboard">
-        <div class="page-title"><div><h1>Khublei ia phi ki Nonghikai 👋</h1><p class="muted">Ka Record jong ka Skul.</p></div><button class="btn" onclick="refreshData()">↻ Refresh</button></div>
-        <div class="stats">
-          <div class="stat"><div class="stat-top">Total Students <span class="stat-icon blue">♙</span></div><div class="stat-num" id="stat-students">—</div><div class="stat-foot">Record jong ki Khynnah</div></div>
-          <div class="stat"><div class="stat-top">Classes <span class="stat-icon mint">▤</span></div><div class="stat-num" id="stat-classes">—</div><div class="stat-foot">Ki registered Class</div></div>
-          <div class="stat"><div class="stat-top">Present Today <span class="stat-icon gold">✓</span></div><div class="stat-num" id="stat-present">—</div><div class="stat-foot">Kiba Present baroh</div></div>
-          <div class="stat"><div class="stat-top">Absent Today <span class="stat-icon pink">!</span></div><div class="stat-num" id="stat-absent">—</div><div class="stat-foot">Kiba Absent baroh</div></div>
+     
+<section id="page-dashboard">
+
+  <!-- Welcome Hero -->
+  <div class="dash-hero">
+    <div class="dash-hero-decoration" aria-hidden="true"></div>
+
+    <div class="dash-hero-content">
+      <span class="dash-eyebrow">ST. DENIS SECONDARY SCHOOL · SCHOOLDESK</span>
+      <h1>Khublei ia phi ki Nonghikai <span>👋</span></h1>
+      <p>Ka Record jong ka Skul.</p>
+      <div class="dash-welcome-tag">
+        <span class="dash-online-dot"></span>
+        Your school workspace
+      </div>
+    </div>
+
+    <button class="btn dash-refresh" onclick="refreshData()">
+      <span aria-hidden="true">↻</span> Refresh Data
+    </button>
+  </div>
+
+  <!-- Summary Statistics -->
+  <div class="dash-section-heading">
+    <div>
+      <span class="dash-section-kicker">AT A GLANCE</span>
+      <h2>School Overview</h2>
+      <p>Your school's key numbers in one place.</p>
+    </div>
+    <span class="dash-heading-mark" aria-hidden="true">✳</span>
+  </div>
+
+  <div class="stats dash-stats">
+
+    <div class="stat dash-stat dash-stat-students">
+      <div class="dash-stat-top">
+        <span>Total Students</span>
+        <span class="dash-stat-icon">♙</span>
+      </div>
+      <div class="stat-num" id="stat-students">—</div>
+      <div class="dash-stat-foot">
+        <span class="dash-stat-indicator"></span>
+        Record jong ki Khynnah
+      </div>
+    </div>
+
+    <div class="stat dash-stat dash-stat-classes">
+      <div class="dash-stat-top">
+        <span>Classes</span>
+        <span class="dash-stat-icon">▤</span>
+      </div>
+      <div class="stat-num" id="stat-classes">—</div>
+      <div class="dash-stat-foot">
+        <span class="dash-stat-indicator"></span>
+        Ki registered Class
+      </div>
+    </div>
+
+    <div class="stat dash-stat dash-stat-present">
+      <div class="dash-stat-top">
+        <span>Present Today</span>
+        <span class="dash-stat-icon">✓</span>
+      </div>
+      <div class="stat-num" id="stat-present">—</div>
+      <div class="dash-stat-foot">
+        <span class="dash-stat-indicator"></span>
+        Kiba Present baroh
+      </div>
+    </div>
+
+    <div class="stat dash-stat dash-stat-absent">
+      <div class="dash-stat-top">
+        <span>Absent Today</span>
+        <span class="dash-stat-icon">!</span>
+      </div>
+      <div class="stat-num" id="stat-absent">—</div>
+      <div class="dash-stat-foot">
+        <span class="dash-stat-indicator"></span>
+        Kiba Absent baroh
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Main Dashboard Panels -->
+  <div class="grid2 dash-main-grid">
+
+    <div class="panel dash-panel dash-quick-panel">
+      <div class="dash-panel-heading">
+        <div>
+          <span class="dash-section-kicker">YOUR SHORTCUTS</span>
+          <h2>Quick Actions</h2>
+          <p>Everything you need, just a click away.</p>
         </div>
-        <div class="grid2">
-          <div class="panel">
-            <div class="panel-head"><h2>Quick actions</h2><span class="muted small">Get things done</span></div>
-            <div class="quick-grid">
-              <button class="quick" onclick="showPage('students');setTimeout(()=>showStudentForm(),0)"><span class="qico">👤</span><strong>Add student</strong><small>Pynrung khynnah thymmai</small></button>
-              <button class="quick" onclick="showPage('attendance')"><span class="qico">☑️</span><strong>Shim Attendance</strong><small>Mark attendance mynta ka sngi</small></button>
-              <button class="quick" onclick="showPage('classes');setTimeout(()=>showClassForm(),0)"><span class="qico">🏫</span><strong>Add a class</strong><small>Set up a class</small></button>
-              <button class="quick" onclick="showPage('reports')"><span class="qico">📊</span><strong>View reports</strong><small>Review attendance records</small></button>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Recent attendance</h2><button class="btn" onclick="showPage('attendance')">View all</button></div>
-            <div id="recent-list" class="activity"><div class="empty">Loading records…</div></div>
-          </div>
+        <span class="dash-panel-heading-icon">✦</span>
+      </div>
+
+      <div class="quick-grid dash-quick-grid">
+
+        <button class="quick dash-quick dash-quick-student"
+                onclick="showPage('students');setTimeout(()=>showStudentForm(),0)">
+          <span class="qico">♙</span>
+          <strong>Add Student</strong>
+          <small>Pynrung khynnah thymmai</small>
+          <span class="dash-quick-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="quick dash-quick dash-quick-attendance"
+                onclick="showPage('attendance')">
+          <span class="qico">✓</span>
+          <strong>Shim Attendance</strong>
+          <small>Mark attendance mynta ka sngi</small>
+          <span class="dash-quick-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="quick dash-quick dash-quick-class"
+                onclick="showPage('classes');setTimeout(()=>showClassForm(),0)">
+          <span class="qico">▤</span>
+          <strong>Add a Class</strong>
+          <small>Set up a class</small>
+          <span class="dash-quick-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <button class="quick dash-quick dash-quick-reports"
+                onclick="showPage('reports')">
+          <span class="qico">▥</span>
+          <strong>View Reports</strong>
+          <small>Review attendance records</small>
+          <span class="dash-quick-arrow" aria-hidden="true">↗</span>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="panel dash-panel dash-recent-panel">
+      <div class="dash-panel-heading">
+        <div>
+          <span class="dash-section-kicker">LATEST RECORDS</span>
+          <h2>Recent Attendance</h2>
+          <p>A quick look at attendance activity.</p>
         </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Jingthoh na u nongshna</h2><span class="pill Active">Connected app</span></div>
-          <p class="muted">Kane ka App kadei tang na bynta ki nonghikai ka skul St. Denis Secondary School.</p>
-        </div>
-      </section>
+        <button class="btn dash-view-all"
+                onclick="showPage('attendance')">
+          View all <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      <div id="recent-list" class="activity dash-recent-list">
+        <div class="empty">Loading records…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- School Identity -->
+  <div class="panel dash-school-note">
+    <div class="dash-school-emblem" aria-hidden="true">✦</div>
+    <div class="dash-school-message">
+      <span class="dash-section-kicker">A NOTE FROM THE CREATOR</span>
+      <h2>Jingthoh na u nongshna</h2>
+      <p>
+        Kane ka App kadei tang na bynta ki nonghikai ka skul
+        St. Denis Secondary School.
+      </p>
+    </div>
+    <span class="pill Active">Connected app</span>
+  </div>
+
+</section>
 
       <section id="page-students" class="hidden">
         <div class="page-title"><div><h1>Khynnah</h1><p class="muted">Hange phin manage student information bad enrollment.</p></div><button class="btn primary" onclick="showStudentForm()">＋ Add student</button></div>
