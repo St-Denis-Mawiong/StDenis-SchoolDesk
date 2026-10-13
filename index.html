@@ -407,6 +407,24 @@
   box-shadow: 0 3px 8px rgba(23, 59, 50, 0.18);
 }
 
+.student-report-link {
+  color: #167d55;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.student-report-link:hover {
+  color: #0b5c3b;
+}
+
+.student-report-link:focus-visible {
+  outline: 2px solid #167d55;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
   </style>
 </head>
 <body>
@@ -663,12 +681,61 @@
           <div class="table-wrap"><table><thead><tr><th>DATE</th><th>STUDENT</th><th>CLASS</th><th>STATUS</th><th>REMARKS</th></tr></thead><tbody id="report-rows"></tbody></table></div>
         </div>
       </section>
+      
+      <section id="page-student-activity" class="hidden">
+        <div class="page-title">
+          <div>
+            <h1 id="activity-student-name">Student Attendance</h1>
+            <p class="muted" id="activity-student-class">Personal attendance summary</p>
+          </div>
+          <button class="btn" onclick="showPage('reports')">← Back to Reports</button>
+        </div>
+
+        <div class="panel">
+          <div class="toolbar">
+            <div class="field" style="min-width:200px;flex:1;">
+              <label for="activity-month">Attendance period</label>
+              <select id="activity-month" onchange="renderStudentActivity()">
+                <option value="all">All time</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:24px;padding:20px 0;">
+            <div id="activity-pie"
+                 role="img"
+                 aria-label="Present and absent attendance chart"
+                 style="width:190px;height:190px;max-width:100%;border-radius:50%;background:#e5e7eb;flex-shrink:0;">
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div><span style="color:#16a34a;">●</span> Present: <strong id="activity-present">0</strong></div>
+              <div><span style="color:#dc2626;">●</span> Absent: <strong id="activity-absent">0</strong></div>
+              <div>Total days: <strong id="activity-total">0</strong></div>
+              <div>Attendance: <strong id="activity-percentage">0%</strong></div>
+            </div>
+          </div>
+
+          <p class="muted small" id="activity-note"></p>
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>
 <script>
-  const state = { students: [], classes: [], attendance: [], marks: {}, page: 'dashboard', busy: false };
+ 
+const state = {
+  students: [],
+  classes: [],
+  attendance: [],
+  holidays: [],
+  marks: {},
+  page: 'dashboard',
+  busy: false,
+  currentActivityStudent: null
+};
   const $ = id => document.getElementById(id);
   const today = () => {
     const d = new Date();
@@ -689,17 +756,149 @@
     $('message').classList.remove('hidden');
   }
   function clearMessage() { $('message').classList.add('hidden'); }
+  
+function openStudentActivity(studentId) {
+  const student = state.students.find(
+    s => String(s.StudentID) === String(studentId)
+  );
+
+  if (!student) {
+    toast('Student record not found.');
+    return;
+  }
+
+  state.currentActivityStudent = student;
+
+  $('activity-student-name').textContent =
+    student.Name || 'Student Attendance';
+
+  $('activity-student-class').textContent =
+    (student.Class || 'No class') + ' · Personal attendance summary';
+
+  const monthSelect = $('activity-month');
+  const currentValue = monthSelect.value || 'all';
+  const months = [...new Set(
+    state.attendance
+      .filter(a =>
+        String(a.StudentID) === String(student.StudentID) &&
+        /^\d{4}-\d{2}-\d{2}$/.test(String(a.Date || ''))
+      )
+      .map(a => String(a.Date).slice(0, 7))
+  )].sort().reverse();
+
+  monthSelect.replaceChildren();
+
+  const allOption = document.createElement('option');
+  allOption.value = 'all';
+  allOption.textContent = 'All time';
+  monthSelect.appendChild(allOption);
+
+  months.forEach(month => {
+    const option = document.createElement('option');
+    option.value = month;
+    option.textContent = new Date(month + '-15T12:00:00').toLocaleDateString(
+      undefined,
+      { month: 'long', year: 'numeric' }
+    );
+    monthSelect.appendChild(option);
+  });
+
+  monthSelect.value =
+    [...monthSelect.options].some(o => o.value === currentValue)
+      ? currentValue
+      : 'all';
+
+  showPage('student-activity');
+  renderStudentActivity();
+}
+
+function renderStudentActivity() {
+  const student = state.currentActivityStudent;
+  if (!student) return;
+
+  const selectedMonth = $('activity-month').value || 'all';
+  const holidayDates = new Set(
+    (state.holidays || []).map(h => String(h.Date || '').slice(0, 10))
+  );
+
+  const dateMatches = date =>
+    /^\d{4}-\d{2}-\d{2}$/.test(String(date || '')) &&
+    !holidayDates.has(String(date).slice(0, 10)) &&
+    (selectedMonth === 'all' || String(date).startsWith(selectedMonth));
+
+  const schoolDates = new Set(
+    state.attendance
+      .filter(a => dateMatches(a.Date))
+      .map(a => String(a.Date).slice(0, 10))
+  );
+
+  const studentRecords = state.attendance.filter(a =>
+    String(a.StudentID) === String(student.StudentID) &&
+    dateMatches(a.Date)
+  );
+
+  const studentByDate = new Map();
+  studentRecords.forEach(record => {
+    studentByDate.set(String(record.Date).slice(0, 10), record);
+  });
+
+  let present = 0;
+  let absent = 0;
+  let unrecorded = 0;
+
+  schoolDates.forEach(date => {
+    const record = studentByDate.get(date);
+
+    if (!record) {
+      unrecorded++;
+    } else if (record.Status === 'Present') {
+      present++;
+    } else if (record.Status === 'Absent') {
+      absent++;
+    } else {
+      unrecorded++;
+    }
+  });
+
+  const total = schoolDates.size;
+  const recorded = present + absent;
+  const percentage = recorded ? (present / recorded) * 100 : 0;
+
+  $('activity-present').textContent = present;
+  $('activity-absent').textContent = absent;
+  $('activity-total').textContent = total;
+  $('activity-percentage').textContent = percentage.toFixed(2) + '%';
+
+  const pie = $('activity-pie');
+
+  if (recorded === 0) {
+    pie.style.background = '#e5e7eb';
+  } else {
+    const presentAngle = (present / recorded) * 360;
+    pie.style.background =
+      'conic-gradient(#16a34a 0deg ' + presentAngle +
+      'deg, #dc2626 ' + presentAngle + 'deg 360deg)';
+  }
+
+  $('activity-note').textContent = unrecorded
+    ? unrecorded + ' school day(s) have no valid attendance record for this student. They are not counted as absent.'
+    : total === 0
+      ? 'No saved school attendance dates found for this period.'
+      : 'School days are counted from saved attendance dates, excluding recorded holidays.';
+}
   function showPage(page) {
     state.page = page;
     document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.toggle('hidden',el.id!=='page-'+page));
     document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
-    $('crumb').textContent = ({dashboard:'Dashboard',students:'Students',classes:'Classes',attendance:'Attendance',reports:'Reports'})[page] || page;
+    $('crumb').textContent = ({dashboard:'Dashboard',students:'Students',classes:'Classes',attendance:'Attendance',reports:'Reports','student-activity':'Student Attendance'})[page] || page;
     clearMessage();
     if(page==='students') renderStudents();
     if(page==='classes') renderClasses();
     if(page==='attendance') populateClassSelectors();
     if(page==='reports') renderReports();
+    if(page==='student-activity') renderStudentActivity();
   }
+
   document.querySelectorAll('.nav').forEach(el=>el.addEventListener('click',()=>showPage(el.dataset.page)));
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
@@ -1408,7 +1607,7 @@ const students = state.students.filter(
     const q=($('report-search')?.value||'').toLowerCase();
     const rows=[...all].sort((a,b)=>String(b.Date).localeCompare(String(a.Date))).filter(a=>[a.Date,a.StudentName,a.Class,a.Status,a.Remarks].some(v=>String(v||'').toLowerCase().includes(q)));
     $('report-rows').innerHTML=rows.length ? rows.map(a=>
-      '<tr><td>'+esc(a.Date)+'</td><td>'+esc(a.StudentName||a.StudentID)+'</td><td>'+esc(a.Class||'—')+'</td><td><span class="pill '+esc(a.Status)+'">'+esc(a.Status)+'</span></td><td>'+esc(a.Remarks||'—')+'</td></tr>'
+      '<tr><td>'+esc(a.Date)+'</td><td><span class="student-report-link" role="button" tabindex="0" data-act="view-student-report" data-id="'+esc(a.StudentID)+'">'+esc(a.StudentName||a.StudentID)+'</span></td><td>'+esc(a.Class||'—')+'</td><td><span class="pill '+esc(a.Status)+'">'+esc(a.Status)+'</span></td><td>'+esc(a.Remarks||'—')+'</td></tr>'
     ).join('') : '<tr><td colspan="5" class="empty">No attendance records found.</td></tr>';
   }
   function exportAttendance() {
@@ -1600,11 +1799,20 @@ if (student.PhotoURL) {
     return;
   }
 
+ 
+  const attendanceReportBtn = e.target.closest('[data-act="view-student-report"]');
+  if (attendanceReportBtn) {
+    const studentId = attendanceReportBtn.dataset.id;
+    openStudentActivity(studentId);
+    return;
+  }
+
   const btn = e.target.closest('[data-act="edit-student"]');
   if (!btn) return;
 
   editStudent(btn.dataset.id);
 });
+
 
 </script> 
 <script>
