@@ -3654,7 +3654,7 @@ if (!cls) {
       return '<div class="attendance-row"><div class="student-cell"><div class="mini-avatar">'+esc(initials(s.Name))+'</div><div><strong>'+esc(s.Name)+'</strong><small>ID: '+esc(shortId(s.StudentID))+'</small></div></div><div class="status-group">'+['Present','Absent'].map(st=>'<button class="status-btn '+st+(status===st?' selected':'')+'" onclick="markAttendance(&quot;'+esc(String(s.StudentID))+'&quot;,&quot;'+st+'&quot;,this)">'+st+'</button>').join('')+'</div></div>';
     }).join('') : '<div class="empty">No active students in this class. Add students and assign them to this class first.</div>';
         const attendanceList = $('attendance-list');
-const scrollPosition = attendanceList.getBoundingClientRect().top + window.scrollY - 180;
+const scrollPosition = attendanceList.getBoundingClientRect().top + window.scrollY - 185;
 
 window.scrollTo({
   top: scrollPosition,
