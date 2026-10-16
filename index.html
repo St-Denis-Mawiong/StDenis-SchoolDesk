@@ -2619,7 +2619,29 @@
           </form>
         </div>
       <div class="panel"><div class="table-wrap"><table><thead><tr><th>CLASS</th><th>CLASS TEACHER</th><th>STUDENTS</th></tr></thead><tbody id="class-rows"></tbody></table></div></div>
-      </section>
+      <div id="class-students-panel" class="panel hidden" style="margin-top:18px">
+  <div class="panel-head">
+    <div>
+      <h2 id="class-students-title">Class students</h2>
+      <p class="muted">Select a student to open their profile.</p>
+    </div>
+    <button class="btn" type="button" onclick="hideClassStudents()">Close</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>STUDENT</th>
+          <th>STUDENT ID</th>
+          <th>GENDER</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody id="class-students-rows"></tbody>
+    </table>
+  </div>
+</div>
+</section>
 
       
 <section id="page-attendance" class="hidden">
@@ -3618,14 +3640,63 @@ esc(s.Name) +
     });
   });
  
+
 function renderClasses() {
-  $('class-rows').innerHTML = state.classes.length ? state.classes.map(c => {
-    const count = state.students.filter(s => s.Class === c.ClassName).length;
-    return '<tr><td><strong>' + esc(c.ClassName) +
-      '</strong></td><td>' + esc(c.Teacher || '—') +
-      '</td><td>' + count + '</td></tr>';
-  }).join('') : '<tr><td colspan="3" class="empty">No classes yet. Add a test class to begin.</td></tr>';
+  $('class-rows').innerHTML = state.classes.length
+    ? state.classes.map(c => {
+        const count = state.students.filter(
+          s => s.Class === c.ClassName
+        ).length;
+
+        return '<tr><td><strong data-act="view-class" data-class="' +
+          esc(c.ClassName) +
+          '" style="cursor:pointer;color:var(--blue)">' +
+          esc(c.ClassName) +
+          '</strong></td><td>' +
+          esc(c.Teacher || '—') +
+          '</td><td>' +
+          count +
+          '</td></tr>';
+      }).join('')
+    : '<tr><td colspan="3" class="empty">No classes yet. Add a test class to begin.</td></tr>';
 }
+
+  
+function viewClassStudents(className) {
+  const panel = $('class-students-panel');
+  const title = $('class-students-title');
+  const rows = $('class-students-rows');
+
+  const students = state.students.filter(
+    s => s.Class === className
+  );
+
+  title.textContent = className + ' — Students (' + students.length + ')';
+
+  rows.innerHTML = students.length
+    ? students.map(s =>
+        '<tr><td><strong class="student-name" data-act="view-student" data-id="' +
+        esc(String(s.StudentID || '')) +
+        '" style="cursor:pointer;color:var(--blue)">' +
+        esc(s.Name || 'Unnamed student') +
+        '</strong></td><td>' +
+        esc(shortId(s.StudentID)) +
+        '</td><td>' +
+        esc(s.Gender || '—') +
+        '</td><td>' +
+        esc(s.Status || 'Active') +
+        '</td></tr>'
+      ).join('')
+    : '<tr><td colspan="4" class="empty">No students are enrolled in this class yet.</td></tr>';
+
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideClassStudents() {
+  $('class-students-panel').classList.add('hidden');
+}
+
   function populateClassSelectors() {
     ['s-class','a-class'].forEach(id=>{
       const el=$(id), current=el.value;
@@ -3935,7 +4006,14 @@ return;
     return;
   }
 
-    const profileBtn = e.target.closest('[data-act="view-student"]');
+    
+  const classBtn = e.target.closest('[data-act="view-class"]');
+  if (classBtn) {
+    viewClassStudents(classBtn.dataset.class);
+    return;
+  }
+
+  const profileBtn = e.target.closest('[data-act="view-student"]');
   if (profileBtn) {
     const id = profileBtn.dataset.id;
     const student = state.students.find(
