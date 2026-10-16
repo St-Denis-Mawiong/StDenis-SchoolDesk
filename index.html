@@ -2618,7 +2618,7 @@
             <div class="form-actions"><button class="btn primary" type="submit">Save class</button><button class="btn" type="button" onclick="hideClassForm()">Cancel</button></div>
           </form>
         </div>
-        <div class="panel"><div class="table-wrap"><table><thead><tr><th>CLASS</th><th>CLASS TEACHER</th><th>ROOM</th><th>STUDENTS</th></tr></thead><tbody id="class-rows"></tbody></table></div></div>
+      <div class="panel"><div class="table-wrap"><table><thead><tr><th>CLASS</th><th>CLASS TEACHER</th><th>STUDENTS</th></tr></thead><tbody id="class-rows"></tbody></table></div></div>
       </section>
 
       
@@ -3617,12 +3617,15 @@ esc(s.Name) +
       hideClassForm(); toast('Class saved to Google Sheets.'); refreshData();
     });
   });
-  function renderClasses() {
-    $('class-rows').innerHTML = state.classes.length ? state.classes.map(c=>{
-      const count=state.students.filter(s=>s.Class===c.ClassName).length;
-      return '<tr><td><strong>'+esc(c.ClassName)+'</strong></td><td>'+esc(c.Teacher||'—')+'</td><td>'+esc(c.Room||'—')+'</td><td>'+count+'</td></tr>';
-    }).join('') : '<tr><td colspan="4" class="empty">No classes yet. Add a test class to begin.</td></tr>';
-  }
+ 
+function renderClasses() {
+  $('class-rows').innerHTML = state.classes.length ? state.classes.map(c => {
+    const count = state.students.filter(s => s.Class === c.ClassName).length;
+    return '<tr><td><strong>' + esc(c.ClassName) +
+      '</strong></td><td>' + esc(c.Teacher || '—') +
+      '</td><td>' + count + '</td></tr>';
+  }).join('') : '<tr><td colspan="3" class="empty">No classes yet. Add a test class to begin.</td></tr>';
+}
   function populateClassSelectors() {
     ['s-class','a-class'].forEach(id=>{
       const el=$(id), current=el.value;
