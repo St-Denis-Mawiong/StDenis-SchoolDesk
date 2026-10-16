@@ -3184,7 +3184,7 @@ script.remove();
   }
   
 function refreshData() {
-  showMessage('Connecting to your Google Sheets database…', false);
+  showMessage('Connecting sha Skul database…', false);
 
   callServer('getAppData', [], data => {
     state.students = data.students || [];
@@ -3647,6 +3647,95 @@ function hideClassForm() {
   editingClassId = null;
 }
 
+function editClass(id) {
+  const c = state.classes.find(
+    x => String(x.ClassID) === String(id)
+  );
+
+  if (!c) {
+    toast('Could not find this class. Please refresh and try again.');
+    return;
+  }
+
+  editingClassId = String(c.ClassID);
+
+  $('class-form').reset();
+  $('c-name').value = c.ClassName || '';
+  $('c-teacher').value = c.Teacher || '';
+
+  if ($('c-room')) {
+    $('c-room').value = c.Room || '';
+  }
+
+  $('class-form-panel').querySelector('h2').textContent = 'Edit class';
+
+  $('class-form-panel').classList.remove('hidden');
+
+  $('class-form-panel').scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
+}
+
+$('class-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const saveButton = $('class-form').querySelector(
+    'button[type="submit"]'
+  );
+
+  const classRecord = {
+    ClassID: editingClassId || '',
+    ClassName: $('c-name').value.trim(),
+    Teacher: $('c-teacher').value.trim(),
+    Room: $('c-room').value.trim()
+  };
+
+  if (!classRecord.ClassName) {
+    toast('Please enter a class name.');
+    $('c-name').focus();
+    return;
+  }
+
+  if (saveButton) {
+    saveButton.disabled = true;
+    saveButton.textContent = 'Saving...';
+  }
+
+  callServer('saveClass', [classRecord], function(result) {
+    if (saveButton) {
+      saveButton.disabled = false;
+      saveButton.textContent = 'Save class';
+    }
+
+    if (!result || result.success !== true) {
+      toast(
+        result && result.error
+          ? result.error
+          : 'Could not confirm that the class was saved.'
+      );
+      return;
+    }
+
+    toast(
+      editingClassId
+        ? 'Class updated successfully.'
+        : 'Class saved successfully.'
+    );
+
+    hideClassForm();
+    refreshData();
+
+  }, function(error) {
+    if (saveButton) {
+      saveButton.disabled = false;
+      saveButton.textContent = 'Save class';
+    }
+
+    toast(error.message || 'Could not save the class.');
+  });
+});
+
 function renderClasses() {
   $('class-rows').innerHTML = state.classes.length
     ? state.classes.map(c => {
@@ -3917,7 +4006,14 @@ const students = state.students.filter(
   });
 
       document.addEventListener('click', async function(e) {
-     const closeProfileBtn = e.target.closest('[data-act="close-profile"]');
+     
+const editClassBtn = e.target.closest('[data-act="edit-class"]');
+
+if (editClassBtn) {
+  editClass(editClassBtn.dataset.id);
+  return;
+}
+        const closeProfileBtn = e.target.closest('[data-act="close-profile"]');
   if (closeProfileBtn) {
     $('student-profile-modal').classList.remove('active');
     const panel = $('student-documents-panel');
