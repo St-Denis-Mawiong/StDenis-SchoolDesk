@@ -3753,7 +3753,9 @@ function renderPromotionStudents() {
           '<td>' +
             '<select class="promotion-decision" data-student-id="' +
               esc(String(s.StudentID || '')) + '">' +
-              '<option value="">Choose decision</option>' +
+              '<option value="' + (isClassX ? 'Complete School Course' : 'Promote') + '" selected>' +
+              (isClassX ? 'Complete School Course' : 'Promote') +
+            '</option>' +
               (isClassX
                 ? '<option value="Complete School Course">Complete School Course</option>'
                 : '<option value="Promote">Promote</option>' +
