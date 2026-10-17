@@ -4048,9 +4048,9 @@ esc(initials(s.Name)) +
 '</div><div><strong class="student-name" data-act="view-student" data-id="' +
 esc(String(s.StudentID || '')) + '" style="cursor:pointer;color:var(--blue)">' +
 esc(s.Name) +
-'</strong><small>ID: ' + esc(shortId(s.StudentID)) +
+'</strong><small>PEN: ' + esc(shortId(s.StudentID)) +
+' · Roll No.: ' + esc(s.RollNo || '—') +
 '</small></div></div></td><td>' + esc(s.Class || '—') +
-
         '</td><td>' + esc(s.Gender || '—') +
         '</td><td>' + esc(s.Guardian || '—') +
         '</td><td><span class="pill ' +
@@ -4677,6 +4677,7 @@ if (student.PhotoURL) {
 
   $('profile-name').textContent = student.Name || 'Unnamed Student';
   $('profile-pen').textContent = student.PEN || student.StudentID || '—';
+  $('profile-rollno').textContent = 'Roll No.: ' + (student.RollNo || '—');
   $('profile-class').textContent = student.Class || '—';
   $('profile-gender').textContent = student.Gender || '—';
   $('profile-guardian').textContent = student.Guardian || '—';
@@ -4739,6 +4740,7 @@ if (student.PhotoURL) {
   <div class="profile-title">
     <h2 id="profile-name">Student Name</h2>
     <p id="profile-pen">Student ID: —</p>
+    <p id="profile-rollno">Roll No.: —</p>
   </div>
 </div>
    <div class="profile-details">
