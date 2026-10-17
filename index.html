@@ -2280,6 +2280,345 @@
   font-style: italic;
   line-height: 1.6;
 }
+
+/* =========================================
+   SCHOOLDESK — PROMOTION PAGE DESIGN
+   Scoped to Promotion only
+========================================= */
+
+#page-promotion {
+  --promo-green: #173b32;
+  --promo-green-light: #e5eee8;
+  --promo-cream: #f8f7f1;
+  --promo-gold: #c6a76a;
+  --promo-muted: #718078;
+  --promo-border: #e2e7e1;
+  color: #24382f;
+  padding-bottom: 100px;
+}
+
+/* Page background and spacing */
+#page-promotion .page-title {
+  background: linear-gradient(125deg, #173b32, #285747);
+  color: #fff;
+  border-radius: 20px;
+  padding: 26px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+#page-promotion .page-title::after {
+  content: "✦";
+  position: absolute;
+  right: 24px;
+  top: 8px;
+  font-size: 76px;
+  color: rgba(255,255,255,.10);
+  pointer-events: none;
+}
+
+#page-promotion .page-title h1 {
+  color: #fff;
+  margin: 0 0 8px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -.6px;
+}
+
+#page-promotion .page-title .muted {
+  color: #d5e4da;
+}
+
+/* Summary cards — different from the other pages */
+#page-promotion .stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 24px;
+}
+
+#page-promotion .stat {
+  background: #fff;
+  border: 1px solid var(--promo-border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 18px rgba(23,59,50,.045);
+}
+
+#page-promotion .stat:nth-child(2) {
+  border-top: 4px solid #5e8d6d;
+}
+
+#page-promotion .stat:nth-child(3) {
+  border-top: 4px solid var(--promo-gold);
+}
+
+#page-promotion .stat-top {
+  color: var(--promo-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#page-promotion .stat-num {
+  color: var(--promo-green);
+  font-size: clamp(27px, 3vw, 36px);
+  font-weight: 750;
+  line-height: 1.3;
+  margin: 8px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+#page-promotion .stat-foot {
+  color: var(--promo-muted);
+  font-size: 12px;
+}
+
+/* Main decision panel */
+#page-promotion .panel {
+  background: #fff;
+  border: 1px solid var(--promo-border);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 8px 28px rgba(23,59,50,.04);
+}
+
+#page-promotion .panel-head {
+  border-bottom: 1px solid var(--promo-border);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+#page-promotion .panel-head h2 {
+  color: var(--promo-green);
+  font-size: 20px;
+  margin: 0;
+}
+
+/* Class and academic-year selectors */
+#page-promotion .toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+#page-promotion .field {
+  min-width: 0;
+}
+
+#page-promotion .field label {
+  display: block;
+  color: #52665b;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: .45px;
+}
+
+#page-promotion .field select,
+#page-promotion .field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d8e1d9;
+  border-radius: 10px;
+  background: var(--promo-cream);
+  color: #24382f;
+  padding: 11px 13px;
+  font: inherit;
+  outline: none;
+}
+
+#page-promotion .field select:focus,
+#page-promotion .field input:focus {
+  border-color: #4d8065;
+  box-shadow: 0 0 0 3px rgba(77,128,101,.13);
+}
+
+/* Student table */
+#page-promotion .table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--promo-border);
+  border-radius: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+#page-promotion table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+#page-promotion thead {
+  background: #edf2ed;
+}
+
+#page-promotion th {
+  padding: 14px 16px;
+  color: #52665b;
+  font-size: 11px;
+  font-weight: 750;
+  text-align: left;
+  letter-spacing: .55px;
+  white-space: nowrap;
+}
+
+#page-promotion td {
+  padding: 14px 16px;
+  border-top: 1px solid #edf0eb;
+  color: #304239;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+#page-promotion tbody tr {
+  transition: background .15s ease;
+}
+
+#page-promotion tbody tr:hover {
+  background: #f7faf6;
+}
+
+#page-promotion .promotion-decision {
+  width: 100%;
+  min-width: 155px;
+  min-height: 40px;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid #cbd9cd;
+  border-radius: 9px;
+  background: #edf4ee;
+  color: #244b35;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* Page messages */
+#page-promotion .empty,
+#page-promotion td.muted {
+  color: var(--promo-muted);
+  text-align: center;
+  padding: 28px 16px;
+}
+
+/* Existing refresh button, scoped to Promotion */
+#page-promotion .page-title .btn {
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 10px;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+}
+
+/* Tablet and mobile layout */
+@media (max-width: 700px) {
+  #page-promotion {
+    padding-bottom: 92px;
+  }
+
+  #page-promotion .page-title {
+    padding: 21px 18px;
+    border-radius: 16px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  #page-promotion .page-title h1 {
+    font-size: 25px;
+    padding-right: 15px;
+  }
+
+  #page-promotion .page-title::after {
+    right: 8px;
+    top: 4px;
+    font-size: 58px;
+  }
+
+  #page-promotion .stats {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  #page-promotion .stat {
+    padding: 12px 10px;
+    border-radius: 12px;
+    min-width: 0;
+  }
+
+  #page-promotion .stat-top {
+    font-size: 11px;
+  }
+
+  #page-promotion .stat-num {
+    font-size: 25px;
+    margin: 6px 0;
+  }
+
+  #page-promotion .stat-foot {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  #page-promotion .panel {
+    padding: 15px 12px;
+    border-radius: 15px;
+  }
+
+  #page-promotion .panel-head h2 {
+    font-size: 18px;
+  }
+
+  #page-promotion .toolbar {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  #page-promotion th,
+  #page-promotion td {
+    padding: 12px 10px;
+  }
+
+  #page-promotion th {
+    font-size: 10px;
+  }
+
+  #page-promotion td {
+    font-size: 12px;
+  }
+
+  #page-promotion .promotion-decision {
+    min-width: 145px;
+    min-height: 42px;
+    font-size: 12px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  #page-promotion .stats {
+    gap: 6px;
+  }
+
+  #page-promotion .stat {
+    padding: 10px 7px;
+  }
+
+  #page-promotion .stat-top {
+    font-size: 10px;
+  }
+
+  #page-promotion .stat-num {
+    font-size: 22px;
+  }
+
+  #page-promotion .panel {
+    padding: 12px 8px;
+  }
+}
+
   </style>
 </head>
 <body>
