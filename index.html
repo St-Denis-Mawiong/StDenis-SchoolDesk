@@ -2833,9 +2833,18 @@
         <div class="page-title"><div><h1>Khynnah</h1><p class="muted">Hange phin manage student information bad enrollment.</p></div><button class="btn primary" onclick="showStudentForm()">＋ Add student</button></div>
         <div id="student-form-panel" class="panel form-panel hidden" style="margin-bottom:18px">
           <div class="panel-head"><h2 id="student-form-title">Add student</h2><button class="btn" onclick="hideStudentForm()">Cancel</button></div>
-          <form id="student-form">
-            <input type="hidden" id="s-id">
+<form id="student-form">
 <div class="form-grid">
+    <div class="field">
+    <label for="s-id">PEN Number *</label>
+    <input id="s-id" required maxlength="50" placeholder="Enter student's PEN number">
+  </div>
+
+  <div class="field">
+    <label for="s-rollno">Roll No.</label>
+    <input id="s-rollno" maxlength="20" placeholder="Enter class roll number">
+  </div>
+
   <div class="field">
     <label for="s-name">Kyrteng pura *</label>
     <input id="s-name" required maxlength="120" placeholder="e.g. Daman Marbaniang">
@@ -3650,6 +3659,7 @@ function refreshData() {
   function showStudentForm(student) {
     $('student-form').reset();
     $('s-id').value = student ? student.StudentID || '' : '';
+    $('s-rollno').value = student ? student.RollNo || '' : '';
     $('s-name').value = student ? student.Name || '' : '';
     $('s-class').value = student ? student.Class || '' : '';
     $('s-gender').value = student ? student.Gender || '' : '';
@@ -3688,8 +3698,9 @@ function updatePhotoProgress(title, message, width) {
   const photoInput = $('s-photo');
   const photoFile = photoInput.files[0];
 
-  const student = {
-    StudentID: $('s-id').value,
+const student = {
+    StudentID: $('s-id').value.trim(),
+    RollNo: $('s-rollno').value.trim(),
     Name: $('s-name').value.trim(),
     Class: $('s-class').value,
     Gender: $('s-gender').value,
