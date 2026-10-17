@@ -2297,6 +2297,7 @@
       <button class="nav" data-page="students"><span class="ico">♙</span> Khynnah Skul</button>
       <button class="nav" data-page="classes"><span class="ico">▤</span> Classes</button>
       <button class="nav" data-page="attendance"><span class="ico">✓</span> Attendance</button>
+      <button class="nav" data-page="promotion"><span class="ico">↑</span> Promotion</button>
       <button class="nav" data-page="reports"><span class="ico">▥</span> Reports</button>
     </div>
     <div class="side-note">
@@ -2788,6 +2789,72 @@
         </div>
       </section>
       
+      <section id="page-promotion" class="hidden">
+        <div class="page-title">
+          <div>
+            <h1>Student Promotion</h1>
+            <p class="muted">Review students and decide their promotion status for the next academic year.</p>
+          </div>
+          <button class="btn" onclick="refreshData()">↻ Refresh</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-top">Students</div>
+            <div class="stat-num" id="promotion-total">0</div>
+            <div class="stat-foot">In selected class</div>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Promoted</div>
+            <div class="stat-num" id="promotion-promoted">0</div>
+            <div class="stat-foot">Marked for promotion</div>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Detained</div>
+            <div class="stat-num" id="promotion-detained">0</div>
+            <div class="stat-foot">Marked to repeat</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Promotion decisions</h2>
+          </div>
+
+          <div class="toolbar">
+            <div class="field">
+              <label for="promotion-class">Current class</label>
+              <select id="promotion-class">
+                <option value="">Select a class</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="promotion-year">Academic year</label>
+              <input id="promotion-year" placeholder="e.g. 2026-2027">
+            </div>
+          </div>
+
+          <p class="muted">Select a class to view its students. Promotion decisions will be added in the next step.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>STUDENT ID</th>
+                  <th>STUDENT NAME</th>
+                  <th>CURRENT CLASS</th>
+                  <th>DECISION</th>
+                </tr>
+              </thead>
+              <tbody id="promotion-rows">
+                <tr>
+                  <td colspan="4" class="muted">Select a class to begin.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
       
 <section id="page-student-activity" class="hidden">
 
@@ -3107,23 +3174,49 @@ function renderStudentActivity() {
       ? 'No saved school attendance dates found for this period.'
       : 'School days are counted from saved attendance dates, excluding recorded holidays.';
 }
-  function showPage(page) {
+ 
+function showPage(page) {
     state.page = page;
-    if (page === 'student-activity') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-    document.querySelectorAll('[id^="page-"]').forEach(el=>el.classList.toggle('hidden',el.id!=='page-'+page));
-    document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
-    $('crumb').textContent = ({dashboard:'Dashboard',students:'Students',classes:'Classes',attendance:'Attendance',reports:'Reports','student-activity':'Student Attendance'})[page] || page;
-    clearMessage();
-    if(page==='students') renderStudents();
-    if(page==='classes') renderClasses();
-    if(page==='attendance') populateClassSelectors();
-    if(page==='reports') renderReports();
-    if(page==='student-activity') renderStudentActivity();
-  }
 
-  document.querySelectorAll('.nav').forEach(el=>el.addEventListener('click',()=>showPage(el.dataset.page)));
+    if (page === 'student-activity') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('[id^="page-"]').forEach(el =>
+      el.classList.toggle('hidden', el.id !== 'page-' + page)
+    );
+
+    document.querySelectorAll('.nav').forEach(el =>
+      el.classList.toggle('active', el.dataset.page === page)
+    );
+
+    $('crumb').textContent = ({
+      dashboard: 'Dashboard',
+      students: 'Students',
+      classes: 'Classes',
+      attendance: 'Attendance',
+      promotion: 'Promotion',
+      reports: 'Reports',
+      'student-activity': 'Student Attendance'
+    })[page] || page;
+
+    clearMessage();
+
+    if (page === 'students') renderStudents();
+    if (page === 'classes') renderClasses();
+    if (page === 'attendance') populateClassSelectors();
+    if (page === 'promotion') {
+      populateClassSelectors();
+      renderPromotionStudents();
+    }
+    if (page === 'reports') renderReports();
+    if (page === 'student-activity') renderStudentActivity();
+}
+
+document.querySelectorAll('.nav').forEach(el =>
+  el.addEventListener('click', () => showPage(el.dataset.page))
+);
+
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
 
@@ -3621,6 +3714,46 @@ esc(s.Name) +
     : '<tr><td colspan="6" class="empty">No students found. Add a test student to begin.</td></tr>';
 }
 
+function renderPromotionStudents() {
+  const selectedClass = $('promotion-class').value;
+
+  const rows = $('promotion-rows');
+  const total = $('promotion-total');
+  const promoted = $('promotion-promoted');
+  const detained = $('promotion-detained');
+
+  if (!selectedClass) {
+    total.textContent = '0';
+    promoted.textContent = '0';
+    detained.textContent = '0';
+
+    rows.innerHTML =
+      '<tr><td colspan="4" class="muted">Select a class to begin.</td></tr>';
+    return;
+  }
+
+  const students = state.students.filter(s =>
+    String(s.Class || '').trim() === selectedClass
+  );
+
+  total.textContent = students.length;
+  promoted.textContent = '0';
+  detained.textContent = '0';
+
+  rows.innerHTML = students.length
+    ? students.map(s =>
+        '<tr>' +
+          '<td>' + esc(String(s.StudentID || '—')) + '</td>' +
+          '<td>' + esc(s.Name || '—') + '</td>' +
+          '<td>' + esc(s.Class || '—') + '</td>' +
+          '<td><span class="muted">Not decided yet</span></td>' +
+        '</tr>'
+      ).join('')
+    : '<tr><td colspan="4" class="empty">No students found in this class.</td></tr>';
+}
+
+$('promotion-class').addEventListener('change', renderPromotionStudents);
+
   function editStudent(id) {
   const s = state.students.find(
     x => String(x.StudentID) === String(id)
@@ -3793,13 +3926,27 @@ function hideClassStudents() {
   $('class-students-panel').classList.add('hidden');
 }
 
-  function populateClassSelectors() {
-    ['s-class','a-class'].forEach(id=>{
-      const el=$(id), current=el.value;
-      el.innerHTML='<option value="">Choose a class</option>'+state.classes.map(c=>'<option value="'+esc(c.ClassName)+'">'+esc(c.ClassName)+'</option>').join('');
-      if([...el.options].some(o=>o.value===current)) el.value=current;
+
+function populateClassSelectors() {
+    ['s-class', 'a-class', 'promotion-class'].forEach(id => {
+      const el = $(id);
+      if (!el) return;
+
+      const current = el.value;
+
+      el.innerHTML = '<option value="">Choose a class</option>' +
+        state.classes.map(c =>
+          '<option value="' + esc(c.ClassName) + '">' +
+          esc(c.ClassName) +
+          '</option>'
+        ).join('');
+
+      if ([...el.options].some(o => o.value === current)) {
+        el.value = current;
+      }
     });
   }
+
   function loadAttendance() {
     const cls = $('a-class').value;
 const date = $('a-date').value || today();
