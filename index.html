@@ -3714,6 +3714,7 @@ esc(s.Name) +
     : '<tr><td colspan="6" class="empty">No students found. Add a test student to begin.</td></tr>';
 }
 
+
 function renderPromotionStudents() {
   const selectedClass = $('promotion-class').value;
 
@@ -3737,6 +3738,9 @@ function renderPromotionStudents() {
   );
 
   total.textContent = students.length;
+
+  const isClassX = selectedClass.trim().toLowerCase() === 'class x';
+
   promoted.textContent = '0';
   detained.textContent = '0';
 
@@ -3746,7 +3750,16 @@ function renderPromotionStudents() {
           '<td>' + esc(String(s.StudentID || '—')) + '</td>' +
           '<td>' + esc(s.Name || '—') + '</td>' +
           '<td>' + esc(s.Class || '—') + '</td>' +
-          '<td><span class="muted">Not decided yet</span></td>' +
+          '<td>' +
+            '<select class="promotion-decision" data-student-id="' +
+              esc(String(s.StudentID || '')) + '">' +
+              '<option value="">Choose decision</option>' +
+              (isClassX
+                ? '<option value="Complete School Course">Complete School Course</option>'
+                : '<option value="Promote">Promote</option>' +
+                  '<option value="Detain">Detain</option>') +
+            '</select>' +
+          '</td>' +
         '</tr>'
       ).join('')
     : '<tr><td colspan="4" class="empty">No students found in this class.</td></tr>';
