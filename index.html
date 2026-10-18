@@ -4314,17 +4314,20 @@ function savePromotionChanges() {
       button.disabled = false;
       button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
 
-      if (result && result.success) {
-        alert(
-          result.message + '\nStudents saved: ' + result.savedCount
-        );
-      } else {
-        alert(
-          'Could not save promotion decisions: ' +
-          ((result && result.error) || 'Unknown error')
-        );
-      }
-    },
+     if (result && result.success) {
+  showMessage(
+    'Promotion decisions saved successfully. ' +
+    result.savedCount + ' students saved.',
+    false
+  );
+} else {
+  showMessage(
+    'Could not save promotion decisions: ' +
+    ((result && result.error) || 'Unknown error'),
+    true
+  );
+}
+},
     function (error) {
       button.disabled = false;
       button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
