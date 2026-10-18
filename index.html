@@ -2701,6 +2701,41 @@
   }
 }
 
+#page-promotion .promotion-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+#page-promotion .promotion-save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 22px;
+  border: 1px solid #173b32;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #173b32, #347653);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 5px 12px rgba(23, 59, 50, 0.16);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+#page-promotion .promotion-save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 16px rgba(23, 59, 50, 0.22);
+}
+
+#page-promotion .promotion-save-btn:disabled {
+  opacity: .65;
+  cursor: wait;
+  transform: none;
+}
+
   </style>
 </head>
 <body>
