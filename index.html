@@ -2736,6 +2736,19 @@
   transform: none;
 }
 
+#page-promotion .promotion-field-error {
+  display: block;
+  margin-top: 6px;
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#page-promotion #promotion-year.promotion-input-error {
+  border-color: #b42318;
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.10);
+}
+
   </style>
 </head>
 <body>
@@ -3295,9 +3308,20 @@
           <option value="">Select a class</option>
         </select>
       </div>
-      <div class="field">
-        <label for="promotion-year">Academic Year</label>
-        <input id="promotion-year" placeholder="e.g. 2026-2027">
+      <div class="field"> 
+<label for="promotion-year">Academic Year</label>
+<input
+  id="promotion-year"
+  placeholder="e.g. 2026-2027"
+  aria-describedby="promotion-year-error"
+  aria-invalid="false"
+>
+<small
+  id="promotion-year-error"
+  class="promotion-field-error hidden"
+  role="alert"
+></small>
+
       </div>
     </div>
 
@@ -4248,7 +4272,17 @@ function renderPromotionStudents() {
 }
 
 $('promotion-class').addEventListener('change', renderPromotionStudents);
+$('promotion-year').addEventListener('input', function () {
+  const input = this;
+  const error = $('promotion-year-error');
 
+  if (input.value.trim()) {
+    error.textContent = '';
+    error.classList.add('hidden');
+    input.classList.remove('promotion-input-error');
+    input.setAttribute('aria-invalid', 'false');
+  }
+});
 function savePromotionChanges() {
   const selectedClass = $('promotion-class').value;
   const academicYear = $('promotion-year').value.trim();
@@ -4258,11 +4292,23 @@ function savePromotionChanges() {
     return;
   }
 
-  if (!academicYear) {
-    alert('Please enter the academic year.');
-    $('promotion-year').focus();
-    return;
-  }
+  
+const yearInput = $('promotion-year');
+const yearError = $('promotion-year-error');
+
+if (!academicYear) {
+  yearError.textContent = 'Please enter the academic year before saving.';
+  yearError.classList.remove('hidden');
+  yearInput.classList.add('promotion-input-error');
+  yearInput.setAttribute('aria-invalid', 'true');
+  yearInput.focus();
+  return;
+}
+
+yearError.textContent = '';
+yearError.classList.add('hidden');
+yearInput.classList.remove('promotion-input-error');
+yearInput.setAttribute('aria-invalid', 'false');
 
   const decisionSelects = Array.from(
     document.querySelectorAll('#promotion-rows .promotion-decision')
@@ -4331,7 +4377,7 @@ function savePromotionChanges() {
     function (error) {
       button.disabled = false;
       button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
-      alert('Could not connect to SchoolDesk. Please try again.');
+      showMessage('Could not connect to SchoolDesk. Please try again.', true);
       console.error('Promotion save failed:', error);
     }
   );
