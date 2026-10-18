@@ -4019,7 +4019,14 @@ document.addEventListener('click', event => {
 
 let schoolDeskDrawerHistory = false;
 
-window.addEventListener('popstate', () => {
+
+window.addEventListener('popstate', event => {
+  console.log('ANDROID BACK EVENT:', {
+    state: event.state,
+    drawerOpen: document.body.classList.contains('mobile-nav-open'),
+    drawerHistory: schoolDeskDrawerHistory
+  });
+
   if (!document.body.classList.contains('mobile-nav-open')) {
     schoolDeskDrawerHistory = false;
     return;
@@ -4033,6 +4040,7 @@ window.addEventListener('popstate', () => {
 
   schoolDeskDrawerHistory = false;
 });
+
 
 function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
