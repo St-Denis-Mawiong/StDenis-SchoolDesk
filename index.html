@@ -3992,8 +3992,16 @@ if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.toggle('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+
+    if (isOpen) {
+      prepareDrawerBackButton();
+    } else if (schoolDeskDrawerHistory) {
+      schoolDeskDrawerHistory = false;
+      history.back();
+    }
   });
 }
+
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
 
@@ -4008,6 +4016,30 @@ document.addEventListener('click', event => {
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 });
+
+let schoolDeskDrawerHistory = false;
+
+window.addEventListener('popstate', () => {
+  if (!document.body.classList.contains('mobile-nav-open')) {
+    schoolDeskDrawerHistory = false;
+    return;
+  }
+
+  document.body.classList.remove('mobile-nav-open');
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  schoolDeskDrawerHistory = false;
+});
+
+function prepareDrawerBackButton() {
+  if (schoolDeskDrawerHistory) return;
+
+  history.pushState({ schoolDeskDrawer: true }, '');
+  schoolDeskDrawerHistory = true;
+}
   
 
 let touchStartX = 0;
