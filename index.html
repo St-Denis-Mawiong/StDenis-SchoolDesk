@@ -2299,33 +2299,52 @@
 
 /* Page background and spacing */
 
+
 #page-promotion .page-title {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(120deg, #102f27 0%, #1d5941 58%, #397957 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(120deg, #e8f0e8 0%, #f6f3e8 72%, #e2eadc 100%);
+  border: 1px solid #d5e1d2;
   border-radius: 18px;
   padding: 26px 28px;
   margin-bottom: 24px;
-  box-shadow: 0 10px 26px rgba(16, 47, 39, 0.22);
+  box-shadow: 0 8px 22px rgba(23, 59, 50, 0.08);
+}
+
+#page-promotion .page-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg, #c49a45, #e4cb83);
 }
 
 #page-promotion .page-title::after {
-  content: "";
+  content: "↗";
   position: absolute;
-  right: 48px;
-  top: -48px;
-  width: 175px;
-  height: 175px;
-  border: 26px solid rgba(255, 255, 255, 0.07);
-  border-radius: 50%;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid #c9d8c6;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.55);
+  color: #397052;
+  font-size: 43px;
+  font-weight: 700;
   pointer-events: none;
 }
 
 #page-promotion .page-title h1 {
   position: relative;
   z-index: 1;
-  color: #fff;
+  color: #173b32;
   font-size: 30px;
   font-weight: 800;
   letter-spacing: -0.6px;
@@ -2335,9 +2354,10 @@
 #page-promotion .page-title p {
   position: relative;
   z-index: 1;
-  color: rgba(255, 255, 255, 0.78);
+  color: #617267;
   margin: 0;
 }
+
 
 #page-promotion .page-title .muted {
   color: #d5e4da;
