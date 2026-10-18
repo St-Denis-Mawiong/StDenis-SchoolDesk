@@ -3853,7 +3853,20 @@ if (mobileMenuBtn) {
     mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
   });
 }
+document.addEventListener('click', event => {
+  if (!document.body.classList.contains('mobile-nav-open')) return;
 
+  const drawer = document.querySelector('aside');
+
+  if (
+    drawer &&
+    !drawer.contains(event.target) &&
+    !mobileMenuBtn.contains(event.target)
+  ) {
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
 
