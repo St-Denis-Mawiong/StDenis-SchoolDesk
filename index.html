@@ -2374,29 +2374,39 @@
 }
 
 /* Main decision panel */
-#page-promotion .panel {
-  background: #fff;
-  border: 1px solid var(--promo-border);
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 8px 28px rgba(23,59,50,.04);
-}
+
 
 #page-promotion .panel-head {
-  background: linear-gradient(110deg, #edf4ee, #f8f7f1);
-  border: 1px solid #dce7dd;
-  border-left: 4px solid #173b32;
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, #173b32 0%, #245943 65%, #397657 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 5px 14px rgba(23, 59, 50, 0.2);
+}
+
+#page-promotion .panel-head::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: -28px;
+  width: 105px;
+  height: 105px;
+  border: 18px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
 }
 
 #page-promotion .panel-head h2 {
-  color: #173b32;
-  font-size: 19px;
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-size: 20px;
   font-weight: 750;
   margin: 0;
 }
+
 
 /* Class and academic-year selectors */
 #page-promotion .toolbar {
