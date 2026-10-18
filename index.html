@@ -4249,6 +4249,91 @@ function renderPromotionStudents() {
 
 $('promotion-class').addEventListener('change', renderPromotionStudents);
 
+function savePromotionChanges() {
+  const selectedClass = $('promotion-class').value;
+  const academicYear = $('promotion-year').value.trim();
+
+  if (!selectedClass) {
+    alert('Please select a class first.');
+    return;
+  }
+
+  if (!academicYear) {
+    alert('Please enter the academic year.');
+    $('promotion-year').focus();
+    return;
+  }
+
+  const decisionSelects = Array.from(
+    document.querySelectorAll('#promotion-rows .promotion-decision')
+  );
+
+  if (decisionSelects.length === 0) {
+    alert('There are no student decisions to save.');
+    return;
+  }
+
+  const isClassX = selectedClass.trim().toLowerCase() === 'class x';
+
+  const records = decisionSelects.map(function (select) {
+    const studentId = select.dataset.studentId;
+    const student = state.students.find(function (s) {
+      return String(s.StudentID || '') === String(studentId || '');
+    });
+
+    return {
+      StudentID: studentId,
+      RollNo: student ? student.RollNo || '' : '',
+      StudentName: student ? student.Name || '' : '',
+      FromClass: selectedClass,
+      Decision: select.value,
+      AcademicYear: academicYear
+    };
+  });
+
+  if (records.some(function (r) { return !r.StudentID; })) {
+    alert('A student is missing a PEN number. Nothing was saved.');
+    return;
+  }
+
+  if (isClassX && records.some(function (r) {
+    return r.Decision !== 'Complete School Course';
+  })) {
+    alert('Class X students must be marked Complete School Course.');
+    return;
+  }
+
+  const button = $('promotion-save-btn');
+  button.disabled = true;
+  button.textContent = 'Saving...';
+
+  callServer(
+    'savePromotion',
+    [records],
+    function (result) {
+      button.disabled = false;
+      button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
+
+      if (result && result.success) {
+        alert(
+          result.message + '\nStudents saved: ' + result.savedCount
+        );
+      } else {
+        alert(
+          'Could not save promotion decisions: ' +
+          ((result && result.error) || 'Unknown error')
+        );
+      }
+    },
+    function (error) {
+      button.disabled = false;
+      button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
+      alert('Could not connect to SchoolDesk. Please try again.');
+      console.error('Promotion save failed:', error);
+    }
+  );
+}
+
   function editStudent(id) {
   const s = state.students.find(
     x => String(x.StudentID) === String(id)
