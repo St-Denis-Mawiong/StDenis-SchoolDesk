@@ -4039,6 +4039,12 @@ function prepareDrawerBackButton() {
 
   history.pushState({ schoolDeskDrawer: true }, '');
   schoolDeskDrawerHistory = true;
+
+  console.log(
+    'Drawer Back entry created:',
+    schoolDeskDrawerHistory,
+    history.state
+  );
 }
   
 
