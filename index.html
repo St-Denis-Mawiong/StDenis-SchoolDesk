@@ -4026,7 +4026,7 @@ document.addEventListener('touchstart', event => {
   const touch = event.changedTouches[0];
   const isOpen = document.body.classList.contains('mobile-nav-open');
   const startedInDrawer = mobileDrawer.contains(event.target);
-  const startedAtLeftEdge = touch.clientX < 45;
+  const startedAtLeftEdge = touch.clientX < 80;
 
   // Only track gestures that can open or close the drawer.
   if (isOpen && !startedInDrawer) return;
