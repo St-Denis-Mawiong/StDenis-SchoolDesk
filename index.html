@@ -3896,7 +3896,7 @@ document.addEventListener('touchend', event => {
   const isOpen = document.body.classList.contains('mobile-nav-open');
 
   // Swipe right from the left edge to open.
-  if (!isOpen && touchStartX < 35 && deltaX > 0) {
+  if (!isOpen && touchStartX < window.innerWidth * 0.2 && deltaX > 0) {
     document.body.classList.add('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'true');
   }
