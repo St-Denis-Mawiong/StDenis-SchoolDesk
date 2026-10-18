@@ -2298,31 +2298,45 @@
 }
 
 /* Page background and spacing */
+
 #page-promotion .page-title {
-  background: linear-gradient(125deg, #173b32, #285747);
-  color: #fff;
-  border-radius: 20px;
-  padding: 26px;
-  margin-bottom: 24px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(120deg, #102f27 0%, #1d5941 58%, #397957 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 26px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 26px rgba(16, 47, 39, 0.22);
 }
 
 #page-promotion .page-title::after {
-  content: "✦";
+  content: "";
   position: absolute;
-  right: 24px;
-  top: 8px;
-  font-size: 76px;
-  color: rgba(255,255,255,.10);
+  right: 48px;
+  top: -48px;
+  width: 175px;
+  height: 175px;
+  border: 26px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
   pointer-events: none;
 }
 
 #page-promotion .page-title h1 {
+  position: relative;
+  z-index: 1;
   color: #fff;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
   margin: 0 0 8px;
-  font-size: clamp(24px, 3vw, 34px);
-  letter-spacing: -.6px;
+}
+
+#page-promotion .page-title p {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
 }
 
 #page-promotion .page-title .muted {
