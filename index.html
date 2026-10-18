@@ -4112,11 +4112,12 @@ document.addEventListener('touchmove', event => {
   if (drawerWasOpen && deltaX >= 0) return;
 
   // Activate the open state while dragging from the edge.
-  if (!drawerWasOpen &&
-      !document.body.classList.contains('mobile-nav-open')) {
+if (
+    !drawerWasOpen &&
+    !document.body.classList.contains('mobile-nav-open')
+  ) {
     document.body.classList.add('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'true');
-    prepareDrawerBackButton();
   }
 
   mobileDrawer.style.transition = 'none';
