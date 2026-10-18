@@ -4153,6 +4153,7 @@ document.addEventListener('touchend', event => {
   if (shouldOpen) {
     document.body.classList.add('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'true');
+     prepareDrawerBackButton();
   } else if (shouldClose || !drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
