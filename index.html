@@ -4151,11 +4151,20 @@ document.addEventListener('touchend', event => {
   mobileDrawer.style.transition = '';
   mobileDrawer.style.transform = '';
 
-  if (shouldOpen) {
+   if (shouldOpen) {
     document.body.classList.add('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'true');
-     prepareDrawerBackButton();
-  } else if (shouldClose || !drawerWasOpen) {
+    prepareDrawerBackButton();
+
+  } else if (shouldClose) {
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+
+    if (schoolDeskDrawerHistory) {
+      history.back();
+    }
+
+  } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
