@@ -3976,6 +3976,7 @@ function showPage(page) {
 let schoolDeskDrawerHistory = false;
 let schoolDeskPendingPage = null;
 let schoolDeskLastExitBack = 0;
+let schoolDeskLastPopAt = 0;
 
 // Establish the Dashboard as the starting screen.
 history.replaceState(
@@ -4001,7 +4002,6 @@ document.querySelectorAll('.nav').forEach(el =>
   el.addEventListener('click', () => {
     const page = el.dataset.page;
 
-    // If the drawer is open, finish closing it first.
     if (schoolDeskDrawerHistory) {
       schoolDeskPendingPage = page;
 
@@ -4057,11 +4057,31 @@ document.addEventListener('click', event => {
   }
 });
 
-
- // Handle Android/browser Back navigation.
+// Handle Android/browser Back navigation.
 window.addEventListener('popstate', event => {
 
-  // Back while the drawer is open: close it first.
+  // Ignore extremely rapid duplicate Back events.
+  const now = Date.now();
+
+  if (now - schoolDeskLastPopAt < 500) {
+    if (
+      state.page === 'dashboard' &&
+      !schoolDeskDrawerHistory &&
+      !document.body.classList.contains('mobile-nav-open')
+    ) {
+      history.pushState(
+        { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
+        ''
+      );
+    }
+
+    schoolDeskLastPopAt = now;
+    return;
+  }
+
+  schoolDeskLastPopAt = now;
+
+  // 1. Close the drawer before handling page navigation.
   if (schoolDeskDrawerHistory) {
     schoolDeskDrawerHistory = false;
 
@@ -4079,7 +4099,8 @@ window.addEventListener('popstate', event => {
 
     return;
   }
-  // Back while a student profile is open: close the profile first.
+
+  // 2. Close the Student profile before changing pages.
   const profileModal = $('student-profile-modal');
 
   if (profileModal && profileModal.classList.contains('active')) {
@@ -4097,17 +4118,43 @@ window.addEventListener('popstate', event => {
     state.currentDocumentStudent = null;
     return;
   }
-  // Restore the previous SchoolDesk page.
+
+  // 3. Handle the Dashboard root before generic page states.
+  if (
+    event.state &&
+    event.state.schoolDeskRoot === true &&
+    state.page === 'dashboard'
+  ) {
+    if (
+      schoolDeskLastExitBack &&
+      now - schoolDeskLastExitBack <= 2500
+    ) {
+      schoolDeskLastExitBack = 0;
+      showMessage('Press Back once more to leave SchoolDesk.');
+      return;
+    }
+
+    schoolDeskLastExitBack = now;
+    showMessage('Press Back again if you want to leave SchoolDesk.');
+
+    history.pushState(
+      { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
+      ''
+    );
+
+    return;
+  }
+
+  // 4. Restore the previous SchoolDesk page.
   if (event.state && event.state.schoolDeskPage) {
     schoolDeskLastExitBack = 0;
     showPage(event.state.schoolDeskPage);
     return;
   }
 
-  // On the Dashboard, ask for confirmation instead of
-  // trying to force the app to exit through browser history.
+  // 5. If history has no known page, restore a safe Dashboard entry.
   if (state.page === 'dashboard') {
-    showMessage('You are on the main screen. Press Back again if you want to leave SchoolDesk.');
+    showMessage('You are on the main screen.');
 
     history.pushState(
       { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
@@ -4115,7 +4162,6 @@ window.addEventListener('popstate', event => {
     );
   }
 });
-
 
 // Add a history entry so Back closes the drawer first.
 function prepareDrawerBackButton() {
