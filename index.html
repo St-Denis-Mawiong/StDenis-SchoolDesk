@@ -2619,6 +2619,91 @@
   }
 }
 
+/* Promotion page: desktop dashboard layout */
+#page-promotion .promotion-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+#page-promotion .promotion-main {
+  min-width: 0;
+}
+
+#page-promotion .promotion-sidebar {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+#page-promotion .promotion-guide-content p {
+  margin: 0 0 14px;
+  color: #52665c;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#page-promotion .promotion-guide-content p:last-child {
+  margin-bottom: 0;
+}
+
+#page-promotion .promotion-guide-content strong {
+  color: #173b32;
+  margin-right: 6px;
+}
+
+#page-promotion .promotion-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e7e1;
+  color: #52665c;
+  font-size: 13px;
+}
+
+#page-promotion .promotion-summary-row:last-of-type {
+  border-bottom: 0;
+}
+
+#page-promotion .promotion-summary-row strong {
+  color: #173b32;
+  font-size: 17px;
+}
+
+#page-promotion .promotion-class-note {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #e5eee8;
+  color: #355347;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Stack the sidebar below the table on smaller screens */
+@media (max-width: 900px) {
+  #page-promotion .promotion-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #page-promotion .promotion-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* One column for phone screens */
+@media (max-width: 700px) {
+  #page-promotion .promotion-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #page-promotion .promotion-guide-content p {
+    margin-bottom: 10px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -3165,10 +3250,11 @@
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-head">
-      <h2>Student Decisions</h2>
-    </div>
+    <div class="promotion-layout">
+    <div class="panel promotion-main">
+      <div class="panel-head">
+        <h2>Student Decisions</h2>
+      </div>
 
     <div class="toolbar">
       <div class="field">
@@ -3199,10 +3285,45 @@
           </tr>
         </tbody>
       </table>
+       </div>
+  </div>
+
+  <aside class="promotion-sidebar">
+    <div class="panel promotion-guide">
+      <div class="panel-head">
+        <h2>Quick Guide</h2>
+      </div>
+      <div class="promotion-guide-content">
+        <p><strong>1.</strong> Select the current class.</p>
+        <p><strong>2.</strong> Confirm the academic year.</p>
+        <p><strong>3.</strong> Choose a decision for each student.</p>
+        <p><strong>4.</strong> Review the decisions before finalizing.</p>
+      </div>
     </div>
+
+    <div class="panel promotion-summary">
+      <div class="panel-head">
+        <h2>Decision Summary</h2>
+      </div>
+      <div class="promotion-summary-row">
+        <span>Students</span>
+        <strong id="promotion-side-total">0</strong>
+      </div>
+      <div class="promotion-summary-row">
+        <span>Promote</span>
+        <strong id="promotion-side-promoted">0</strong>
+      </div>
+      <div class="promotion-summary-row">
+        <span>Detain</span>
+        <strong id="promotion-side-detained">0</strong>
+      </div>
+      <p class="promotion-class-note">
+        Class X students are marked as completing the school course.
+      </p>
+    </div>
+  </aside>
   </div>
 </section>
-
 <section id="page-student-activity" class="hidden">
 
   <div class="activity-hero">
