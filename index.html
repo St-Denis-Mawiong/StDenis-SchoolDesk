@@ -153,7 +153,14 @@
       aside { width:100%; padding:12px; }
       .brand { padding:4px 8px 12px; }
       .nav-label,.side-note { display:none; }
-      .navs { display:flex; overflow-x:auto; gap:4px; }
+      .navs {
+          display: flex;
+          flex-direction: column;
+          overflow-x: visible;
+          overflow-y: visible;
+          gap: 6px;
+          width: 100%;
+        }
       .nav { width:auto; white-space:nowrap; padding:9px 11px; margin:0; }
       .nav .ico { width:auto; }
       header { padding:13px 17px; }
