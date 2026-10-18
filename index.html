@@ -3353,6 +3353,14 @@
         <span aria-hidden="true">✓</span>
         Save Changes
       </button>
+      <button
+  type="button"
+  id="promotion-apply-btn"
+  onclick="applySavedPromotions()"
+  disabled
+>
+  Apply Promotion
+</button>
     </div>
 
   </div>
@@ -4283,6 +4291,7 @@ $('promotion-year').addEventListener('input', function () {
     input.setAttribute('aria-invalid', 'false');
   }
 });
+
 function savePromotionChanges() {
   const selectedClass = $('promotion-class').value;
   const academicYear = $('promotion-year').value.trim();
@@ -4292,26 +4301,28 @@ function savePromotionChanges() {
     return;
   }
 
-  
-const yearInput = $('promotion-year');
-const yearError = $('promotion-year-error');
+  const yearInput = $('promotion-year');
+  const yearError = $('promotion-year-error');
 
-if (!academicYear) {
-  yearError.textContent = 'Please enter the academic year before saving.';
-  yearError.classList.remove('hidden');
-  yearInput.classList.add('promotion-input-error');
-  yearInput.setAttribute('aria-invalid', 'true');
-  yearInput.focus();
-  return;
-}
+  if (!academicYear) {
+    yearError.textContent =
+      'Please enter the academic year before saving.';
+    yearError.classList.remove('hidden');
+    yearInput.classList.add('promotion-input-error');
+    yearInput.setAttribute('aria-invalid', 'true');
+    yearInput.focus();
+    return;
+  }
 
-yearError.textContent = '';
-yearError.classList.add('hidden');
-yearInput.classList.remove('promotion-input-error');
-yearInput.setAttribute('aria-invalid', 'false');
+  yearError.textContent = '';
+  yearError.classList.add('hidden');
+  yearInput.classList.remove('promotion-input-error');
+  yearInput.setAttribute('aria-invalid', 'false');
 
   const decisionSelects = Array.from(
-    document.querySelectorAll('#promotion-rows .promotion-decision')
+    document.querySelectorAll(
+      '#promotion-rows .promotion-decision'
+    )
   );
 
   if (decisionSelects.length === 0) {
@@ -4319,10 +4330,12 @@ yearInput.setAttribute('aria-invalid', 'false');
     return;
   }
 
-  const isClassX = selectedClass.trim().toLowerCase() === 'class x';
+  const isClassX =
+    selectedClass.trim().toLowerCase() === 'class x';
 
   const records = decisionSelects.map(function (select) {
     const studentId = select.dataset.studentId;
+
     const student = state.students.find(function (s) {
       return String(s.StudentID || '') === String(studentId || '');
     });
@@ -4342,10 +4355,15 @@ yearInput.setAttribute('aria-invalid', 'false');
     return;
   }
 
-  if (isClassX && records.some(function (r) {
-    return r.Decision !== 'Complete School Course';
-  })) {
-    alert('Class X students must be marked Complete School Course.');
+  if (
+    isClassX &&
+    records.some(function (r) {
+      return r.Decision !== 'Complete School Course';
+    })
+  ) {
+    alert(
+      'Class X students must be marked Complete School Course.'
+    );
     return;
   }
 
@@ -4358,27 +4376,126 @@ yearInput.setAttribute('aria-invalid', 'false');
     [records],
     function (result) {
       button.disabled = false;
-      button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
+      button.innerHTML =
+        '<span aria-hidden="true">✓</span> Save Changes';
 
-     if (result && result.success) {
-  showMessage(
-    'Promotion decisions saved successfully. ' +
-    result.savedCount + ' students saved.',
-    false
-  );
-} else {
-  showMessage(
-    'Could not save promotion decisions: ' +
-    ((result && result.error) || 'Unknown error'),
-    true
-  );
-}
-},
+      if (result && result.success) {
+        if (
+          !Array.isArray(result.promotionIds) ||
+          result.promotionIds.length !== records.length
+        ) {
+          showMessage(
+            'Decisions were saved, but the promotion IDs were not ' +
+            'returned. Do not save again yet. Please contact the ' +
+            'next setup step.',
+            true
+          );
+          return;
+        }
+
+        // Keep the exact IDs from this save for the apply step.
+        state.pendingPromotion = {
+          promotionIds: result.promotionIds,
+          academicYear: academicYear,
+          selectedClass: selectedClass
+        };
+      const applyButton = $('promotion-apply-btn');
+      applyButton.disabled = false;
+        showMessage(
+          'Promotion decisions saved successfully. ' +
+          result.savedCount +
+          ' students saved. Review before applying promotions.',
+          false
+        );
+      } else {
+        showMessage(
+          'Could not save promotion decisions: ' +
+          ((result && result.error) || 'Unknown error'),
+          true
+        );
+      }
+    },
     function (error) {
       button.disabled = false;
-      button.innerHTML = '<span aria-hidden="true">✓</span> Save Changes';
-      showMessage('Could not connect to SchoolDesk. Please try again.', true);
+      button.innerHTML =
+        '<span aria-hidden="true">✓</span> Save Changes';
+
+      showMessage(
+        'Could not connect to SchoolDesk. Please try again.',
+        true
+      );
+
       console.error('Promotion save failed:', error);
+    }
+  );
+}
+
+function applySavedPromotions() {
+  const pending = state.pendingPromotion;
+
+  if (
+    !pending ||
+    !Array.isArray(pending.promotionIds) ||
+    pending.promotionIds.length === 0
+  ) {
+    showMessage(
+      'Please save the promotion decisions before applying them.',
+      true
+    );
+    return;
+  }
+
+  const confirmed = confirm(
+    'Apply the saved promotion decisions for ' +
+    pending.selectedClass + ' (' + pending.academicYear + ')?\n\n' +
+    'Students marked Promote will move to the next class. ' +
+    'Detained students will remain in their current class.'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const button = $('promotion-apply-btn');
+  button.disabled = true;
+  button.textContent = 'Applying...';
+
+  callServer(
+    'applyPromotion',
+    [pending.promotionIds],
+    function (result) {
+      button.disabled = false;
+      button.textContent = 'Apply Promotion';
+
+      if (result && result.success) {
+        state.pendingPromotion = null;
+      const applyButton = $('promotion-apply-btn');
+      applyButton.disabled = true;
+        showMessage(
+          'Promotion applied successfully. ' +
+          result.updatedCount + ' students moved to their next class.',
+          false
+        );
+
+        refreshData();
+      } else {
+        showMessage(
+          'Could not apply promotion: ' +
+          ((result && result.error) || 'Unknown error'),
+          true
+        );
+      }
+    },
+    function (error) {
+      button.disabled = false;
+      button.textContent = 'Apply Promotion';
+
+      showMessage(
+        'Could not connect to SchoolDesk. Please try again.',
+        true
+      );
+
+      console.error('Apply promotion failed:', error);
     }
   );
 }
