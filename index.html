@@ -228,6 +228,63 @@ body.mobile-nav-open::before {
   opacity: 1;
   pointer-events: auto;
 }
+      /* SchoolDesk mobile drawer design */
+      aside {
+        background: linear-gradient(180deg, #173b32 0%, #102d26 100%);
+        color: #ffffff;
+        padding: 20px 14px;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      aside .brand {
+        padding: 12px 10px 24px;
+        color: #ffffff;
+      }
+
+      aside .brand strong,
+      aside .brand small {
+        color: #ffffff;
+      }
+
+      aside .nav-label {
+        color: #a9c8bb;
+        letter-spacing: 1.5px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 12px 12px 8px;
+      }
+
+      aside .nav {
+        color: #d6e7df;
+        border-radius: 12px;
+        margin: 4px 0;
+        padding: 12px;
+        transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+      }
+
+      aside .nav .ico {
+        color: #a9c8bb;
+      }
+
+      aside .nav.active {
+        background: #d9eee3;
+        color: #173b32;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+      }
+
+      aside .nav.active .ico {
+        color: #173b32;
+      }
+
+      aside .nav:active {
+        transform: scale(0.98);
+      }
+
+      aside .side-note {
+        color: #a9c8bb;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
     }
       @media (prefers-reduced-motion: reduce) {
         aside {
