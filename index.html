@@ -3973,70 +3973,35 @@ function showPage(page) {
   if (page === 'reports') renderReports();
   if (page === 'student-activity') renderStudentActivity();
 }
-let schoolDeskDrawerHistory = false;
-let schoolDeskPendingPage = null;
-let schoolDeskLastExitBack = 0;
-let schoolDeskLastPopAt = 0;
 
-// Establish the Dashboard as the starting screen.
-history.replaceState(
-  { schoolDeskPage: 'dashboard', schoolDeskRoot: true },
-  ''
-);
-
-history.pushState(
-  { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
-  ''
-);
-
-// Navigate to a page and record it in browser history.
-function navigateToPage(page) {
-  if (page === state.page) return;
-
-  history.pushState({ schoolDeskPage: page }, '');
-  showPage(page);
-}
-
-// Main navigation
 document.querySelectorAll('.nav').forEach(el =>
   el.addEventListener('click', () => {
-    const page = el.dataset.page;
+    showPage(el.dataset.page);
 
-    if (schoolDeskDrawerHistory) {
-      schoolDeskPendingPage = page;
-
+    if (window.innerWidth <= 650) {
       document.body.classList.remove('mobile-nav-open');
-
-      if (mobileMenuBtn) {
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-      }
-
-      history.back();
-      return;
+      document.getElementById('mobile-menu-btn')
+        ?.setAttribute('aria-expanded', 'false');
     }
-
-    navigateToPage(page);
   })
 );
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 
-// Open and close the mobile navigation drawer.
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.toggle('mobile-nav-open');
-
     mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
 
     if (isOpen) {
       prepareDrawerBackButton();
     } else if (schoolDeskDrawerHistory) {
+      schoolDeskDrawerHistory = false;
       history.back();
     }
   });
 }
 
-// Close the drawer when tapping outside it.
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
 
@@ -4045,138 +4010,38 @@ document.addEventListener('click', event => {
   if (
     drawer &&
     !drawer.contains(event.target) &&
-    mobileMenuBtn &&
     !mobileMenuBtn.contains(event.target)
   ) {
     document.body.classList.remove('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-    if (schoolDeskDrawerHistory) {
-      history.back();
-    }
   }
 });
 
-// Handle Android/browser Back navigation.
-window.addEventListener('popstate', event => {
+let schoolDeskDrawerHistory = false;
 
-  // Ignore extremely rapid duplicate Back events.
-  const now = Date.now();
-
-  if (now - schoolDeskLastPopAt < 500) {
-    if (
-      state.page === 'dashboard' &&
-      !schoolDeskDrawerHistory &&
-      !document.body.classList.contains('mobile-nav-open')
-    ) {
-      history.pushState(
-        { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
-        ''
-      );
-    }
-
-    schoolDeskLastPopAt = now;
-    return;
-  }
-
-  schoolDeskLastPopAt = now;
-
-  // 1. Close the drawer before handling page navigation.
-  if (schoolDeskDrawerHistory) {
+window.addEventListener('popstate', () => {
+  if (!document.body.classList.contains('mobile-nav-open')) {
     schoolDeskDrawerHistory = false;
-
-    document.body.classList.remove('mobile-nav-open');
-
-    if (mobileMenuBtn) {
-      mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    }
-
-    if (schoolDeskPendingPage !== null) {
-      const nextPage = schoolDeskPendingPage;
-      schoolDeskPendingPage = null;
-      navigateToPage(nextPage);
-    }
-
     return;
   }
 
-  // 2. Close the Student profile before changing pages.
-  const profileModal = $('student-profile-modal');
+  document.body.classList.remove('mobile-nav-open');
 
-  if (profileModal && profileModal.classList.contains('active')) {
-    profileModal.classList.remove('active');
-
-    const panel = $('student-documents-panel');
-    if (panel) panel.hidden = true;
-
-    const list = $('student-document-list');
-    if (list) list.replaceChildren();
-
-    const message = $('student-document-message');
-    if (message) message.textContent = '';
-
-    state.currentDocumentStudent = null;
-    return;
+  if (mobileMenuBtn) {
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 
-  // 3. Handle the Dashboard root before generic page states.
-  if (
-    event.state &&
-    event.state.schoolDeskRoot === true &&
-    state.page === 'dashboard'
-  ) {
-    if (
-      schoolDeskLastExitBack &&
-      now - schoolDeskLastExitBack <= 2500
-    ) {
-      schoolDeskLastExitBack = 0;
-      showMessage('Press Back once more to leave SchoolDesk.');
-      return;
-    }
-
-    schoolDeskLastExitBack = now;
-    showMessage('Press Back again if you want to leave SchoolDesk.');
-
-    history.pushState(
-      { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
-      ''
-    );
-
-    return;
-  }
-
-  // 4. Restore the previous SchoolDesk page.
-  if (event.state && event.state.schoolDeskPage) {
-    schoolDeskLastExitBack = 0;
-    showPage(event.state.schoolDeskPage);
-    return;
-  }
-
-  // 5. If history has no known page, restore a safe Dashboard entry.
-  if (state.page === 'dashboard') {
-    showMessage('You are on the main screen.');
-
-    history.pushState(
-      { schoolDeskPage: 'dashboard', schoolDeskExitGuard: true },
-      ''
-    );
-  }
+  schoolDeskDrawerHistory = false;
 });
 
-// Add a history entry so Back closes the drawer first.
 function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
 
-  history.pushState(
-    {
-      schoolDeskDrawer: true,
-      schoolDeskPage: state.page || 'dashboard'
-    },
-    ''
-  );
-
+  history.pushState({ schoolDeskDrawer: true }, '');
   schoolDeskDrawerHistory = true;
 }
+  
+
 let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
@@ -4286,23 +4151,14 @@ document.addEventListener('touchend', event => {
   mobileDrawer.style.transition = '';
   mobileDrawer.style.transform = '';
 
- if (shouldOpen) {
-  document.body.classList.add('mobile-nav-open');
-  mobileMenuBtn.setAttribute('aria-expanded', 'true');
-  prepareDrawerBackButton();
-
-} else if (shouldClose) {
-  document.body.classList.remove('mobile-nav-open');
-  mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-  if (schoolDeskDrawerHistory) {
-    history.back();
+  if (shouldOpen) {
+    document.body.classList.add('mobile-nav-open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+     prepareDrawerBackButton();
+  } else if (shouldClose || !drawerWasOpen) {
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
-
-} else if (!drawerWasOpen) {
-  document.body.classList.remove('mobile-nav-open');
-  mobileMenuBtn.setAttribute('aria-expanded', 'false');
-}
 }, { passive: true });
 
 document.addEventListener('touchcancel', () => {
@@ -5660,12 +5516,7 @@ if (student.PhotoURL) {
   $('profile-dob').textContent = student.DateOfBirth || '—';
   $('profile-status').textContent = student.Status || 'Active';
 
-  history.pushState(
-  { schoolDeskProfile: true, schoolDeskPage: state.page },
-  ''
-);
-
-$('student-profile-modal').classList.add('active');
+  $('student-profile-modal').classList.add('active');
   
   const contactBtn = $('contact-parent-btn');
   const phone = String(student.Phone || '').trim();
@@ -5785,4 +5636,3 @@ $('student-profile-modal').classList.add('active');
 </div> <!-- closes student-profile-modal -->
  </body>
 </html>
-
