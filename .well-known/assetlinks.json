@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.st_denis_mawiong.twa",
+        "sha256_cert_fingerprints": ["C9:33:EA:76:D9:5B:88:B9:DF:96:E7:19:35:A3:FE:B8:82:88:DB:53:0E:27:68:6F:CF:C9:4A:B1:7C:CB:09:C6"]
+      }
+    }]
