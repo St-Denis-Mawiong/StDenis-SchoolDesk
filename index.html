@@ -4079,7 +4079,24 @@ window.addEventListener('popstate', event => {
 
     return;
   }
+  // Back while a student profile is open: close the profile first.
+  const profileModal = $('student-profile-modal');
 
+  if (profileModal && profileModal.classList.contains('active')) {
+    profileModal.classList.remove('active');
+
+    const panel = $('student-documents-panel');
+    if (panel) panel.hidden = true;
+
+    const list = $('student-document-list');
+    if (list) list.replaceChildren();
+
+    const message = $('student-document-message');
+    if (message) message.textContent = '';
+
+    state.currentDocumentStudent = null;
+    return;
+  }
   // Restore the previous SchoolDesk page.
   if (event.state && event.state.schoolDeskPage) {
     schoolDeskLastExitBack = 0;
@@ -5588,7 +5605,12 @@ if (student.PhotoURL) {
   $('profile-dob').textContent = student.DateOfBirth || '—';
   $('profile-status').textContent = student.Status || 'Active';
 
-  $('student-profile-modal').classList.add('active');
+  history.pushState(
+  { schoolDeskProfile: true, schoolDeskPage: state.page },
+  ''
+);
+
+$('student-profile-modal').classList.add('active');
   
   const contactBtn = $('contact-parent-btn');
   const phone = String(student.Phone || '').trim();
