@@ -4102,6 +4102,7 @@ document.addEventListener('touchmove', event => {
       !document.body.classList.contains('mobile-nav-open')) {
     document.body.classList.add('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    prepareDrawerBackButton();
   }
 
   mobileDrawer.style.transition = 'none';
