@@ -170,7 +170,56 @@
       .quick { padding:13px; }
       .search { max-width:none; flex:1; }
     }
-    
+    @media (max-width: 650px) {
+      /* Mobile navigation drawer */
+      #mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border: 1px solid #dce7e2;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #173b32;
+        font-size: 23px;
+        cursor: pointer;
+      }
+
+      aside {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: min(285px, 82vw);
+        height: 100dvh;
+        overflow-y: auto;
+        z-index: 1001;
+        background: #ffffff;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.14);
+        transform: translateX(-110%);
+        transition: transform 0.25s ease;
+      }
+
+      body.mobile-nav-open aside {
+        transform: translateX(0);
+      }
+
+      body.mobile-nav-open::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(15, 30, 25, 0.45);
+      }
+    }
+      @media (prefers-reduced-motion: reduce) {
+        aside {
+          transition: none;
+        }
+      }
+
 /* Student Profile — Glassmorphism */
 .profile-modal {
   position: fixed;
@@ -2831,6 +2880,7 @@
   </aside>
   <main>
     <header>
+      <button id="mobile-menu-btn" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
       <div class="crumb">St. Denis&nbsp; / &nbsp;<strong id="crumb">Dashboard</strong></div>
       <div class="profile"><div class="avatar">A</div><div><strong>Teachers</strong><small>of St. Denis</small></div></div>
     </header>
@@ -3737,47 +3787,65 @@ function renderStudentActivity() {
       : 'School days are counted from saved attendance dates, excluding recorded holidays.';
 }
  
+
 function showPage(page) {
-    state.page = page;
+  state.page = page;
 
-    if (page === 'student-activity') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  if (page === 'student-activity') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-    document.querySelectorAll('[id^="page-"]').forEach(el =>
-      el.classList.toggle('hidden', el.id !== 'page-' + page)
-    );
+  document.querySelectorAll('[id^="page-"]').forEach(el =>
+    el.classList.toggle('hidden', el.id !== 'page-' + page)
+  );
 
-    document.querySelectorAll('.nav').forEach(el =>
-      el.classList.toggle('active', el.dataset.page === page)
-    );
+  document.querySelectorAll('.nav').forEach(el =>
+    el.classList.toggle('active', el.dataset.page === page)
+  );
 
-    $('crumb').textContent = ({
-      dashboard: 'Dashboard',
-      students: 'Students',
-      classes: 'Classes',
-      attendance: 'Attendance',
-      promotion: 'Promotion',
-      reports: 'Reports',
-      'student-activity': 'Student Attendance'
-    })[page] || page;
+  $('crumb').textContent = ({
+    dashboard: 'Dashboard',
+    students: 'Students',
+    classes: 'Classes',
+    attendance: 'Attendance',
+    promotion: 'Promotion',
+    reports: 'Reports',
+    'student-activity': 'Student Attendance'
+  })[page] || page;
 
-    clearMessage();
+  clearMessage();
 
-    if (page === 'students') renderStudents();
-    if (page === 'classes') renderClasses();
-    if (page === 'attendance') populateClassSelectors();
-    if (page === 'promotion') {
-      populateClassSelectors();
-      renderPromotionStudents();
-    }
-    if (page === 'reports') renderReports();
-    if (page === 'student-activity') renderStudentActivity();
+  if (page === 'students') renderStudents();
+  if (page === 'classes') renderClasses();
+  if (page === 'attendance') populateClassSelectors();
+  if (page === 'promotion') {
+    populateClassSelectors();
+    renderPromotionStudents();
+  }
+  if (page === 'reports') renderReports();
+  if (page === 'student-activity') renderStudentActivity();
 }
 
 document.querySelectorAll('.nav').forEach(el =>
-  el.addEventListener('click', () => showPage(el.dataset.page))
+  el.addEventListener('click', () => {
+    showPage(el.dataset.page);
+
+    if (window.innerWidth <= 650) {
+      document.body.classList.remove('mobile-nav-open');
+      document.getElementById('mobile-menu-btn')
+        ?.setAttribute('aria-expanded', 'false');
+    }
+  })
 );
+
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', () => {
+    const isOpen = document.body.classList.toggle('mobile-nav-open');
+    mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+}
 
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
