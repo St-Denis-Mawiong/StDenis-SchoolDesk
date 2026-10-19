@@ -4134,12 +4134,16 @@ document.addEventListener('touchmove', event => {
 
   // Activate the open state while dragging from the edge.
 if (
-    !drawerWasOpen &&
-    !document.body.classList.contains('mobile-nav-open')
-  ) {
-    document.body.classList.add('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'true');
-  }
+  !drawerWasOpen &&
+  !document.body.classList.contains('mobile-nav-open')
+) {
+  document.body.classList.add('mobile-nav-open');
+  mobileMenuBtn.setAttribute('aria-expanded', 'true');
+
+  // Register the drawer's Back entry immediately.
+  prepareDrawerBackButton();
+}
+
 
   mobileDrawer.style.transition = 'none';
 
@@ -4193,11 +4197,9 @@ document.addEventListener('touchend', event => {
      prepareDrawerBackButton();
     
   } else if (shouldClose) {
-  closeSchoolDeskDrawer();
-
+  closeSchoolDeskDrawer(); 
   } else if (!drawerWasOpen) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    closeSchoolDeskDrawer();
   }
 }, { passive: true });
 
@@ -4208,10 +4210,11 @@ document.addEventListener('touchcancel', () => {
   mobileDrawer.style.transition = '';
   mobileDrawer.style.transform = '';
 
+ 
   if (!drawerWasOpen) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    closeSchoolDeskDrawer();
   }
+
 }, { passive: true });
 
 
