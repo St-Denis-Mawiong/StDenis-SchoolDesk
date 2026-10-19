@@ -3152,6 +3152,191 @@ header .profile small {
   }
 }
 
+/* ==================================
+   SCHOOLDESK — KHYNNAH PAGE DESIGN
+   ================================== */
+
+#page-students {
+  color: #203b30;
+}
+
+/* Students page heading */
+#page-students > .page-title {
+  align-items: center;
+  margin-bottom: 26px;
+  padding: 24px;
+  border: 1px solid #dce9e0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #edf6ef 100%);
+  box-shadow: 0 6px 20px rgba(23, 59, 50, 0.06);
+}
+
+#page-students > .page-title h1 {
+  margin: 0 0 7px;
+  color: #173b32;
+  font-size: clamp(25px, 4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+#page-students > .page-title p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Add student button */
+#page-students > .page-title .btn.primary {
+  flex-shrink: 0;
+  padding: 12px 17px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(23, 59, 50, 0.14);
+}
+
+/* Student form panel */
+#page-students #student-form-panel {
+  padding: 24px;
+  border: 1px solid #dce9e0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 28px rgba(23, 59, 50, 0.07);
+}
+
+#page-students #student-form-panel .panel-head {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e7eee9;
+}
+
+#page-students #student-form-title {
+  margin: 0;
+  color: #173b32;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+/* Search and student count */
+#page-students .toolbar {
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#page-students #student-search {
+  flex: 1;
+  min-width: 180px;
+  min-height: 46px;
+  padding: 12px 15px;
+  border: 1px solid #d8e5dc;
+  border-radius: 13px;
+  background: #f8fbf9;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+#page-students #student-search:focus {
+  outline: none;
+  border-color: #4c8b6c;
+  box-shadow: 0 0 0 3px rgba(76, 139, 108, 0.13);
+}
+
+/* Student directory panel */
+#page-students > .panel:last-child {
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid #e0e9e3;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 5px 22px rgba(23, 59, 50, 0.045);
+}
+
+/* Table */
+#page-students .table-wrap {
+  border: 1px solid #e5ece7;
+  border-radius: 13px;
+}
+
+#page-students .table-wrap table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#page-students .table-wrap thead th {
+  padding: 14px 15px;
+  background: #edf5ef;
+  color: #365d49;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.55px;
+  white-space: nowrap;
+}
+
+#page-students .table-wrap tbody td {
+  padding: 15px;
+  border-bottom: 1px solid #edf1ee;
+  vertical-align: middle;
+}
+
+#page-students .table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#page-students .table-wrap tbody tr {
+  transition: background 150ms ease;
+}
+
+#page-students .table-wrap tbody tr:hover {
+  background: #f6faf7;
+}
+
+/* Phone layout */
+@media (max-width: 600px) {
+  #page-students > .page-title {
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  #page-students > .page-title h1 {
+    font-size: 25px;
+  }
+
+  #page-students > .page-title p {
+    font-size: 12px;
+  }
+
+  #page-students > .page-title .btn.primary {
+    padding: 11px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  #page-students #student-form-panel,
+  #page-students > .panel:last-child {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  #page-students .toolbar {
+    gap: 9px;
+  }
+
+  #page-students #student-search {
+    min-width: 0;
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  #page-students .table-wrap {
+    border-radius: 10px;
+  }
+
+  #page-students .table-wrap thead th,
+  #page-students .table-wrap tbody td {
+    padding: 12px 10px;
+  }
+}
+
   </style>
 </head>
 <body>
