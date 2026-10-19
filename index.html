@@ -3943,9 +3943,6 @@ function showPage(page) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  document.querySelectorAll('[id^="page-"]').forEach(el =>
-    el.classList.toggle('hidden', el.id !== 'page-' + page)
-  );
 
   document.querySelectorAll('.nav').forEach(el =>
     el.classList.toggle('active', el.dataset.page === page)
@@ -3973,35 +3970,61 @@ function showPage(page) {
   if (page === 'reports') renderReports();
   if (page === 'student-activity') renderStudentActivity();
 }
+let schoolDeskDrawerHistory = false;
 
-document.querySelectorAll('.nav').forEach(el =>
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+// Keep an app-level history entry available.
+function ensureSchoolDeskAppBackGuard() {
+  if (!history.state || history.state.schoolDeskApp !== true) {
+    history.pushState({ schoolDeskApp: true }, '');
+  }
+}
+
+// Open the drawer.
+function openSchoolDeskDrawer() {
+  if (document.body.classList.contains('mobile-nav-open')) return;
+
+  document.body.classList.add('mobile-nav-open');
+  mobileMenuBtn?.setAttribute('aria-expanded', 'true');
+
+  prepareDrawerBackButton();
+}
+
+// Close the drawer and remove its history entry.
+function closeSchoolDeskDrawer() {
+  document.body.classList.remove('mobile-nav-open');
+  mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+
+  if (schoolDeskDrawerHistory) {
+    schoolDeskDrawerHistory = false;
+    history.back();
+  }
+}
+
+// Navigation items.
+document.querySelectorAll('.nav').forEach(el => {
   el.addEventListener('click', () => {
     showPage(el.dataset.page);
 
     if (window.innerWidth <= 650) {
-      document.body.classList.remove('mobile-nav-open');
-      document.getElementById('mobile-menu-btn')
-        ?.setAttribute('aria-expanded', 'false');
+      closeSchoolDeskDrawer();
     }
-  })
-);
+  });
+});
 
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-
+// Menu button.
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
-    const isOpen = document.body.classList.toggle('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
-
-    if (isOpen) {
-      prepareDrawerBackButton();
-    } else if (schoolDeskDrawerHistory) {
-      schoolDeskDrawerHistory = false;
-      history.back();
+    if (document.body.classList.contains('mobile-nav-open')) {
+      closeSchoolDeskDrawer();
+    } else {
+      openSchoolDeskDrawer();
     }
   });
 }
 
+// Close the drawer when clicking outside it.
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
 
@@ -4010,53 +4033,51 @@ document.addEventListener('click', event => {
   if (
     drawer &&
     !drawer.contains(event.target) &&
+    mobileMenuBtn &&
     !mobileMenuBtn.contains(event.target)
   ) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    closeSchoolDeskDrawer();
   }
 });
 
-let schoolDeskDrawerHistory = false;
-
-
+// Handle Android/browser Back.
 window.addEventListener('popstate', event => {
-  console.log('ANDROID BACK EVENT:', {
+  console.log('SCHOOLDESK BACK EVENT:', {
     state: event.state,
     drawerOpen: document.body.classList.contains('mobile-nav-open'),
     drawerHistory: schoolDeskDrawerHistory
   });
 
-  if (!document.body.classList.contains('mobile-nav-open')) {
+  if (document.body.classList.contains('mobile-nav-open')) {
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
     schoolDeskDrawerHistory = false;
-    return;
   }
 
-  document.body.classList.remove('mobile-nav-open');
-
-  if (mobileMenuBtn) {
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-  }
-
-  schoolDeskDrawerHistory = false;
+  // Restore the guard if Back moved away from the app entry.
+  ensureSchoolDeskAppBackGuard();
 });
 
+// Initialize the app-level guard.
+ensureSchoolDeskAppBackGuard();
 
+// Create a history entry when the drawer opens.
 function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
 
-  history.pushState({ schoolDeskDrawer: true }, '');
+  ensureSchoolDeskAppBackGuard();
+
+  history.pushState(
+    { schoolDeskApp: true, schoolDeskDrawer: true },
+    ''
+  );
+
   schoolDeskDrawerHistory = true;
 
-  console.log(
-    'Drawer Back entry created:',
-    schoolDeskDrawerHistory,
-    history.state
-  );
+  console.log('Drawer Back entry created:', schoolDeskDrawerHistory, history.state);
 }
-  
 
-let touchStartX = 0;
+ let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
 let touchStartTime = 0;
@@ -4172,12 +4193,7 @@ document.addEventListener('touchend', event => {
      prepareDrawerBackButton();
     
   } else if (shouldClose) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-    if (schoolDeskDrawerHistory) {
-      history.back();
-    }
+  closeSchoolDeskDrawer();
 
   } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
