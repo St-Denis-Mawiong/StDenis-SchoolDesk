@@ -4161,12 +4161,8 @@ window.addEventListener('popstate', event => {
 
 function initializeSchoolDeskPageHistory() {
   if (schoolDeskPageHistoryInitialized) return;
-
   history.replaceState(
-    schoolDeskPageState(state.page || 'dashboard'),
-    ''
-  );
-
+    schoolDeskPageState(state.page || 'dashboard'), '');
   schoolDeskPageHistoryInitialized = true;
 }
 
