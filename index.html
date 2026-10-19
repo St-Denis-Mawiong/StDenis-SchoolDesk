@@ -4118,20 +4118,27 @@ window.addEventListener('popstate', event => {
     }
   }
 
-  // Priority 3: if the page is scrolled, return to the top first.
-  if (window.scrollY > 0) {
-    history.pushState(schoolDeskPageState(state.page), '');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Priority 3: restore the previous SchoolDesk page first.
+  // Page navigation takes priority over browser scroll restoration.
+  const previousPage = event.state?.schoolDeskPage;
+
+  if (
+    event.state?.schoolDeskApp &&
+    previousPage &&
+    previousPage !== state.page
+  ) {
+    showPage(previousPage, { fromHistory: true });
     return;
   }
 
-  // Priority 4: restore the previous SchoolDesk page.
-  const previousPage = event.state?.schoolDeskPage;
-
-  if (event.state?.schoolDeskApp && previousPage) {
-    showPage(previousPage, { fromHistory: true });
+  // Priority 4: if this history entry is for the same page,
+  // return to the top before doing anything else.
+  if (window.scrollY > 0) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
   }
 });
+
 
 function initializeSchoolDeskPageHistory() {
   if (schoolDeskPageHistoryInitialized) return;
