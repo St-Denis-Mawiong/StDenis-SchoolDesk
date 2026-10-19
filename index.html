@@ -3973,7 +3973,6 @@ function showPage(page) {
   if (page === 'reports') renderReports();
   if (page === 'student-activity') renderStudentActivity();
 }
-
 document.querySelectorAll('.nav').forEach(el =>
   el.addEventListener('click', () => {
     showPage(el.dataset.page);
@@ -3991,16 +3990,15 @@ const mobileDrawer = document.querySelector('aside');
 
 // 1. Core State & History Manager
 function setDrawerOpen(isOpen) {
+  const currentlyOpen = document.body.classList.contains('mobile-nav-open');
+  if (isOpen === currentlyOpen) return;
+
   if (isOpen) {
-    if (!document.body.classList.contains('mobile-nav-open')) {
-      document.body.classList.add('mobile-nav-open');
-    }
+    document.body.classList.add('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
     
-    // Push history state if not already tracking
-    if (!history.state || !history.state.drawerOpen) {
-      history.pushState({ drawerOpen: true }, '');
-    }
+    // Always push a distinct state entry when opening
+    history.pushState({ drawerOpen: true }, '', window.location.href);
   } else {
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
@@ -4011,7 +4009,12 @@ function setDrawerOpen(isOpen) {
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.contains('mobile-nav-open');
-    setDrawerOpen(!isOpen);
+    if (isOpen) {
+      setDrawerOpen(false);
+      history.back();
+    } else {
+      setDrawerOpen(true);
+    }
   });
 }
 
@@ -4020,16 +4023,15 @@ document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
   if (mobileDrawer && !mobileDrawer.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
     setDrawerOpen(false);
-    if (history.state && history.state.drawerOpen) {
-      history.back();
-    }
+    history.back(); // Pops the state we pushed when opening
   }
 });
 
 // 4. Hardware Back Button (Popstate)
 window.addEventListener('popstate', event => {
   if (document.body.classList.contains('mobile-nav-open')) {
-    setDrawerOpen(false);
+    document.body.classList.remove('mobile-nav-open');
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 });
 
@@ -4130,9 +4132,7 @@ document.addEventListener('touchend', event => {
     setDrawerOpen(true);
   } else if (shouldClose) {
     setDrawerOpen(false);
-    if (history.state && history.state.drawerOpen) {
-      history.back();
-    }
+    history.back();
   } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
@@ -4143,8 +4143,8 @@ document.addEventListener('touchcancel', () => {
   if (!drawerTouching) return;
 
   drawerTouching = false;
-  mobileDrawer.style.transition = '';
   mobileDrawer.style.transform = '';
+  mobileDrawer.style.transition = '';
 
   if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
