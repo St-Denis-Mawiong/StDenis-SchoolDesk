@@ -3969,7 +3969,12 @@ function setDrawerOpen(isOpen) {
   if (isOpen) {
     document.body.classList.add('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    
+    if (!history.state || !history.state.drawerOpen) {
+      history.pushState({ drawerOpen: true }, '', window.location.href);
+    }
   } else {
+    // FORCE remove the class so the invisible blocking layer disappears
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
