@@ -3988,7 +3988,7 @@ document.querySelectorAll('.nav').forEach(el =>
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 let schoolDeskDrawerHistory = false;
 
-// Unified open function used by both menu click and swipe
+// Unified open function: ALWAYS pushes a history state when opening
 function openMobileDrawer() {
   if (document.body.classList.contains('mobile-nav-open')) return;
   document.body.classList.add('mobile-nav-open');
@@ -4000,7 +4000,7 @@ function openMobileDrawer() {
   }
 }
 
-// Unified close function used by backdrop clicks, back button, and swipe
+// Unified close function: Pops history if needed
 function closeMobileDrawer(popHistory = true) {
   if (!document.body.classList.contains('mobile-nav-open')) return;
   document.body.classList.remove('mobile-nav-open');
@@ -4014,6 +4014,7 @@ function closeMobileDrawer(popHistory = true) {
   }
 }
 
+// 1. Menu Button Click
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.contains('mobile-nav-open');
@@ -4025,11 +4026,10 @@ if (mobileMenuBtn) {
   });
 }
 
+// 2. Click Outside Drawer (Backdrop)
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
-
   const drawer = document.querySelector('aside');
-
   if (
     drawer &&
     !drawer.contains(event.target) &&
@@ -4039,9 +4039,10 @@ document.addEventListener('click', event => {
   }
 });
 
+// 3. Hardware / Browser Back Button
 window.addEventListener('popstate', event => {
   if (document.body.classList.contains('mobile-nav-open')) {
-    // Close the drawer without calling history.back() because popstate already triggered it
+    // Close drawer without calling history.back() because popstate already popped it
     closeMobileDrawer(false);
     // Push a neutral state so the next back press doesn't exit the app
     history.pushState(null, '');
@@ -4050,6 +4051,7 @@ window.addEventListener('popstate', event => {
   }
 });
 
+// Touch Gesture Variables
 let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
@@ -4098,9 +4100,10 @@ document.addEventListener('touchmove', event => {
   if (!drawerWasOpen && deltaX <= 0) return;
   if (drawerWasOpen && deltaX >= 0) return;
 
+  // VISUAL DRAG OPEN (History state will be locked in upon touchend if successfully opened)
   if (!drawerWasOpen && !document.body.classList.contains('mobile-nav-open')) {
-    openMobileDrawer();
-    // Temporarily remove transition during drag
+    document.body.classList.add('mobile-nav-open');
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
     mobileDrawer.style.transition = 'none';
   }
 
@@ -4145,7 +4148,9 @@ document.addEventListener('touchend', event => {
   mobileDrawer.style.transform = '';
 
   if (shouldOpen) {
-    openMobileDrawer();
+    // FORCE FULL OPEN WITH HISTORY STATE REGISTRATION
+    document.body.classList.remove('mobile-nav-open'); // reset class temporarily
+    openMobileDrawer(); // This correctly triggers pushState and sets up history tracking!
   } else if (shouldClose) {
     closeMobileDrawer(true);
   } else if (!drawerWasOpen) {
@@ -4166,7 +4171,6 @@ document.addEventListener('touchcancel', () => {
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }, { passive: true });
-
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
 
