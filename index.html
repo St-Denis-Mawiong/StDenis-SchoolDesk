@@ -3946,9 +3946,6 @@ function showPage(page) {
   document.querySelectorAll('[id^="page-"]').forEach(el =>
     el.classList.toggle('hidden', el.id !== 'page-' + page)
   );
-// 1. Initialize baseline history state to lock the app into the history stack
-history.pushState({ appLoaded: true }, '', window.location.href);
-
 document.querySelectorAll('.nav').forEach(el =>
   el.addEventListener('click', () => {
     showPage(el.dataset.page);
@@ -3964,23 +3961,18 @@ document.querySelectorAll('.nav').forEach(el =>
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileDrawer = document.querySelector('aside');
 
-// Simple, reliable drawer toggle (No history manipulation here)
+// Simple, stable drawer toggle (Zero history interference)
 function setDrawerOpen(isOpen) {
   if (isOpen) {
     document.body.classList.add('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
-    
-    if (!history.state || !history.state.drawerOpen) {
-      history.pushState({ drawerOpen: true }, '', window.location.href);
-    }
   } else {
-    // FORCE remove the class so the invisible blocking layer disappears
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }
 
-// 2. Menu Button Click
+// 1. Menu Button Click
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.contains('mobile-nav-open');
@@ -3988,24 +3980,11 @@ if (mobileMenuBtn) {
   });
 }
 
-// 3. Click Outside (Backdrop)
+// 2. Click Outside (Backdrop)
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
   if (mobileDrawer && !mobileDrawer.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
     setDrawerOpen(false);
-  }
-});
-
-// 4. Ultimate Back Button Safety Guard
-window.addEventListener('popstate', event => {
-  const isOpen = document.body.classList.contains('mobile-nav-open');
-
-  if (isOpen) {
-    // If the drawer is open, hitting back just closes the drawer
-    setDrawerOpen(false);
-  } else {
-    // If the drawer is closed, PREVENT app exit by immediately re-pushing the state
-    history.pushState({ appLoaded: true }, '', window.location.href);
   }
 });
 
