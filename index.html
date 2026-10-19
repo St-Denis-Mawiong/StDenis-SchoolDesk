@@ -3986,6 +3986,7 @@ function showPage(page, options = {}) {
 }
 
 let schoolDeskDrawerHistory = false;
+  let schoolDeskDashboardBackAt = 0;
   let schoolDeskProfileHistory = false;
 let schoolDeskPageHistoryInitialized = false;
 
@@ -4118,31 +4119,7 @@ window.addEventListener('popstate', event => {
       return;
     }
   }
-  // Dashboard: require a second Back press to exit.
-  if (state.page === 'dashboard') {
-    // If the page is scrolled, return to the top first.
-    if (window.scrollY > 0) {
-      schoolDeskDashboardBackAt = 0;
-      history.pushState(schoolDeskPageState('dashboard'), '');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    const now = Date.now();
-
-    if (now - schoolDeskDashboardBackAt < 2000) {
-      // Second Back within 2 seconds: allow normal browser exit.
-      schoolDeskDashboardBackAt = 0;
-      return;
-    }
-
-    // First Back: remain on Dashboard.
-    schoolDeskDashboardBackAt = now;
-    history.pushState(schoolDeskPageState('dashboard'), '');
-
-    toast('Back sa Shisien ban Exit');
-    return;
-  }
+ 
   // Priority 3: restore the previous SchoolDesk page first.
   // Page navigation takes priority over browser scroll restoration.
   const previousPage = event.state?.schoolDeskPage;
@@ -4162,6 +4139,25 @@ window.addEventListener('popstate', event => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
+
+  // Dashboard: require two Back presses to exit.
+  if (state.page === 'dashboard') {
+    const now = Date.now();
+
+    if (now - schoolDeskDashboardBackAt < 2000) {
+      schoolDeskDashboardBackAt = 0;
+      history.back();
+      return;
+    }
+
+    schoolDeskDashboardBackAt = now;
+
+    history.pushState(schoolDeskPageState('dashboard'), '');
+
+    toast('Press Back sa shisien ban Exit');
+    return;
+  }
+});
 });
 
 
