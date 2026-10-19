@@ -4001,9 +4001,6 @@ window.addEventListener('popstate', event => {
   } else {
     // If the drawer is closed, PREVENT app exit by immediately re-pushing the state
     history.pushState({ appLoaded: true }, '', window.location.href);
-    
-    // Optional: You can show a brief message here if you want, 
-    // e.g., showMessage("Use menu to navigate or home to exit");
   }
 });
 
