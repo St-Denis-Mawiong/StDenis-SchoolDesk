@@ -3986,6 +3986,7 @@ function showPage(page, options = {}) {
 }
 
 let schoolDeskDrawerHistory = false;
+  let schoolDeskProfileHistory = false;
 let schoolDeskPageHistoryInitialized = false;
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -4085,7 +4086,7 @@ window.addEventListener('popstate', event => {
   const profile = document.getElementById('student-profile-modal');
   const profileOpen = profile?.classList.contains('active');
 
-  // Priority 1: close the student profile first.
+     // Priority 1: close the student profile first.
   if (profileOpen) {
     profile.classList.remove('active');
 
@@ -4099,8 +4100,8 @@ window.addEventListener('popstate', event => {
     if (message) message.textContent = '';
 
     state.currentDocumentStudent = null;
+    schoolDeskProfileHistory = false;
 
-    history.pushState(schoolDeskPageState(state.page), '');
     return;
   }
 
@@ -5495,7 +5496,19 @@ if (student.PhotoURL) {
   $('profile-dob').textContent = student.DateOfBirth || '—';
   $('profile-status').textContent = student.Status || 'Active';
 
-  $('student-profile-modal').classList.add('active');
+ $('student-profile-modal').classList.add('active');
+
+if (!schoolDeskProfileHistory) {
+  ensureSchoolDeskAppBackGuard();
+
+  history.pushState({
+    schoolDeskApp: true,
+    schoolDeskProfile: true,
+    schoolDeskPage: state.page
+  }, '');
+
+  schoolDeskProfileHistory = true;
+}
   
   const contactBtn = $('contact-parent-btn');
   const phone = String(student.Phone || '').trim();
