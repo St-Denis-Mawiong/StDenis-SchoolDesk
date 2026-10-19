@@ -3936,12 +3936,23 @@ function renderStudentActivity() {
 }
  
 
-function showPage(page) {
+function showPage(page, options = {}) {
+  const previousPage = state.page;
+
+  if (page === previousPage && !options.fromHistory) return;
+
+  if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
+    if (schoolDeskDrawerHistory) {
+      history.replaceState(schoolDeskPageState(page), '');
+      schoolDeskDrawerHistory = false;
+    } else {
+      history.pushState(schoolDeskPageState(page), '');
+    }
+  }
+
   state.page = page;
 
-  if (page === 'student-activity') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
 
   document.querySelectorAll('[id^="page-"]').forEach(el =>
     el.classList.toggle('hidden', el.id !== 'page-' + page)
@@ -3973,18 +3984,25 @@ function showPage(page) {
   if (page === 'reports') renderReports();
   if (page === 'student-activity') renderStudentActivity();
 }
+
 let schoolDeskDrawerHistory = false;
+let schoolDeskPageHistoryInitialized = false;
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 
-// Keep an app-level history entry available.
+function schoolDeskPageState(page) {
+  return {
+    schoolDeskApp: true,
+    schoolDeskPage: page
+  };
+}
+
 function ensureSchoolDeskAppBackGuard() {
   if (!history.state || history.state.schoolDeskApp !== true) {
-    history.pushState({ schoolDeskApp: true }, '');
+    history.replaceState(schoolDeskPageState(state.page || 'dashboard'), '');
   }
 }
 
-// Open the drawer.
 function openSchoolDeskDrawer() {
   if (document.body.classList.contains('mobile-nav-open')) return;
 
@@ -3994,18 +4012,20 @@ function openSchoolDeskDrawer() {
   prepareDrawerBackButton();
 }
 
-// Close the drawer and remove its history entry.
 function closeSchoolDeskDrawer() {
-  document.body.classList.remove('mobile-nav-open');
-  mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+  if (!document.body.classList.contains('mobile-nav-open')) return;
 
   if (schoolDeskDrawerHistory) {
-    schoolDeskDrawerHistory = false;
+    // Let popstate finish closing the drawer so history and UI stay in sync.
     history.back();
+    return;
   }
+
+  document.body.classList.remove('mobile-nav-open');
+  mobileMenuBtn?.setAttribute('aria-expanded', 'false');
 }
 
-// Navigation items.
+
 document.querySelectorAll('.nav').forEach(el => {
   el.addEventListener('click', () => {
     showPage(el.dataset.page);
@@ -4016,7 +4036,6 @@ document.querySelectorAll('.nav').forEach(el => {
   });
 });
 
-// Menu button.
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     if (document.body.classList.contains('mobile-nav-open')) {
@@ -4027,7 +4046,6 @@ if (mobileMenuBtn) {
   });
 }
 
-// Close the drawer when clicking outside it.
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
 
@@ -4043,42 +4061,90 @@ document.addEventListener('click', event => {
   }
 });
 
-// Handle Android/browser Back.
-window.addEventListener('popstate', event => {
-  console.log('SCHOOLDESK BACK EVENT:', {
-    state: event.state,
-    drawerOpen: document.body.classList.contains('mobile-nav-open'),
-    drawerHistory: schoolDeskDrawerHistory
-  });
-
-  if (document.body.classList.contains('mobile-nav-open')) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
-    schoolDeskDrawerHistory = false;
-  }
-
-  // Restore the guard if Back moved away from the app entry.
-  ensureSchoolDeskAppBackGuard();
-});
-
-// Initialize the app-level guard.
-ensureSchoolDeskAppBackGuard();
-
-// Create a history entry when the drawer opens.
 function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
 
   ensureSchoolDeskAppBackGuard();
 
   history.pushState(
-    { schoolDeskApp: true, schoolDeskDrawer: true },
+    {
+      schoolDeskApp: true,
+      schoolDeskDrawer: true,
+      schoolDeskPage: state.page
+    },
     ''
   );
 
   schoolDeskDrawerHistory = true;
-
-  console.log('Drawer Back entry created:', schoolDeskDrawerHistory, history.state);
 }
+
+window.addEventListener('popstate', event => {
+  const drawerOpen =
+    document.body.classList.contains('mobile-nav-open');
+
+  const profile = document.getElementById('student-profile-modal');
+  const profileOpen = profile?.classList.contains('active');
+
+  // Priority 1: close the student profile first.
+  if (profileOpen) {
+    profile.classList.remove('active');
+
+    const panel = document.getElementById('student-documents-panel');
+    if (panel) panel.hidden = true;
+
+    const list = document.getElementById('student-document-list');
+    if (list) list.replaceChildren();
+
+    const message = document.getElementById('student-document-message');
+    if (message) message.textContent = '';
+
+    state.currentDocumentStudent = null;
+
+    history.pushState(schoolDeskPageState(state.page), '');
+    return;
+  }
+
+  // Priority 2: close the drawer.
+  // If its history entry was consumed, stay on the same page.
+  if (drawerOpen || schoolDeskDrawerHistory) {
+    const drawerEntryConsumed = schoolDeskDrawerHistory;
+
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+    schoolDeskDrawerHistory = false;
+
+    if (drawerEntryConsumed) {
+      return;
+    }
+  }
+
+  // Priority 3: if the page is scrolled, return to the top first.
+  if (window.scrollY > 0) {
+    history.pushState(schoolDeskPageState(state.page), '');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Priority 4: restore the previous SchoolDesk page.
+  const previousPage = event.state?.schoolDeskPage;
+
+  if (event.state?.schoolDeskApp && previousPage) {
+    showPage(previousPage, { fromHistory: true });
+  }
+});
+
+function initializeSchoolDeskPageHistory() {
+  if (schoolDeskPageHistoryInitialized) return;
+
+  history.replaceState(
+    schoolDeskPageState(state.page || 'dashboard'),
+    ''
+  );
+
+  schoolDeskPageHistoryInitialized = true;
+}
+
+initializeSchoolDeskPageHistory();
 
  let touchStartX = 0;
 let touchStartY = 0;
