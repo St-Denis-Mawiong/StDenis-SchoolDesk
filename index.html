@@ -4037,21 +4037,13 @@ function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
   history.pushState({ schoolDeskDrawer: true }, '');
   schoolDeskDrawerHistory = true;
-}
-function prepareDrawerBackButton() {
-  if (schoolDeskDrawerHistory) return;
-
-  history.pushState({ schoolDeskDrawer: true }, '');
-  schoolDeskDrawerHistory = true;
-
+  
   console.log(
     'Drawer Back entry created:',
     schoolDeskDrawerHistory,
     history.state
   );
 }
-  
-
 let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
