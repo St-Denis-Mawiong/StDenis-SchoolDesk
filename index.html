@@ -3985,73 +3985,55 @@ document.querySelectorAll('.nav').forEach(el =>
     }
   })
 );
+
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-let schoolDeskDrawerHistory = false;
+const mobileDrawer = document.querySelector('aside');
 
-// Unified open function: ALWAYS pushes a history state when opening
-function openMobileDrawer() {
-  if (document.body.classList.contains('mobile-nav-open')) return;
-  document.body.classList.add('mobile-nav-open');
-  if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
-
-  if (!schoolDeskDrawerHistory) {
-    history.pushState({ schoolDeskDrawer: true }, '');
-    schoolDeskDrawerHistory = true;
-  }
-}
-
-// Unified close function: Pops history if needed
-function closeMobileDrawer(popHistory = true) {
-  if (!document.body.classList.contains('mobile-nav-open')) return;
-  document.body.classList.remove('mobile-nav-open');
-  if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-  if (schoolDeskDrawerHistory) {
-    schoolDeskDrawerHistory = false;
-    if (popHistory) {
-      history.back();
+// 1. Core State & History Manager
+function setDrawerOpen(isOpen) {
+  if (isOpen) {
+    if (!document.body.classList.contains('mobile-nav-open')) {
+      document.body.classList.add('mobile-nav-open');
     }
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    
+    // Push history state if not already tracking
+    if (!history.state || !history.state.drawerOpen) {
+      history.pushState({ drawerOpen: true }, '');
+    }
+  } else {
+    document.body.classList.remove('mobile-nav-open');
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }
 
-// 1. Menu Button Click
+// 2. Menu Button Click
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.contains('mobile-nav-open');
-    if (isOpen) {
-      closeMobileDrawer(true);
-    } else {
-      openMobileDrawer();
-    }
+    setDrawerOpen(!isOpen);
   });
 }
 
-// 2. Click Outside Drawer (Backdrop)
+// 3. Click Outside (Backdrop)
 document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
-  const drawer = document.querySelector('aside');
-  if (
-    drawer &&
-    !drawer.contains(event.target) &&
-    !mobileMenuBtn.contains(event.target)
-  ) {
-    closeMobileDrawer(true);
+  if (mobileDrawer && !mobileDrawer.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+    setDrawerOpen(false);
+    if (history.state && history.state.drawerOpen) {
+      history.back();
+    }
   }
 });
 
-// 3. Hardware / Browser Back Button
+// 4. Hardware Back Button (Popstate)
 window.addEventListener('popstate', event => {
   if (document.body.classList.contains('mobile-nav-open')) {
-    // Close drawer without calling history.back() because popstate already popped it
-    closeMobileDrawer(false);
-    // Push a neutral state so the next back press doesn't exit the app
-    history.pushState(null, '');
-  } else {
-    schoolDeskDrawerHistory = false;
+    setDrawerOpen(false);
   }
 });
 
-// Touch Gesture Variables
+// --- Touch Gesture Variables ---
 let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
@@ -4059,8 +4041,6 @@ let touchStartTime = 0;
 let drawerTouching = false;
 let drawerWasOpen = false;
 let drawerWidth = 0;
-
-const mobileDrawer = document.querySelector('aside');
 
 document.addEventListener('touchstart', event => {
   if (window.innerWidth > 650 || !mobileDrawer) return;
@@ -4100,7 +4080,6 @@ document.addEventListener('touchmove', event => {
   if (!drawerWasOpen && deltaX <= 0) return;
   if (drawerWasOpen && deltaX >= 0) return;
 
-  // VISUAL DRAG OPEN (History state will be locked in upon touchend if successfully opened)
   if (!drawerWasOpen && !document.body.classList.contains('mobile-nav-open')) {
     document.body.classList.add('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
@@ -4148,11 +4127,12 @@ document.addEventListener('touchend', event => {
   mobileDrawer.style.transform = '';
 
   if (shouldOpen) {
-    // FORCE FULL OPEN WITH HISTORY STATE REGISTRATION
-    document.body.classList.remove('mobile-nav-open'); // reset class temporarily
-    openMobileDrawer(); // This correctly triggers pushState and sets up history tracking!
+    setDrawerOpen(true);
   } else if (shouldClose) {
-    closeMobileDrawer(true);
+    setDrawerOpen(false);
+    if (history.state && history.state.drawerOpen) {
+      history.back();
+    }
   } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
