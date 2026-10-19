@@ -3988,16 +3988,39 @@ document.querySelectorAll('.nav').forEach(el =>
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 let schoolDeskDrawerHistory = false;
 
+// Unified open function used by both menu click and swipe
+function openMobileDrawer() {
+  if (document.body.classList.contains('mobile-nav-open')) return;
+  document.body.classList.add('mobile-nav-open');
+  if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
+
+  if (!schoolDeskDrawerHistory) {
+    history.pushState({ schoolDeskDrawer: true }, '');
+    schoolDeskDrawerHistory = true;
+  }
+}
+
+// Unified close function used by backdrop clicks, back button, and swipe
+function closeMobileDrawer(popHistory = true) {
+  if (!document.body.classList.contains('mobile-nav-open')) return;
+  document.body.classList.remove('mobile-nav-open');
+  if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
+
+  if (schoolDeskDrawerHistory) {
+    schoolDeskDrawerHistory = false;
+    if (popHistory) {
+      history.back();
+    }
+  }
+}
+
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
-    const isOpen = document.body.classList.toggle('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
-
+    const isOpen = document.body.classList.contains('mobile-nav-open');
     if (isOpen) {
-      prepareDrawerBackButton();
-    } else if (schoolDeskDrawerHistory) {
-      schoolDeskDrawerHistory = false;
-      history.back();
+      closeMobileDrawer(true);
+    } else {
+      openMobileDrawer();
     }
   });
 }
@@ -4012,38 +4035,21 @@ document.addEventListener('click', event => {
     !drawer.contains(event.target) &&
     !mobileMenuBtn.contains(event.target)
   ) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    if (schoolDeskDrawerHistory) {
-      schoolDeskDrawerHistory = false;
-      history.back();
-    }
+    closeMobileDrawer(true);
   }
 });
 
 window.addEventListener('popstate', event => {
   if (document.body.classList.contains('mobile-nav-open')) {
-    document.body.classList.remove('mobile-nav-open');
-    if (mobileMenuBtn) {
-      mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    }
-    schoolDeskDrawerHistory = false;
-    // Intercept back action when drawer is open so it closes the drawer instead of exiting the app
+    // Close the drawer without calling history.back() because popstate already triggered it
+    closeMobileDrawer(false);
+    // Push a neutral state so the next back press doesn't exit the app
     history.pushState(null, '');
+  } else {
+    schoolDeskDrawerHistory = false;
   }
 });
 
-function prepareDrawerBackButton() {
-  if (schoolDeskDrawerHistory) return;
-  history.pushState({ schoolDeskDrawer: true }, '');
-  schoolDeskDrawerHistory = true;
-  
-  console.log(
-    'Drawer Back entry created:',
-    schoolDeskDrawerHistory,
-    history.state
-  );
-}
 let touchStartX = 0;
 let touchStartY = 0;
 let touchLastX = 0;
@@ -4062,7 +4068,6 @@ document.addEventListener('touchstart', event => {
   const startedInDrawer = mobileDrawer.contains(event.target);
   const startedAtLeftEdge = touch.clientX < 80;
 
-  // Only track gestures that can open or close the drawer.
   if (isOpen && !startedInDrawer) return;
   if (!isOpen && !startedAtLeftEdge) return;
 
@@ -4082,7 +4087,6 @@ document.addEventListener('touchmove', event => {
   const deltaX = touch.clientX - touchStartX;
   const deltaY = touch.clientY - touchStartY;
 
-  // Ignore vertical scrolling.
   if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
     drawerTouching = false;
     mobileDrawer.style.transform = '';
@@ -4090,28 +4094,17 @@ document.addEventListener('touchmove', event => {
     return;
   }
 
-  // Ignore tiny movements.
   if (Math.abs(deltaX) < 3) return;
-
-  // A closed drawer should only follow a rightward drag.
   if (!drawerWasOpen && deltaX <= 0) return;
-
-  // An open drawer should only follow a leftward drag.
   if (drawerWasOpen && deltaX >= 0) return;
 
-  // Activate the open state while dragging from the edge.
-if (
-    !drawerWasOpen &&
-    !document.body.classList.contains('mobile-nav-open')
-  ) {
-    document.body.classList.add('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+  if (!drawerWasOpen && !document.body.classList.contains('mobile-nav-open')) {
+    openMobileDrawer();
+    // Temporarily remove transition during drag
+    mobileDrawer.style.transition = 'none';
   }
 
-  mobileDrawer.style.transition = 'none';
-
   let offset;
-
   if (drawerWasOpen) {
     offset = Math.max(-drawerWidth, Math.min(0, deltaX));
   } else {
@@ -4133,7 +4126,6 @@ document.addEventListener('touchend', event => {
 
   drawerTouching = false;
 
-  // Ignore vertical gestures.
   if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
     mobileDrawer.style.transform = '';
     mobileDrawer.style.transition = '';
@@ -4149,27 +4141,16 @@ document.addEventListener('touchend', event => {
     deltaX < 0 &&
     (distance > drawerWidth * 0.3 || velocity > 0.5);
 
-  // Remove the temporary drag position and let CSS animate
-  // the drawer to its final open or closed position.
   mobileDrawer.style.transition = '';
   mobileDrawer.style.transform = '';
 
-   if (shouldOpen) {
-    document.body.classList.add('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'true');
-     prepareDrawerBackButton();
-    
+  if (shouldOpen) {
+    openMobileDrawer();
   } else if (shouldClose) {
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-    if (schoolDeskDrawerHistory) {
-      history.back();
-    }
-
+    closeMobileDrawer(true);
   } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }, { passive: true });
 
@@ -4182,10 +4163,9 @@ document.addEventListener('touchcancel', () => {
 
   if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }, { passive: true });
-
 
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
