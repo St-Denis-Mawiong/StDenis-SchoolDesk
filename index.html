@@ -3946,33 +3946,9 @@ function showPage(page) {
   document.querySelectorAll('[id^="page-"]').forEach(el =>
     el.classList.toggle('hidden', el.id !== 'page-' + page)
   );
+// 1. Initialize baseline history state to lock the app into the history stack
+history.pushState({ appLoaded: true }, '', window.location.href);
 
-  document.querySelectorAll('.nav').forEach(el =>
-    el.classList.toggle('active', el.dataset.page === page)
-  );
-
-  $('crumb').textContent = ({
-    dashboard: 'Dashboard',
-    students: 'Students',
-    classes: 'Classes',
-    attendance: 'Attendance',
-    promotion: 'Promotion',
-    reports: 'Reports',
-    'student-activity': 'Student Attendance'
-  })[page] || page;
-
-  clearMessage();
-
-  if (page === 'students') renderStudents();
-  if (page === 'classes') renderClasses();
-  if (page === 'attendance') populateClassSelectors();
-  if (page === 'promotion') {
-    populateClassSelectors();
-    renderPromotionStudents();
-  }
-  if (page === 'reports') renderReports();
-  if (page === 'student-activity') renderStudentActivity();
-}
 document.querySelectorAll('.nav').forEach(el =>
   el.addEventListener('click', () => {
     showPage(el.dataset.page);
@@ -3988,17 +3964,11 @@ document.querySelectorAll('.nav').forEach(el =>
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileDrawer = document.querySelector('aside');
 
-// 1. Core State & History Manager
+// Simple, reliable drawer toggle (No history manipulation here)
 function setDrawerOpen(isOpen) {
-  const currentlyOpen = document.body.classList.contains('mobile-nav-open');
-  if (isOpen === currentlyOpen) return;
-
   if (isOpen) {
     document.body.classList.add('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
-    
-    // Always push a distinct state entry when opening
-    history.pushState({ drawerOpen: true }, '', window.location.href);
   } else {
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
@@ -4009,12 +3979,7 @@ function setDrawerOpen(isOpen) {
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
     const isOpen = document.body.classList.contains('mobile-nav-open');
-    if (isOpen) {
-      setDrawerOpen(false);
-      history.back();
-    } else {
-      setDrawerOpen(true);
-    }
+    setDrawerOpen(!isOpen);
   });
 }
 
@@ -4023,15 +3988,22 @@ document.addEventListener('click', event => {
   if (!document.body.classList.contains('mobile-nav-open')) return;
   if (mobileDrawer && !mobileDrawer.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
     setDrawerOpen(false);
-    history.back(); // Pops the state we pushed when opening
   }
 });
 
-// 4. Hardware Back Button (Popstate)
+// 4. Ultimate Back Button Safety Guard
 window.addEventListener('popstate', event => {
-  if (document.body.classList.contains('mobile-nav-open')) {
-    document.body.classList.remove('mobile-nav-open');
-    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  const isOpen = document.body.classList.contains('mobile-nav-open');
+
+  if (isOpen) {
+    // If the drawer is open, hitting back just closes the drawer
+    setDrawerOpen(false);
+  } else {
+    // If the drawer is closed, PREVENT app exit by immediately re-pushing the state
+    history.pushState({ appLoaded: true }, '', window.location.href);
+    
+    // Optional: You can show a brief message here if you want, 
+    // e.g., showMessage("Use menu to navigate or home to exit");
   }
 });
 
@@ -4132,7 +4104,6 @@ document.addEventListener('touchend', event => {
     setDrawerOpen(true);
   } else if (shouldClose) {
     setDrawerOpen(false);
-    history.back();
   } else if (!drawerWasOpen) {
     document.body.classList.remove('mobile-nav-open');
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
@@ -4151,7 +4122,7 @@ document.addEventListener('touchcancel', () => {
     if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 }, { passive: true });
- function callServer(fn, args, success, failure) {
+  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
 
   const callbackName =
