@@ -3152,45 +3152,122 @@ header .profile small {
   }
 }
 
-/* ==================================
-   SCHOOLDESK — KHYNNAH PAGE DESIGN
-   ================================== */
 
-#page-students {
-  color: #203b30;
+/* Khynnah — Elegant Forest Gradient Banner */
+#page-students > .page-title {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 26px;
+  padding: 28px 30px;
+  border: 1px solid rgba(125, 183, 151, 0.24);
+  border-radius: 20px;
+  background:
+    repeating-linear-gradient(
+      132deg,
+      transparent 0px,
+      transparent 42px,
+      rgba(180, 226, 197, 0.045) 43px,
+      rgba(180, 226, 197, 0.045) 44px,
+      transparent 45px,
+      transparent 70px
+    ),
+    radial-gradient(
+      ellipse at 82% 15%,
+      rgba(49, 132, 91, 0.32),
+      transparent 45%
+    ),
+    linear-gradient(
+      115deg,
+      #071f19 0%,
+      #103d2e 38%,
+      #15553c 70%,
+      #09291f 100%
+    );
+  box-shadow:
+    0 10px 28px rgba(7, 31, 25, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Students page heading */
-#page-students > .page-title {
-  align-items: center;
-  margin-bottom: 26px;
-  padding: 24px;
-  border: 1px solid #dce9e0;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #ffffff 0%, #edf6ef 100%);
-  box-shadow: 0 6px 20px rgba(23, 59, 50, 0.06);
+/* Fine decorative linework */
+#page-students > .page-title::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -70%;
+  right: -4%;
+  width: 38%;
+  height: 240%;
+  border-left: 1px solid rgba(187, 222, 197, 0.12);
+  border-right: 1px solid rgba(187, 222, 197, 0.08);
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0px,
+    transparent 17px,
+    rgba(187, 222, 197, 0.055) 18px,
+    transparent 19px,
+    transparent 34px
+  );
+  transform: rotate(8deg);
+  pointer-events: none;
 }
 
 #page-students > .page-title h1 {
+  position: relative;
+  z-index: 1;
   margin: 0 0 7px;
-  color: #173b32;
+  color: #ffffff;
   font-size: clamp(25px, 4vw, 34px);
   font-weight: 800;
   letter-spacing: -0.8px;
 }
 
 #page-students > .page-title p {
+  position: relative;
+  z-index: 1;
   margin: 0;
+  color: #c8dfd1;
   line-height: 1.6;
 }
 
-/* Add student button */
 #page-students > .page-title .btn.primary {
+  position: relative;
+  z-index: 1;
   flex-shrink: 0;
   padding: 12px 17px;
+  border: 1px solid rgba(213, 239, 222, 0.2);
   border-radius: 12px;
+  background: linear-gradient(135deg, #27835b, #126443);
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(23, 59, 50, 0.14);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 600px) {
+  #page-students > .page-title {
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 17px;
+    border-radius: 16px;
+  }
+
+  #page-students > .page-title h1 {
+    font-size: 25px;
+  }
+
+  #page-students > .page-title p {
+    font-size: 12px;
+  }
+
+  #page-students > .page-title .btn.primary {
+    padding: 11px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 }
 
 /* Student form panel */
