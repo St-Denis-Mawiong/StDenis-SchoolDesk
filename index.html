@@ -3985,8 +3985,8 @@ document.querySelectorAll('.nav').forEach(el =>
     }
   })
 );
-
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+let schoolDeskDrawerHistory = false;
 
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
@@ -4014,34 +4014,30 @@ document.addEventListener('click', event => {
   ) {
     document.body.classList.remove('mobile-nav-open');
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    if (schoolDeskDrawerHistory) {
+      schoolDeskDrawerHistory = false;
+      history.back();
+    }
   }
 });
-
-let schoolDeskDrawerHistory = false;
-
 
 window.addEventListener('popstate', event => {
-  console.log('ANDROID BACK EVENT:', {
-    state: event.state,
-    drawerOpen: document.body.classList.contains('mobile-nav-open'),
-    drawerHistory: schoolDeskDrawerHistory
-  });
-
-  if (!document.body.classList.contains('mobile-nav-open')) {
+  if (document.body.classList.contains('mobile-nav-open')) {
+    document.body.classList.remove('mobile-nav-open');
+    if (mobileMenuBtn) {
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }
     schoolDeskDrawerHistory = false;
-    return;
+    // Intercept back action when drawer is open so it closes the drawer instead of exiting the app
+    history.pushState(null, '');
   }
-
-  document.body.classList.remove('mobile-nav-open');
-
-  if (mobileMenuBtn) {
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-  }
-
-  schoolDeskDrawerHistory = false;
 });
 
-
+function prepareDrawerBackButton() {
+  if (schoolDeskDrawerHistory) return;
+  history.pushState({ schoolDeskDrawer: true }, '');
+  schoolDeskDrawerHistory = true;
+}
 function prepareDrawerBackButton() {
   if (schoolDeskDrawerHistory) return;
 
