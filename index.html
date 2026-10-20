@@ -4670,14 +4670,14 @@ function showPage(page, options = {}) {
 
   if (page === previousPage && !options.fromHistory) return;
 
- if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
-  if (schoolDeskDrawerHistory || options.replaceHistory) {
-    history.replaceState(schoolDeskPageState(page), '');
-    schoolDeskDrawerHistory = false;
-  } else {
-    history.pushState(schoolDeskPageState(page), '');
+  if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
+    if (schoolDeskDrawerHistory) {
+      history.replaceState(schoolDeskPageState(page), '');
+      schoolDeskDrawerHistory = false;
+    } else {
+      history.pushState(schoolDeskPageState(page), '');
+    }
   }
-}
 
   state.page = page;
 
@@ -4718,7 +4718,6 @@ let schoolDeskDrawerHistory = false;
 let schoolDeskProfileHistory = false;
 let schoolDeskDashboardBackAt = 0;
 let schoolDeskPageHistoryInitialized = false;
-  let schoolDeskPendingMenuPage = null;
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 
@@ -4757,38 +4756,16 @@ function closeSchoolDeskDrawer() {
   mobileMenuBtn?.setAttribute('aria-expanded', 'false');
 }
 
+
 document.querySelectorAll('.nav').forEach(el => {
   el.addEventListener('click', () => {
-    const targetPage = el.dataset.page;
+    showPage(el.dataset.page);
 
-    // Close any open student profile and its documents.
-    const profile = document.getElementById('student-profile-modal');
-    if (profile) profile.classList.remove('active');
-
-    const panel = document.getElementById('student-documents-panel');
-    if (panel) panel.hidden = true;
-
-    const list = document.getElementById('student-document-list');
-    if (list) list.replaceChildren();
-
-    const message = document.getElementById('student-document-message');
-    if (message) message.textContent = '';
-
-    state.currentDocumentStudent = null;
-    schoolDeskProfileHistory = false;
-    schoolDeskPendingMenuPage = null;
-
-    // Close the drawer without jumping through browser history.
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
-    schoolDeskDrawerHistory = false;
-
-    // Switch pages using the current history entry.
-    showPage(targetPage, { replaceHistory: true });
+    if (window.innerWidth <= 650) {
+      closeSchoolDeskDrawer();
+    }
   });
 });
-
-
 
 if (mobileMenuBtn) {
   mobileMenuBtn.addEventListener('click', () => {
@@ -4833,38 +4810,6 @@ function prepareDrawerBackButton() {
 }
 
 window.addEventListener('popstate', event => {
-  
-  // Finish a main-page menu selection after returning
-  // to the appropriate existing history entry.
-  if (schoolDeskPendingMenuPage !== null) {
-    const targetPage = schoolDeskPendingMenuPage;
-    schoolDeskPendingMenuPage = null;
-
-    const profile = document.getElementById('student-profile-modal');
-    profile?.classList.remove('active');
-
-    const panel = document.getElementById('student-documents-panel');
-    if (panel) panel.hidden = true;
-
-    const list = document.getElementById('student-document-list');
-    if (list) list.replaceChildren();
-
-    const message = document.getElementById('student-document-message');
-    if (message) message.textContent = '';
-
-    state.currentDocumentStudent = null;
-    schoolDeskProfileHistory = false;
-
-    document.body.classList.remove('mobile-nav-open');
-    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
-    schoolDeskDrawerHistory = false;
-
-    history.replaceState(schoolDeskPageState(targetPage), '');
-
-    showPage(targetPage, { fromHistory: true });
-    return;
-  }
-
   const drawerOpen =
     document.body.classList.contains('mobile-nav-open');
 
