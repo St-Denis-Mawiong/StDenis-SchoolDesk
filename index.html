@@ -4769,8 +4769,16 @@ function openSchoolDeskDrawer() {
 function closeSchoolDeskDrawer() {
   if (!document.body.classList.contains('mobile-nav-open')) return;
 
+  // Android: close the drawer directly without browser history.
+  if (isSchoolDeskAndroidApp()) {
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+    schoolDeskDrawerHistory = false;
+    return;
+  }
+
+  // Desktop/web: preserve the existing history behavior.
   if (schoolDeskDrawerHistory) {
-    // Let popstate finish closing the drawer so history and UI stay in sync.
     history.back();
     return;
   }
