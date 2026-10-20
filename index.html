@@ -6326,5 +6326,38 @@ if (!schoolDeskProfileHistory) {
 })();
 </script>
 
+<script>
+(function () {
+  const photoInput = document.getElementById('s-photo');
+  if (!photoInput) return;
+
+  window.schoolDeskCroppedPhotoFile = null;
+
+  photoInput.addEventListener('change', async function () {
+    const selectedFile = photoInput.files &&
+      photoInput.files[0];
+
+    if (!selectedFile) return;
+
+    window.schoolDeskCroppedPhotoFile = null;
+
+    try {
+      const croppedFile =
+        await window.schoolDeskOpenPhotoCrop(selectedFile);
+
+      window.schoolDeskCroppedPhotoFile = croppedFile;
+
+    } catch (error) {
+      window.schoolDeskCroppedPhotoFile = null;
+      photoInput.value = '';
+
+      if (error.message !== 'Photo cropping cancelled.') {
+        alert(error.message || 'Could not crop this photo.');
+      }
+    }
+  });
+})();
+</script>
+
  </body>
 </html>
