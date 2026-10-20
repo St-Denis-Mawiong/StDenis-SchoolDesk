@@ -4670,14 +4670,14 @@ function showPage(page, options = {}) {
 
   if (page === previousPage && !options.fromHistory) return;
 
-  if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
-    if (schoolDeskDrawerHistory) {
-      history.replaceState(schoolDeskPageState(page), '');
-      schoolDeskDrawerHistory = false;
-    } else {
-      history.pushState(schoolDeskPageState(page), '');
-    }
+ if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
+  if (schoolDeskDrawerHistory || options.replaceHistory) {
+    history.replaceState(schoolDeskPageState(page), '');
+    schoolDeskDrawerHistory = false;
+  } else {
+    history.pushState(schoolDeskPageState(page), '');
   }
+}
 
   state.page = page;
 
@@ -4756,10 +4756,9 @@ function closeSchoolDeskDrawer() {
   mobileMenuBtn?.setAttribute('aria-expanded', 'false');
 }
 
-
 document.querySelectorAll('.nav').forEach(el => {
   el.addEventListener('click', () => {
-    showPage(el.dataset.page);
+    showPage(el.dataset.page, { replaceHistory: true });
 
     if (window.innerWidth <= 650) {
       closeSchoolDeskDrawer();
