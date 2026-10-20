@@ -5062,6 +5062,29 @@ schoolDeskStudentForm.addEventListener(
 schoolDeskStudentFormDirty = false;
   }
   function hideStudentForm() { $('student-form-panel').classList.add('hidden'); }
+  
+window.schoolDeskHandleStudentFormBack = function () {
+  const panel = document.getElementById('student-form-panel');
+
+  if (panel.classList.contains('hidden')) {
+    return 'no-student-form';
+  }
+
+  if (schoolDeskStudentFormDirty) {
+    return 'student-form-dirty';
+  }
+
+  hideStudentForm();
+  return 'student-form-closed';
+};
+
+window.schoolDeskDiscardStudentForm = function () {
+  hideStudentForm();
+  document.getElementById('student-form').reset();
+  schoolDeskStudentFormDirty = false;
+  schoolDeskStudentFormOriginal = '';
+};
+
   $('student-form').addEventListener('submit', async e => {
   e.preventDefault();
   const progressBox = document.getElementById('photo-upload-progress');
