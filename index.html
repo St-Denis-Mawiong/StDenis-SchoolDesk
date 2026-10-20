@@ -3795,9 +3795,9 @@ header .profile small {
   <!-- Summary Statistics -->
   <div class="dash-section-heading">
     <div>
-      <span class="dash-section-kicker">AT A GLANCE</span>
+      <span class="dash-section-kicker">TANG SHISIEN PEIT</span>
       <h2>School Overview</h2>
-      <p>Your school's key numbers in one place.</p>
+      <p>Baroh ki jingdonkam ki don hangne.</p>
     </div>
     <span class="dash-heading-mark" aria-hidden="true">✳</span>
   </div>
@@ -3836,7 +3836,7 @@ header .profile small {
       <div class="stat-num" id="stat-present">—</div>
       <div class="dash-stat-foot">
         <span class="dash-stat-indicator"></span>
-        Kiba Present baroh
+        Kiba Present mynta
       </div>
     </div>
 
@@ -3848,7 +3848,7 @@ header .profile small {
       <div class="stat-num" id="stat-absent">—</div>
       <div class="dash-stat-foot">
         <span class="dash-stat-indicator"></span>
-        Kiba Absent baroh
+        Kiba Absent mynta
       </div>
     </div>
 
@@ -3860,9 +3860,9 @@ header .profile small {
     <div class="panel dash-panel dash-quick-panel">
       <div class="dash-panel-heading">
         <div>
-          <span class="dash-section-kicker">YOUR SHORTCUTS</span>
-          <h2>Quick Actions</h2>
-          <p>Everything you need, just a click away.</p>
+          <span class="dash-section-kicker">KI SHORTCUTS</span>
+          <h2>Ban Pynkloi</h2>
+          <p>Ki jingdonkam jong phi, shu click</p>
         </div>
         <span class="dash-panel-heading-icon">✦</span>
       </div>
@@ -3907,13 +3907,13 @@ header .profile small {
     <div class="panel dash-panel dash-recent-panel">
       <div class="dash-panel-heading">
         <div>
-          <span class="dash-section-kicker">LATEST RECORDS</span>
-          <h2>Recent Attendance</h2>
+          <span class="dash-section-kicker">RECORDS BA DANG SHEN</span>
+          <h2>Attendance Ba dang shen</h2>
           <p>A quick look at attendance activity.</p>
         </div>
         <button class="btn dash-view-all"
                 onclick="showPage('attendance')">
-          View all <span aria-hidden="true">→</span>
+          Pyni lut <span aria-hidden="true">→</span>
         </button>
       </div>
 
@@ -3940,7 +3940,7 @@ header .profile small {
 </section>
 
       <section id="page-students" class="hidden">
-        <div class="page-title"><div><h1>Khynnah</h1><p class="muted">Hange phin manage student information bad enrollment.</p></div><button class="btn primary" onclick="showStudentForm()">＋ Add student</button></div>
+        <div class="page-title"><div><h1>Khynnah</h1><p class="muted">Hange phin manage ia ki student information bad enrollment.</p></div><button class="btn primary" onclick="showStudentForm()">＋ Add student</button></div>
         <div id="student-form-panel" class="panel form-panel hidden" style="margin-bottom:18px">
           <div class="panel-head"><h2 id="student-form-title">Add student</h2><button class="btn" onclick="hideStudentForm()">Cancel</button></div>
 <form id="student-form">
@@ -3999,26 +3999,26 @@ header .profile small {
   </div>
 
   <div class="field">
-    <label for="s-photo">Student Passport Photo</label>
+    <label for="s-photo">Dur jong khynnah</label>
     <input id="s-photo" type="file" accept="image/*">
-    <small class="muted">Choose a clear passport-size photo.</small>
+    <small class="muted">Jied da ka Passport-size ba clear.</small>
   </div>
 </div>
 
 <!-- Student Document Upload -->
 <div class="field" style="grid-column: 1 / -1;">
-  <label for="student-document-type">📁 Student Documents</label>
+  <label for="student-document-type">📁 Documents jong khynnah</label>
 
   <select id="student-document-type">
     <option value="Birth Certificate">Birth Certificate</option>
     <option value="Transfer Certificate">Transfer Certificate</option>
     <option value="Admission Form">Admission Form</option>
     <option value="Report Card">Report Card</option>
-    <option value="Other">Other</option>
+    <option value="Other">Kiwei Kiwei</option>
   </select>
 
   <label for="student-document-file" style="margin-top: 10px;">
-    Choose a document
+    Jied ia ki documents
   </label>
 
   <input
@@ -4039,7 +4039,7 @@ header .profile small {
 
 <div id="photo-upload-progress" class="hidden" style="margin: 16px 0; padding: 14px; background: #f0f7f3; border-radius: 12px;">
   <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
-    <strong id="photo-upload-title" style="color: #173b32;">Preparing photo...</strong>
+    <strong id="photo-upload-title" style="color: #173b32;">Dang load ka dur...</strong>
     <span id="photo-upload-spinner" style="color: #18865b;">●</span>
   </div>
 
@@ -4048,7 +4048,7 @@ header .profile small {
   </div>
 
   <p id="photo-upload-message" style="margin: 8px 0 0; color: #52665b; font-size: 13px;">
-    Please wait while your photo is uploaded.
+    Sngewbha ban ap katba dang upload.
   </p>
 </div>
 
@@ -4065,15 +4065,14 @@ header .profile small {
       </section>
 
       <section id="page-classes" class="hidden">
-        <div class="page-title"><div><h1>Classes</h1><p class="muted">Organise classes and their teachers.</p></div><button class="btn primary" onclick="showClassForm()">＋ Add class</button></div>
+        <div class="page-title"><div><h1>Classes</h1><p class="muted">Organise iaki class bad Nonghikai.</p></div><button class="btn primary" onclick="showClassForm()">＋ Add class</button></div>
         <div id="class-form-panel" class="panel form-panel hidden" style="margin-bottom:18px">
           <div class="panel-head"><h2>Add class</h2><button class="btn" onclick="hideClassForm()">Cancel</button></div>
           <form id="class-form">
             <div class="form-grid">
               <div class="field"><label for="c-name">Class name *</label><input id="c-name" required maxlength="100" placeholder="e.g. Class 1"></div>
               <div class="field"><label for="c-teacher">Class teacher</label><input id="c-teacher" maxlength="120" placeholder="Teacher name"></div>
-              <div class="field"><label for="c-room">Room</label><input id="c-room" maxlength="50" placeholder="e.g. Room 2"></div>
-            </div>
+              </div>
             <div class="form-actions"><button class="btn primary" type="submit">Save class</button><button class="btn" type="button" onclick="hideClassForm()">Cancel</button></div>
           </form>
         </div>
@@ -4082,7 +4081,7 @@ header .profile small {
   <div class="panel-head">
     <div>
       <h2 id="class-students-title">Class students</h2>
-      <p class="muted">Select a student to open their profile.</p>
+      <p class="muted">Shu click ia kyrteng khynnah ban peit Profile.</p>
     </div>
     <button class="btn" type="button" onclick="hideClassStudents()">Close</button>
   </div>
@@ -4154,8 +4153,8 @@ header .profile small {
     <div class="attendance-holiday-heading">
       <div class="attendance-holiday-icon" aria-hidden="true">☀</div>
       <div>
-        <h2>School Holiday</h2>
-        <p>Manage holidays for the whole school.</p>
+        <h2>Sngi Shuti</h2>
+        <p>Sngi shuti jong ka Skul jong ngi.</p>
       </div>
       <span class="attendance-holiday-tag">HOLIDAY</span>
     </div>
@@ -4234,7 +4233,7 @@ header .profile small {
 
 
       <section id="page-reports" class="hidden">
-        <div class="page-title"><div><h1>Reports</h1><p class="muted">Review attendance data stored in Google Sheets.</p></div><button class="btn" onclick="refreshData()">↻ Refresh</button></div>
+        <div class="page-title"><div><h1>Reports</h1><p class="muted">Ki attendance lah buh ha skul server.</p></div><button class="btn" onclick="refreshData()">↻ Refresh</button></div>
         <div class="stats">
           <div class="stat"><div class="stat-top">Total records</div><div class="stat-num" id="r-total">0</div><div class="stat-foot">Attendance entries</div></div>
           <div class="stat"><div class="stat-top">Present</div><div class="stat-num" id="r-present">0</div><div class="stat-foot">Present entries</div></div>
