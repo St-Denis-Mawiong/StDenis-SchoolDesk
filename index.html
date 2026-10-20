@@ -4722,8 +4722,9 @@ function updatePhotoProgress(title, message, width) {
   await new Promise(resolve =>
     requestAnimationFrame(() => resolve())
   );
-  const photoInput = $('s-photo');
-  const photoFile = photoInput.files[0];
+ const photoInput = $('s-photo');
+const photoFile =
+  window.schoolDeskCroppedPhotoFile || photoInput.files[0];
 
 const student = {
     StudentID: $('s-id').value.trim(),
