@@ -4670,16 +4670,20 @@ function showPage(page, options = {}) {
 
   if (page === previousPage && !options.fromHistory) return;
  
-  if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
-    if (schoolDeskDrawerHistory) {
-      history.replaceState(schoolDeskPageState(page), '');
-      schoolDeskDrawerHistory = false;
-    } else if (options.detailHistory) {
-      history.pushState(schoolDeskPageState(page), '');
-    } else {
-      history.replaceState(schoolDeskPageState(page), '');
-    }
+  if (
+  !isSchoolDeskAndroidApp() &&
+  !options.fromHistory &&
+  schoolDeskPageHistoryInitialized
+) {
+  if (schoolDeskDrawerHistory) {
+    history.replaceState(schoolDeskPageState(page), '');
+    schoolDeskDrawerHistory = false;
+  } else if (options.detailHistory) {
+    history.pushState(schoolDeskPageState(page), '');
+  } else {
+    history.replaceState(schoolDeskPageState(page), '');
   }
+}
 
   state.page = page;
 
@@ -4730,6 +4734,13 @@ let schoolDeskDrawerHistory = false;
 let schoolDeskProfileHistory = false;
 let schoolDeskDashboardBackAt = 0;
 let schoolDeskPageHistoryInitialized = false;
+  function isSchoolDeskAndroidApp() {
+  return !!(
+    window.SchoolDeskAndroid &&
+    typeof window.SchoolDeskAndroid.isNativeApp === 'function' &&
+    window.SchoolDeskAndroid.isNativeApp()
+  );
+}
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 
@@ -4822,6 +4833,7 @@ function prepareDrawerBackButton() {
 }
 
 window.addEventListener('popstate', event => {
+    if (isSchoolDeskAndroidApp()) return;
   const drawerOpen =
     document.body.classList.contains('mobile-nav-open');
 
@@ -4902,6 +4914,12 @@ window.addEventListener('popstate', event => {
 function initializeSchoolDeskPageHistory() {
   if (schoolDeskPageHistoryInitialized) return;
 
+  // Android Studio manages navigation inside the Android app.
+  if (isSchoolDeskAndroidApp()) {
+    schoolDeskPageHistoryInitialized = true;
+    return;
+  }
+
   history.replaceState(
     schoolDeskPageState(state.page || 'dashboard'),
     ''
@@ -4917,6 +4935,7 @@ function initializeSchoolDeskPageHistory() {
 
   schoolDeskPageHistoryInitialized = true;
 }
+
 initializeSchoolDeskPageHistory();
  function callServer(fn, args, success, failure) {
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
