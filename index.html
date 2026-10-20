@@ -4546,7 +4546,7 @@ function openStudentActivity(studentId) {
       ? currentValue
       : 'all';
 
-  showPage('student-activity');
+  showPage('student-activity', { detailHistory: true });
   renderStudentActivity();
 }
 
@@ -4669,13 +4669,15 @@ function showPage(page, options = {}) {
   const previousPage = state.page;
 
   if (page === previousPage && !options.fromHistory) return;
-
+ 
   if (!options.fromHistory && schoolDeskPageHistoryInitialized) {
     if (schoolDeskDrawerHistory) {
       history.replaceState(schoolDeskPageState(page), '');
       schoolDeskDrawerHistory = false;
-    } else {
+    } else if (options.detailHistory) {
       history.pushState(schoolDeskPageState(page), '');
+    } else {
+      history.replaceState(schoolDeskPageState(page), '');
     }
   }
 
