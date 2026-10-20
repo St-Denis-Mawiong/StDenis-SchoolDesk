@@ -4999,6 +4999,48 @@ function refreshData() {
       '<div class="activity-row"><div class="mini-avatar">'+esc(initials(a.StudentName))+'</div><div class="activity-info"><strong>'+esc(a.StudentName || a.StudentID)+'</strong><small>'+esc(a.Class)+' · '+esc(a.Date)+'</small></div><span class="pill '+esc(a.Status)+'">'+esc(a.Status)+'</span></div>'
     ).join('') : '<div class="empty">No attendance records yet.<br>Take attendance to see activity here.</div>';
   }
+  
+let schoolDeskStudentFormDirty = false;
+let schoolDeskStudentFormOpening = false;
+let schoolDeskStudentFormOriginal = '';
+
+function schoolDeskGetStudentFormValues() {
+  const form = document.getElementById('student-form');
+
+  return JSON.stringify(
+    Array.from(form.elements)
+      .filter(el => el.id && el.type !== 'button' && el.type !== 'submit')
+      .map(el => [
+        el.id,
+        el.type === 'file'
+          ? (el.files && el.files[0]
+              ? el.files[0].name + ':' + el.files[0].size
+              : '')
+          : el.value
+      ])
+  );
+}
+const schoolDeskStudentForm =
+  document.getElementById('student-form');
+
+function schoolDeskCheckStudentFormChanges() {
+  if (!document.getElementById('student-form-panel')
+      .classList.contains('hidden')) {
+    schoolDeskStudentFormDirty =
+      schoolDeskGetStudentFormValues() !==
+      schoolDeskStudentFormOriginal;
+  }
+}
+
+schoolDeskStudentForm.addEventListener(
+  'input',
+  schoolDeskCheckStudentFormChanges
+);
+
+schoolDeskStudentForm.addEventListener(
+  'change',
+  schoolDeskCheckStudentFormChanges
+);
   function showStudentForm(student) {
     $('student-form').reset();
     $('s-id').value = student ? student.StudentID || '' : '';
@@ -5014,6 +5056,10 @@ function refreshData() {
    $('student-form-panel').classList.remove('hidden');
     $('student-form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     populateClassSelectors();
+    schoolDeskStudentFormOriginal =
+  schoolDeskGetStudentFormValues();
+
+schoolDeskStudentFormDirty = false;
   }
   function hideStudentForm() { $('student-form-panel').classList.add('hidden'); }
   $('student-form').addEventListener('submit', async e => {
