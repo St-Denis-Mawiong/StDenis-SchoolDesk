@@ -4714,6 +4714,16 @@ function showPage(page, options = {}) {
   }
   if (page === 'reports') renderReports();
   if (page === 'student-activity') renderStudentActivity();
+    // Notify Android of the active SchoolDesk page.
+  if (
+    window.SchoolDeskAndroid &&
+    typeof window.SchoolDeskAndroid.onPageChanged === 'function'
+  ) {
+    window.SchoolDeskAndroid.onPageChanged(
+      page,
+      options.detailHistory === true
+    );
+  }
 }
 
 let schoolDeskDrawerHistory = false;
