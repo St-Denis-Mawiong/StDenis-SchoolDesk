@@ -4757,39 +4757,37 @@ function closeSchoolDeskDrawer() {
   mobileMenuBtn?.setAttribute('aria-expanded', 'false');
 }
 
-
 document.querySelectorAll('.nav').forEach(el => {
   el.addEventListener('click', () => {
     const targetPage = el.dataset.page;
 
-    const profileOpen = document
-      .getElementById('student-profile-modal')
-      ?.classList.contains('active');
+    // Close any open student profile and its documents.
+    const profile = document.getElementById('student-profile-modal');
+    if (profile) profile.classList.remove('active');
 
-    const detailOpen =
-      profileOpen || state.page === 'student-activity';
+    const panel = document.getElementById('student-documents-panel');
+    if (panel) panel.hidden = true;
 
-    let steps = schoolDeskDrawerHistory ? 1 : 0;
+    const list = document.getElementById('student-document-list');
+    if (list) list.replaceChildren();
 
-    if (detailOpen) {
-      steps++;
-    }
+    const message = document.getElementById('student-document-message');
+    if (message) message.textContent = '';
 
-    // Dashboard has an extra entry for the double-Back exit guard.
-    if (schoolDeskDrawerHistory && state.page === 'dashboard') {
-      steps++;
-    }
+    state.currentDocumentStudent = null;
+    schoolDeskProfileHistory = false;
+    schoolDeskPendingMenuPage = null;
 
-    if (steps > 0) {
-      schoolDeskPendingMenuPage = targetPage;
-      history.go(-steps);
-      return;
-    }
+    // Close the drawer without jumping through browser history.
+    document.body.classList.remove('mobile-nav-open');
+    mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+    schoolDeskDrawerHistory = false;
 
-    // Main-page menu navigation replaces the current entry.
+    // Switch pages using the current history entry.
     showPage(targetPage, { replaceHistory: true });
   });
 });
+
 
 
 if (mobileMenuBtn) {
