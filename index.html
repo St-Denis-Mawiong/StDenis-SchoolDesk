@@ -3414,6 +3414,322 @@ header .profile small {
   }
 }
 
+/* =========================================
+   SCHOOLDESK — CLASSES PAGE REDESIGN
+   CSS only: preserves existing functionality
+   ========================================= */
+
+#page-classes {
+  --classes-green: #173b32;
+  --classes-green-light: #285849;
+  --classes-border: rgba(31, 73, 59, 0.12);
+  --classes-shadow: 0 12px 30px rgba(20, 52, 42, 0.07);
+  color: var(--text, #24352e);
+  padding-bottom: 24px;
+}
+
+/* Page heading banner */
+#page-classes > .page-title {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border-radius: 22px;
+  color: #fff;
+  background:
+    radial-gradient(
+      ellipse at 90% 0%,
+      rgba(145, 190, 143, 0.24),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 0% 100%,
+      rgba(74, 124, 99, 0.35),
+      transparent 48%
+    ),
+    linear-gradient(125deg, #102b24 0%, #173b32 48%, #285849 100%);
+  box-shadow: 0 14px 32px rgba(17, 51, 40, 0.19);
+}
+
+#page-classes > .page-title::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 190px;
+  height: 190px;
+  right: -45px;
+  top: -95px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 48% 52% 63% 37%;
+  transform: rotate(-28deg);
+  box-shadow:
+    0 0 0 20px rgba(255, 255, 255, 0.025),
+    0 0 0 42px rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+#page-classes > .page-title h1 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+#page-classes > .page-title p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Primary buttons */
+#page-classes .btn.primary {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #356c54, #214c3c);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 5px 13px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+#page-classes .btn.primary:hover {
+  filter: brightness(1.09);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+/* Class table and student list panels */
+#page-classes > .panel {
+  overflow: hidden;
+  border: 1px solid var(--classes-border);
+  border-radius: 19px;
+  background: var(--panel, #fff);
+  box-shadow: var(--classes-shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+#page-classes > .panel:not(.hidden):hover {
+  box-shadow: 0 15px 34px rgba(20, 52, 42, 0.09);
+}
+
+/* Table wrapper */
+#page-classes .table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Table headings */
+#page-classes table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#page-classes table thead th {
+  padding: 17px 20px;
+  background: #f1f6f2;
+  color: #476457;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.85px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid #e4ece6;
+}
+
+#page-classes table tbody td {
+  padding: 17px 20px;
+  border-bottom: 1px solid #edf1ee;
+  font-size: 13px;
+  line-height: 1.6;
+  vertical-align: middle;
+  transition: background 0.15s ease;
+}
+
+#page-classes table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#page-classes table tbody tr:hover td {
+  background: #f7faf8;
+}
+
+/* Class form panel */
+#page-classes #class-form-panel {
+  border: 1px solid rgba(40, 88, 73, 0.16);
+  border-radius: 19px;
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(115, 158, 128, 0.10),
+      transparent 45%
+    ),
+    var(--panel, #fff);
+  box-shadow: var(--classes-shadow);
+}
+
+#page-classes .panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--classes-border);
+}
+
+#page-classes .panel-head h2 {
+  margin: 0;
+  color: var(--classes-green);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+#page-classes .panel-head p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Form fields */
+#page-classes #class-form {
+  padding: 22px;
+}
+
+#page-classes .form-grid {
+  gap: 18px;
+}
+
+#page-classes .field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #425b4f;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+#page-classes .field input {
+  width: 100%;
+  min-height: 45px;
+  padding: 11px 13px;
+  border: 1px solid #dce6df;
+  border-radius: 11px;
+  background: #fbfdfb;
+  color: #24352e;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+#page-classes .field input:focus {
+  border-color: #548b6e;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(65, 119, 88, 0.12);
+}
+
+#page-classes .field input::placeholder {
+  color: #9aa9a0;
+}
+
+#page-classes .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* Secondary buttons */
+#page-classes .btn:not(.primary) {
+  border-radius: 10px;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+#page-classes .btn:not(.primary):hover {
+  border-color: #b9cfc0;
+  background: #f0f6f1;
+}
+
+/* Student list panel */
+#page-classes #class-students-panel {
+  margin-top: 20px;
+}
+
+#page-classes #class-students-panel .panel-head {
+  background: linear-gradient(120deg, #f7faf7, #edf5ef);
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  #page-classes > .page-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+    padding: 23px 20px;
+    border-radius: 18px;
+  }
+
+  #page-classes > .page-title .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #page-classes > .panel {
+    border-radius: 15px;
+  }
+
+  #page-classes table thead th {
+    padding: 14px 13px;
+    font-size: 10px;
+  }
+
+  #page-classes table tbody td {
+    padding: 14px 13px;
+    font-size: 12px;
+  }
+
+  #page-classes #class-form {
+    padding: 17px;
+  }
+
+  #page-classes .panel-head {
+    padding: 17px;
+  }
+
+  #page-classes .form-actions {
+    flex-direction: column;
+  }
+
+  #page-classes .form-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-classes *,
+  #page-classes *::before,
+  #page-classes *::after {
+    transition: none !important;
+  }
+}
+
+/* End Classes page redesign */
+
   </style>
 </head>
 <body>
