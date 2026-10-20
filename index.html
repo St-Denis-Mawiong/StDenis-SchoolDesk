@@ -5896,9 +5896,39 @@ if (student.PhotoURL) {
     /[?&]id=([^&]+)/
   )?.[1];
 
-  if (photoId) {
+ 
+if (photoId) {
+  // Keep retrieved photos in memory for this app session.
+  window.schoolDeskPhotoCache =
+    window.schoolDeskPhotoCache || {};
+
+  function displayStudentPhoto(dataUrl) {
+    // Ignore the photo if another student's profile is open.
+    if (state.currentDocumentStudent !== student) return;
+
+    const photo = document.createElement('img');
+    photo.alt = student.Name || 'Student photo';
+    photo.style.width = '100%';
+    photo.style.height = '100%';
+    photo.style.objectFit = 'cover';
+    photo.style.borderRadius = 'inherit';
+
+    photo.onerror = function() {
+      avatar.textContent = initials(student.Name);
+      delete window.schoolDeskPhotoCache[photoId];
+    };
+
+    photo.src = dataUrl;
+    avatar.replaceChildren(photo);
+  }
+
+  // Reuse the photo if we have already retrieved it.
+  const cachedPhoto = window.schoolDeskPhotoCache[photoId];
+
+  if (cachedPhoto) {
+    displayStudentPhoto(cachedPhoto);
+  } else {
     callServer('getStudentPhoto', [photoId], function(result) {
-      // Ignore a delayed response if another profile was opened.
       if (state.currentDocumentStudent !== student) return;
 
       if (!result || !result.success || !result.dataUrl) {
@@ -5906,19 +5936,10 @@ if (student.PhotoURL) {
         return;
       }
 
-      const photo = document.createElement('img');
-      photo.alt = student.Name || 'Student photo';
-      photo.style.width = '100%';
-      photo.style.height = '100%';
-      photo.style.objectFit = 'cover';
-      photo.style.borderRadius = 'inherit';
+      // Store the image for future profile previews.
+      window.schoolDeskPhotoCache[photoId] = result.dataUrl;
 
-      photo.onerror = function() {
-        avatar.textContent = initials(student.Name);
-      };
-
-      photo.src = result.dataUrl;
-      avatar.replaceChildren(photo);
+      displayStudentPhoto(result.dataUrl);
     });
   }
 }
