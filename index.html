@@ -6062,5 +6062,269 @@ if (!schoolDeskProfileHistory) {
 </div> <!-- closes student-documents-section -->
 </div> <!-- closes profile-card -->
 </div> <!-- closes student-profile-modal -->
+  
+<!-- SchoolDesk Student Photo Crop Tool -->
+<div id="photo-crop-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.78); align-items:center; justify-content:center; padding:16px; box-sizing:border-box;">
+  <div style="width:100%; max-width:480px; max-height:92vh; overflow:auto; background:#ffffff; color:#183b32; border-radius:20px; padding:20px; box-sizing:border-box; box-shadow:0 20px 60px rgba(0,0,0,0.35);">
+
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px;">
+      <h2 style="margin:0; font-size:21px;">Crop Student Photo</h2>
+      <button id="photo-crop-cancel" type="button" style="border:0; background:#edf2ef; color:#173b32; border-radius:50%; width:38px; height:38px; font-size:22px; cursor:pointer;" aria-label="Cancel crop">&times;</button>
+    </div>
+
+    <p style="margin:0 0 16px; color:#65736d; font-size:14px;">
+      Adjust the photo to center the student's face.
+    </p>
+
+    <div style="width:100%; aspect-ratio:1/1; background:#17231e; border-radius:14px; overflow:hidden; position:relative;">
+      <canvas id="photo-crop-canvas" style="display:block; width:100%; height:100%; touch-action:none; cursor:grab;"></canvas>
+    </div>
+
+    <div style="margin-top:18px;">
+      <label for="photo-crop-zoom" style="display:block; font-size:14px; font-weight:600; margin-bottom:8px;">
+        Zoom photo
+      </label>
+      <input id="photo-crop-zoom" type="range" min="1" max="3" step="0.05" value="1" style="width:100%; accent-color:#173b32;">
+    </div>
+
+    <p style="font-size:12px; color:#65736d; margin:10px 0 18px;">
+      Drag the photo to reposition it. Use the slider to zoom in or out.
+    </p>
+
+    <div style="display:flex; gap:10px;">
+      <button id="photo-crop-cancel-bottom" type="button" style="flex:1; padding:13px 10px; border:1px solid #d5ded9; background:#ffffff; color:#173b32; border-radius:12px; font-weight:600; cursor:pointer;">
+        Cancel
+      </button>
+      <button id="photo-crop-save" type="button" style="flex:1; padding:13px 10px; border:0; background:#173b32; color:#ffffff; border-radius:12px; font-weight:600; cursor:pointer;">
+        Save Crop
+      </button>
+    </div>
+
+  </div>
+</div>
+<!-- End SchoolDesk Student Photo Crop Tool -->
+
+<script>
+(function () {
+  const modal = document.getElementById('photo-crop-modal');
+  const canvas = document.getElementById('photo-crop-canvas');
+  const ctx = canvas.getContext('2d');
+  const zoomInput = document.getElementById('photo-crop-zoom');
+  const saveButton = document.getElementById('photo-crop-save');
+
+  if (!modal || !canvas || !ctx || !zoomInput || !saveButton) return;
+
+  let image = null;
+  let sourceFile = null;
+  let scale = 1;
+  let minScale = 1;
+  let offsetX = 0;
+  let offsetY = 0;
+  let dragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let resolveCrop = null;
+  let rejectCrop = null;
+
+  const SIZE = 400;
+
+  function draw() {
+    if (!image) return;
+
+    canvas.width = SIZE;
+    canvas.height = SIZE;
+
+    ctx.fillStyle = '#17231e';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, SIZE, SIZE);
+    ctx.clip();
+
+    ctx.drawImage(
+      image,
+      offsetX,
+      offsetY,
+      image.width * scale,
+      image.height * scale
+    );
+
+    ctx.restore();
+  }
+
+  function fitImage() {
+    minScale = Math.max(
+      SIZE / image.width,
+      SIZE / image.height
+    );
+
+    scale = minScale;
+    offsetX = (SIZE - image.width * scale) / 2;
+    offsetY = (SIZE - image.height * scale) / 2;
+
+    zoomInput.value = '1';
+    draw();
+  }
+
+  function clampPosition() {
+    const width = image.width * scale;
+    const height = image.height * scale;
+
+    offsetX = Math.min(0, Math.max(SIZE - width, offsetX));
+    offsetY = Math.min(0, Math.max(SIZE - height, offsetY));
+  }
+
+  function openCrop(file) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith('image/')) {
+        reject(new Error('Please select a valid image.'));
+        return;
+      }
+
+      sourceFile = file;
+      resolveCrop = resolve;
+      rejectCrop = reject;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        image = new Image();
+
+        image.onload = () => {
+          modal.style.display = 'flex';
+          fitImage();
+        };
+
+        image.onerror = () => {
+          closeCrop();
+          reject(new Error('Could not open this photo.'));
+        };
+
+        image.src = reader.result;
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Could not read the selected photo.'));
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function closeCrop() {
+    modal.style.display = 'none';
+    dragging = false;
+    image = null;
+    sourceFile = null;
+    zoomInput.value = '1';
+
+    if (rejectCrop) {
+      const reject = rejectCrop;
+      resolveCrop = null;
+      rejectCrop = null;
+      reject(new Error('Photo cropping cancelled.'));
+    }
+  }
+
+  function saveCrop() {
+    if (!image || !sourceFile || !resolveCrop) return;
+
+    clampPosition();
+    draw();
+
+    const output = document.createElement('canvas');
+    output.width = SIZE;
+    output.height = SIZE;
+
+    output.getContext('2d').drawImage(canvas, 0, 0);
+
+    output.toBlob(blob => {
+      if (!blob) {
+        alert('Could not prepare the cropped photo. Please try again.');
+        return;
+      }
+
+      const originalName = sourceFile.name.replace(/\.[^.]+$/, '');
+      const croppedFile = new File(
+        [blob],
+        originalName + '-cropped.jpg',
+        { type: 'image/jpeg', lastModified: Date.now() }
+      );
+
+      const resolve = resolveCrop;
+      resolveCrop = null;
+      rejectCrop = null;
+
+      modal.style.display = 'none';
+      image = null;
+      sourceFile = null;
+
+      resolve(croppedFile);
+    }, 'image/jpeg', 0.78);
+  }
+
+  zoomInput.addEventListener('input', () => {
+    if (!image) return;
+
+    const oldScale = scale;
+    const centerX = SIZE / 2;
+    const centerY = SIZE / 2;
+
+    const imageX = (centerX - offsetX) / oldScale;
+    const imageY = (centerY - offsetY) / oldScale;
+
+    scale = minScale * Number(zoomInput.value);
+    offsetX = centerX - imageX * scale;
+    offsetY = centerY - imageY * scale;
+
+    clampPosition();
+    draw();
+  });
+
+  canvas.addEventListener('pointerdown', event => {
+    if (!image) return;
+
+    dragging = true;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    canvas.setPointerCapture(event.pointerId);
+  });
+
+  canvas.addEventListener('pointermove', event => {
+    if (!dragging || !image) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const factor = SIZE / rect.width;
+
+    offsetX += (event.clientX - lastX) * factor;
+    offsetY += (event.clientY - lastY) * factor;
+
+    lastX = event.clientX;
+    lastY = event.clientY;
+
+    clampPosition();
+    draw();
+  });
+
+  function stopDragging() {
+    dragging = false;
+  }
+
+  canvas.addEventListener('pointerup', stopDragging);
+  canvas.addEventListener('pointercancel', stopDragging);
+
+  saveButton.addEventListener('click', saveCrop);
+
+  document.getElementById('photo-crop-cancel')
+    .addEventListener('click', closeCrop);
+
+  document.getElementById('photo-crop-cancel-bottom')
+    .addEventListener('click', closeCrop);
+
+  window.schoolDeskOpenPhotoCrop = openCrop;
+})();
+</script>
+
  </body>
 </html>
