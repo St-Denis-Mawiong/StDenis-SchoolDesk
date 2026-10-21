@@ -5572,34 +5572,33 @@ function tcEscapeHtml(value) {
   });
 }
 
-function previewTC() {
-  const studentSelect = document.getElementById('tc-student');
-  const studentName = document.getElementById('tc-student-name').value.trim();
 
-  if (!studentSelect.value || !studentName) {
+function previewTC() {
+  const select = document.getElementById('tc-student');
+  const student = (state.students || []).find(s =>
+    String(s.StudentID) === String(select.value)
+  );
+
+  if (!student) {
     alert('Please select a student first.');
     return;
   }
 
-  const checkedReasons = Array.from(
-    document.querySelectorAll('input[name="tc-reason"]:checked')
-  ).map(box => box.value);
+  const gender = String(student.Gender || '').trim().toLowerCase();
+  const female = ['female', 'f', 'girl'].includes(gender);
+
+  const pronoun = female ? 'She' : 'He';
+  const possessive = female ? 'Her' : 'His';
+  const childWord = female ? 'daughter' : 'son';
 
   const fields = {
-    name: studentName,
-    gender: (
-  (state.students || []).find(s =>
-    String(s.StudentID) === String(studentSelect.value)
-    )?.Gender || ''
-    ).trim(),
-    father: document.getElementById('tc-father-name').value,
-    mother: document.getElementById('tc-mother-name').value,
+    name: student.Name || '',
+    mother: student.Guardian ||
+      document.getElementById('tc-mother-name').value || '',
     address: document.getElementById('tc-address').value,
-    dob: document.getElementById('tc-dob').value,
-    admissionNo: document.getElementById('tc-admission-number').value,
-    admissionDate: document.getElementById('tc-admission-date').value,
-    lastClass: document.getElementById('tc-last-class').value,
-    academicYear: document.getElementById('tc-academic-year').value,
+    dob: document.getElementById('tc-dob').value ||
+      student.DateOfBirth || '',
+    lastClass: student.Class || '',
     leavingDate: document.getElementById('tc-leaving-date').value,
     fees: document.getElementById('tc-fees-paid').value,
     fines: document.getElementById('tc-fines-character').value,
@@ -5607,13 +5606,19 @@ function previewTC() {
   };
 
   const safe = value => tcEscapeHtml(value || '');
-  const blank = value => safe(value) || '................................';
+  const blank = value => safe(value) ||
+    '................................................';
+
+  const checkedReasons = Array.from(
+    document.querySelectorAll('input[name="tc-reason"]:checked')
+  ).map(box => box.value);
 
   function reasonLine(reason) {
-    const selected = checkedReasons.includes(reason);
-    return '<span class="reason-item">' +
-      '<span class="check">' + (selected ? '✓' : '&nbsp;') + '</span> ' +
-      safe(reason) + '</span>';
+    const checked = checkedReasons.includes(reason);
+
+    return '<div class="reason-item"><span class="check">' +
+      (checked ? '&#10003;' : '&nbsp;') +
+      '</span>' + safe(reason) + '</div>';
   }
 
   function certificate() {
@@ -5625,51 +5630,38 @@ function previewTC() {
           <h1>TRANSFER CERTIFICATE</h1>
         </header>
 
-        <div class="number-line">
-          <span>Admission Register No.: <b>${blank(fields.admissionNo)}</b></span>
-          <span>TC No.: <b>________________</b></span>
-        </div>
-
         <p class="opening">
-          Certified that <b>${blank(fields.name)}</b>, son/daughter of
-          <b>${blank(fields.father)}</b> and <b>${blank(fields.mother)}</b>,
-          residing at <b>${blank(fields.address)}</b>, was a student of
-          this school.
+          This is to certify that <b>${blank(fields.name)}</b>,
+          ${childWord} of <b>${blank(fields.mother)}</b>,
+          residing at <b>${blank(fields.address)}</b>, was a student
+          of this school.
         </p>
 
-        <div class="statement">
-          <span class="serial">1.</span>
-          <span>His/Her date of birth, according to the Admission Register,
-          is <b>${blank(fields.dob)}</b>.</span>
-        </div>
+        <p class="statement">
+          ${possessive} date of birth, according to the school records,
+          is <b>${blank(fields.dob)}</b>.
+        </p>
 
-        <div class="statement">
-          <span class="serial">2.</span>
-          <span>He/She was admitted to this school on
-          <b>${blank(fields.admissionDate)}</b> and studied in
-          <b>${blank(fields.lastClass)}</b> during the academic year
-          <b>${blank(fields.academicYear)}</b>.</span>
-        </div>
+        <p class="statement">
+          ${pronoun} was studying in Class
+          <b>${blank(fields.lastClass)}</b>.
+          ${pronoun} left the school on
+          <b>${blank(fields.leavingDate)}</b>.
+        </p>
 
-        <div class="statement">
-          <span class="serial">3.</span>
-          <span>The date on which he/she left the school was
-          <b>${blank(fields.leavingDate)}</b>.</span>
-        </div>
+        <p class="statement">
+          The school dues have been
+          <b>${safe(fields.fees) === 'Yes' ? 'paid' :
+            safe(fields.fees) === 'No' ? 'not paid' :
+            safe(fields.fees) || '................................'}</b>.
+        </p>
 
-        <div class="statement">
-          <span class="serial">4.</span>
-          <span>School dues are:
-          <b>${safe(fields.fees) || '................................'}</b>.</span>
-        </div>
+        <p class="statement">
+          <b>Fines and Character:</b>
+          ${blank(fields.fines)}
+        </p>
 
-        <div class="statement">
-          <span class="serial">5.</span>
-          <span>Fines and character:
-          <b>${blank(fields.fines)}</b>.</span>
-        </div>
-
-        <div class="reason-heading">REASON FOR LEAVING</div>
+        <div class="reason-heading">Reason for Leaving</div>
         <div class="reason-list">
           ${reasonLine("Parent's request")}
           ${reasonLine('Transfer')}
@@ -5678,19 +5670,20 @@ function previewTC() {
         </div>
 
         <p class="remarks">
-          <b>Remarks:</b> ${safe(fields.remarks) || '........................................................'}
+          <b>Remarks:</b> ${safe(fields.remarks) ||
+            '........................................................'}
         </p>
 
         <p class="certification">
-          I certify that the particulars given above are correct according
-          to the school records.
+          Certified that the particulars stated above are true
+          according to the school records.
         </p>
 
-        <footer class="signatures">
+        <footer class="signature-row">
           <div>Date: __________________</div>
-          <div class="head-sign">
-            __________________________<br>
-            <b>Headmaster</b>
+          <div class="signature">
+            ______________________<br>
+            Headmaster
           </div>
         </footer>
       </article>
@@ -5720,9 +5713,11 @@ function previewTC() {
 
   body {
     margin: 0;
+    font-family: "Times New Roman", serif;
+    font-size: 12px;
+    line-height: 1.45;
     color: #111;
     background: #eee;
-    font-family: "Times New Roman", serif;
   }
 
   .preview-toolbar {
@@ -5734,7 +5729,7 @@ function previewTC() {
   }
 
   .preview-toolbar button {
-    padding: 9px 18px;
+    padding: 8px 16px;
     margin-left: 8px;
     cursor: pointer;
   }
@@ -5749,10 +5744,8 @@ function previewTC() {
   }
 
   .certificate {
-    padding: 5mm 6mm;
+    padding: 7mm;
     min-width: 0;
-    font-size: 11px;
-    line-height: 1.42;
     border: 1px solid #555;
     overflow-wrap: anywhere;
   }
@@ -5764,77 +5757,61 @@ function previewTC() {
   .school-header {
     text-align: center;
     border-bottom: 1px solid #222;
-    padding-bottom: 6px;
+    padding-bottom: 8px;
   }
 
   .school-name {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: bold;
-    text-transform: uppercase;
   }
 
   .school-address {
     font-size: 12px;
-    margin-top: 2px;
+    margin-top: 3px;
   }
 
   h1 {
-    font-size: 16px;
-    margin: 8px 0 0;
+    font-size: 17px;
+    margin: 10px 0 0;
     text-decoration: underline;
     letter-spacing: 1px;
   }
 
-  .number-line {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 9px;
-    font-size: 10px;
-  }
-
   .opening {
+    margin-top: 18px;
     text-align: justify;
-    margin: 11px 0 9px;
   }
 
   .statement {
-    display: flex;
-    gap: 7px;
-    margin: 7px 0;
+    margin: 13px 0;
     text-align: justify;
   }
 
-  .serial {
-    min-width: 14px;
-    font-weight: bold;
-  }
-
   .reason-heading {
+    margin-top: 16px;
     font-weight: bold;
     text-decoration: underline;
-    margin-top: 10px;
   }
 
   .reason-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px 8px;
-    margin-top: 5px;
+    gap: 9px;
+    margin-top: 8px;
   }
 
   .reason-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
   }
 
   .check {
     display: inline-flex;
+    width: 13px;
+    height: 13px;
     align-items: center;
     justify-content: center;
-    width: 12px;
-    height: 12px;
     border: 1px solid #222;
     font-family: Arial, sans-serif;
     font-size: 10px;
@@ -5842,24 +5819,24 @@ function previewTC() {
   }
 
   .remarks {
-    margin-top: 10px;
+    margin-top: 17px;
   }
 
   .certification {
-    margin-top: 10px;
+    margin-top: 17px;
     text-align: justify;
   }
 
-  .signatures {
+  .signature-row {
     display: flex;
     justify-content: space-between;
     align-items: end;
-    margin-top: 20px;
+    margin-top: 28px;
   }
 
-  .head-sign {
-    text-align: center;
+  .signature {
     min-width: 125px;
+    text-align: center;
   }
 
   @media print {
@@ -5872,15 +5849,13 @@ function previewTC() {
       min-height: 194mm;
     }
 
-    .certificate {
-      break-inside: avoid;
-    }
+    .certificate { break-inside: avoid; }
   }
 </style>
 </head>
 <body>
   <div class="preview-toolbar">
-    PREVIEW ONLY — Certificate not issued.
+    PREVIEW ONLY — Not yet issued.
     <button onclick="window.print()">Print / Save PDF</button>
     <button onclick="window.close()">Close Preview</button>
   </div>
