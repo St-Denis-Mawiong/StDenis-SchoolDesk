@@ -4702,6 +4702,15 @@ header .profile small {
         <label for="tc-last-class">Last Class Attended</label>
         <input id="tc-last-class" readonly>
       </div>
+      
+<div class="field">
+  <label for="tc-decision">Examination Decision</label>
+  <select id="tc-decision">
+    <option value="Passed">Passed</option>
+    <option value="Failed">Failed</option>
+  </select>
+</div>
+
       <div class="field">
         <label for="tc-dob">Date of Birth</label>
         <input type="date" id="tc-dob">
@@ -5598,7 +5607,8 @@ const female = [
     student.Class || '';
   const leavingDate =
     document.getElementById('tc-leaving-date').value || '';
-
+  const decision =
+  document.getElementById('tc-decision').value;
   const fees = document.getElementById('tc-fees-paid').value;
   const fines = fees === 'Yes' ? 'None' : 'Please verify';
   const character = 'Good';
@@ -5650,11 +5660,14 @@ const female = [
           ${formatDate(leavingDate)}. ${possessive.charAt(0).toUpperCase() +
           possessive.slice(1)} date of birth according to the
           Admission Register is ${formatDate(dob)}.
-          ${pronoun} was reading in Class ${escTC(lastClass)}
-          and had passed the examination for promotion to
-          Class ${escTC(
-            document.getElementById('tc-next-class')?.value || ''
-          ) || '................'}.
+         ${pronoun} was reading in Class ${escTC(lastClass)}
+        and ${decision === 'Passed'
+        ? 'had passed'
+        : 'had not passed'} the examination for promotion to
+        Class ${escTC(
+        document.getElementById('tc-next-class')?.value || ''
+      ) || '................'}.
+
         </div>
 
         <div class="tc-fees">
@@ -5761,13 +5774,12 @@ const female = [
         font-weight: bold;
         font-family: "Old English Text MT", "Old English", serif;
         font-size: 26px;
-        text-decoration: underline;
         margin: 20px 0 10px;
       }
         
         .tc-paragraph {
           text-align: left;
-          line-height: 2.45;
+          line-height: 2.01;
           overflow-wrap: break-word;
         }
 
