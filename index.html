@@ -5478,9 +5478,11 @@ const student = {
     DateOfBirth: $('s-dob').value,
     Guardian: $('s-guardian').value.trim(),
     Phone: $('s-phone').value.trim(),
-   Status: editingStudentId
-  ? (state.students.find(s => String(s.StudentID) === String(editingStudentId))?.Status || 'Active')
-  : 'Active',
+  Status: (
+  state.students.find(
+    s => String(s.StudentID) === String($('s-id').value.trim())
+  )?.Status || 'Active'
+),
   PhotoURL: (state.students.find(s => String(s.StudentID) === String($('s-id').value)) || {}).PhotoURL || ''
   };
 
