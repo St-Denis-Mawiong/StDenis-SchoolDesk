@@ -5121,7 +5121,24 @@ window.schoolDeskDiscardStudentForm = function () {
   schoolDeskStudentFormDirty = false;
   schoolDeskStudentFormOriginal = '';
 };
+function handleStudentFormCancel() {
+  if (!schoolDeskStudentFormDirty) {
+    hideStudentForm();
+    return;
+  }
 
+  if (
+    window.SchoolDeskAndroid &&
+    typeof window.SchoolDeskAndroid.onStudentFormCancel === 'function'
+  ) {
+    window.SchoolDeskAndroid.onStudentFormCancel();
+    return;
+  }
+
+  if (confirm('You have unsaved changes. Discard them?')) {
+    window.schoolDeskDiscardStudentForm();
+  }
+}
   $('student-form').addEventListener('submit', async e => {
   e.preventDefault();
   const progressBox = document.getElementById('photo-upload-progress');
