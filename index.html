@@ -4707,7 +4707,6 @@ header .profile small {
         <input type="date" id="tc-dob">
       </div>
     </div>
-
    
 <div class="toolbar">
   <div class="field">
@@ -5528,7 +5527,7 @@ function clearTCForm() {
   fillTCStudentDetails();
 
   document.getElementById('tc-leaving-date').value = '';
-    document.getElementById('tc-mother-name').value = '';
+  document.getElementById('tc-mother-name').value = '';
   document.getElementById('tc-address').value = '';
    document.getElementById('tc-fees-paid').value = 'Yes';
   document.getElementById('tc-fines-character').value = '';
@@ -5552,9 +5551,9 @@ function tcEscapeHtml(value) {
 
 
 
+
 function previewTC() {
   const select = document.getElementById('tc-student');
-
   const student = (state.students || []).find(s =>
     String(s.StudentID) === String(select.value)
   );
@@ -5567,61 +5566,27 @@ function previewTC() {
   const gender = String(student.Gender || '').trim().toLowerCase();
   const female = ['female', 'f', 'girl'].includes(gender);
 
+  const child = female ? 'Daughter' : 'Son';
   const pronoun = female ? 'She' : 'He';
-  const possessive = female ? 'Her' : 'His';
-  const childWord = female ? 'Daughter' : 'Son';
-  const himHer = female ? 'her' : 'him';
-
-  function safe(value) {
-    return typeof esc === 'function'
-      ? esc(String(value ?? ''))
-      : String(value ?? '').replace(/[&<>"']/g, ch => ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        }[ch]));
-  }
-
-  function formatDate(value) {
-    if (!value) return '........................';
-
-    const parts = String(value).split('-');
-    if (parts.length === 3) {
-      return parts[2] + '/' + parts[1] + '/' + parts[0];
-    }
-
-    return value;
-  }
+  const possessive = female ? 'her' : 'his';
 
   const name = student.Name || '';
-  const mother = student.Guardian ||
-    document.getElementById('tc-mother-name').value || '';
+  const mother =
+    student.Guardian ||
+    document.getElementById('tc-mother-name').value ||
+    '';
   const address = document.getElementById('tc-address').value || '';
   const dob = document.getElementById('tc-dob').value ||
     student.DateOfBirth || '';
-  const lastClass = student.Class || '';
+  const lastClass =
+    document.getElementById('tc-last-class').value ||
+    student.Class || '';
   const leavingDate =
     document.getElementById('tc-leaving-date').value || '';
 
   const fees = document.getElementById('tc-fees-paid').value;
-  const finesCharacter =
-    document.getElementById('tc-fines-character').value.trim();
-  const remarks =
-    document.getElementById('tc-remarks').value.trim();
-
-  const selectedReasons = Array.from(
-    document.querySelectorAll('input[name="tc-reason"]:checked')
-  ).map(box => box.value);
-
-  // Match the existing form choices to the original certificate choices.
-  const reasonMap = {
-    "Transfer": "Unavoidable change of residence",
-    "Completion of studies": "Completion of the School Course",
-    "Parent's request": "Minor Reasons",
-    "Other": "Minor Reasons"
-  };
+  const fines = fees === 'Yes' ? 'None' : 'Please verify';
+  const character = 'Good';
 
   const reasons = [
     'Unavoidable change of residence',
@@ -5630,90 +5595,109 @@ function previewTC() {
     'Minor Reasons'
   ];
 
-  const checkedReasons = selectedReasons.map(reason =>
-    reasonMap[reason] || reason
-  );
+  const checkedReasons = Array.from(
+    document.querySelectorAll('input[name="tc-reason"]:checked')
+  ).map(box => box.value);
 
-  function makeCertificate() {
+  function escTC(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[ch]);
+  }
+
+  function formatDate(value) {
+    if (!value) return '........................';
+    const parts = value.split('-');
+    if (parts.length !== 3) return escTC(value);
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+
+  function certificate() {
     return `
-      <div class="certificate">
-        <div class="school-name">ST. DENIS SECONDARY SCHOOL</div>
-        <div class="school-address">
-          MAWIONG UMJAPUNG, SHILLONG - 793016
+      <article class="tc-copy">
+        <header class="tc-school">
+          <div class="tc-school-name">ST. DENIS SECONDARY SCHOOL</div>
+          <div class="tc-address">
+            MAWIONG UMJAPUNG, SHILLONG - 793016
+          </div>
+        </header>
+
+        <div class="tc-heading">Transfer Certificate</div>
+
+        <div class="tc-paragraph">
+          CERTIFIED that ${escTC(name)}
+          ${child} of ${escTC(mother)}, an inhabitant of
+          ${escTC(address)}. Left the school on
+          ${formatDate(leavingDate)}. ${possessive.charAt(0).toUpperCase() +
+          possessive.slice(1)} date of birth according to the
+          Admission Register is ${formatDate(dob)}.
+          ${pronoun} was reading in Class ${escTC(lastClass)}
+          and had passed the examination for promotion to
+          Class ${escTC(
+            document.getElementById('tc-next-class')?.value || ''
+          ) || '................'}.
         </div>
 
-        <div class="certificate-title">Transfer Certificate</div>
+        <div class="tc-fees">
+          All sums due by ${female ? 'her' : 'him'} have been paid,
+          viz, fees up to December
+        </div>
 
-        <div class="certificate-body">
-          <p>
-            CERTIFIED that <strong>${safe(name)}</strong>
-            ${childWord} of <strong>${safe(mother)}</strong>
-            an inhabitant of <strong>${safe(address)}</strong>.
-            ${pronoun} left the school on
-            <strong>${safe(formatDate(leavingDate))}</strong>.
-            ${possessive} date of birth according to the Admission
-            Register is <strong>${safe(formatDate(dob))}</strong>.
-            ${pronoun} was reading in Class
-            <strong>${safe(lastClass)}</strong> has passed the
-            examination for promotion to .
-          </p>
+        <div class="tc-result"><strong>Fines : ${fines}</strong></div>
+        <div class="tc-result"><strong>Character : ${character}</strong></div>
 
-          <p class="dues">
-            All Sums due by ${himHer} have been
-            ${fees === 'No' ? 'not ' : ''}paid, viz. fees up to December.
-          </p>
-
-          <p class="detail-line">
-            <strong>Fines :</strong>
-            ${safe(finesCharacter || 'None')}
-          </p>
-
-          <p class="detail-line">
-            <strong>Character :</strong>
-            ${safe(remarks || 'Good')}
-          </p>
-
-          <div class="reason-heading"><em>Reason for Leaving :-</em></div>
-
-          <div class="reason-list">
-            ${reasons.map(reason => `
-              <div class="reason-option">
-                <span class="check-box">${
-                  checkedReasons.includes(reason) ? '&#10003;' : ''
-                }</span>
-                <span>${safe(reason)}</span>
-              </div>
-            `).join('')}
-          </div>
-
-          <div class="signature-area">
-            <div class="date-line">
-              <strong><em>Date :</em></strong>
-            </div>
-            <div class="headmaster"><em>Headmaster</em></div>
+        <div class="tc-reasons">
+          <div class="tc-reason-title">Reason for Leaving :-</div>
+          <div class="tc-reason-options">
+            ${reasons.map((reason, index) => {
+              const selected = checkedReasons.includes(reason) ||
+                checkedReasons.includes([
+                  "Parent's request",
+                  'Transfer',
+                  'Completion of studies',
+                  'Other'
+                ][index]);
+              return `
+                <div class="tc-reason">
+                  <span class="tc-checkbox">${selected ? '&#10003;' : ''}</span>
+                  <span>${reason}</span>
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
-      </div>
+
+        <div class="tc-date">
+          <strong><em>Date :</em></strong>
+          ${formatDate(leavingDate)}
+        </div>
+
+        <div class="tc-signature"><strong><em>Headmaster</em></strong></div>
+      </article>
     `;
   }
 
-  const preview = window.open('', '_blank');
+  const printWindow = window.open('', '_blank');
 
-  if (!preview) {
-    alert('Please allow pop-ups for SchoolDesk to preview the certificate.');
+  if (!printWindow) {
+    alert('Please allow pop-ups to preview the certificate.');
     return;
   }
 
-  preview.document.open();
-  preview.document.write(`<!DOCTYPE html>
+  printWindow.document.write(`
+    <!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>Transfer Certificate Preview</title>
+      <title>Transfer Certificate</title>
       <style>
         @page {
           size: A4 landscape;
-          margin: 0.25in;
+          margin: 8mm;
         }
 
         * {
@@ -5722,158 +5706,141 @@ function previewTC() {
 
         body {
           margin: 0;
-          color: #111;
-          background: #fff;
-          font-family: "Times New Roman", Times, serif;
+          color: #000;
+          font-family: "Times New Roman", serif;
+          font-size: 11px;
         }
 
-        .print-toolbar {
-          padding: 12px;
-          text-align: center;
-          font-family: Arial, sans-serif;
-        }
-
-        .print-toolbar button {
-          padding: 9px 18px;
-          margin: 0 5px;
-          border: 0;
-          border-radius: 4px;
-          background: #173b32;
-          color: white;
-          cursor: pointer;
-        }
-
-        .certificates {
+        .tc-sheet {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 0.12in;
+          column-gap: 5mm;
           width: 100%;
         }
 
-        .certificate {
+        .tc-copy {
+          position: relative;
           min-width: 0;
-          padding: 0;
-          page-break-inside: avoid;
-          break-inside: avoid;
-          font-size: 10pt;
-          line-height: 1.22;
+          height: 190mm;
+          overflow: hidden;
         }
 
-        .school-name {
+        .tc-school {
           text-align: center;
           font-family: Arial, sans-serif;
-          font-size: 14pt;
-          font-weight: bold;
-          line-height: 1.15;
-          white-space: nowrap;
         }
 
-        .school-address {
+        .tc-school-name {
+          font-size: 17px;
+          font-weight: bold;
+          line-height: 1.2;
+        }
+
+        .tc-address {
+          font-size: 11px;
           margin-top: 3px;
-          text-align: center;
-          font-family: Arial, sans-serif;
-          font-size: 9pt;
         }
 
-        .certificate-title {
-          margin: 19px 0 12px;
+        .tc-heading {
           text-align: center;
-          font-size: 11pt;
           font-weight: bold;
+          text-decoration: underline;
+          margin: 20px 0 10px;
         }
 
-        .certificate-body p {
-          margin: 0 0 10px;
+        .tc-paragraph {
           text-align: left;
+          line-height: 1.45;
+          overflow-wrap: break-word;
         }
 
-        .certificate-body .dues {
-          margin-top: 14px;
-          margin-bottom: 10px;
+        .tc-fees {
+          text-align: center;
+          margin-top: 12px;
+          margin-bottom: 12px;
+          line-height: 1.4;
         }
 
-        .certificate-body .detail-line {
-          margin-bottom: 6px;
-          font-size: 10.5pt;
+        .tc-result {
+          margin-top: 5px;
+          font-size: 12px;
         }
 
-        .reason-heading {
-          margin-top: 14px;
-          margin-bottom: 5px;
+        .tc-reasons {
+          display: grid;
+          grid-template-columns: 120px 1fr;
+          margin-top: 15px;
+          align-items: start;
         }
 
-        .reason-list {
-          margin-left: 1.5in;
-          font-size: 9pt;
+        .tc-reason-title {
+          font-style: italic;
         }
 
-        .reason-option {
+        .tc-reason-options {
+          padding-top: 12px;
+        }
+
+        .tc-reason {
           display: flex;
           align-items: center;
-          gap: 4px;
-          min-height: 17px;
-          white-space: nowrap;
+          gap: 5px;
+          margin-bottom: 6px;
         }
 
-        .check-box {
+        .tc-checkbox {
           display: inline-flex;
-          align-items: center;
-          justify-content: center;
           width: 12px;
           height: 12px;
-          border: 1px solid #333;
-          font-family: Arial, sans-serif;
+          border: 1px solid #000;
+          align-items: center;
+          justify-content: center;
           font-size: 10px;
           flex-shrink: 0;
         }
 
-        .signature-area {
-          position: relative;
-          height: 58px;
-          margin-top: 20px;
-        }
-
-        .date-line {
+        .tc-date {
           position: absolute;
           left: 0;
-          top: 0;
+          bottom: 32mm;
         }
 
-        .headmaster {
+        .tc-signature {
           position: absolute;
-          right: 12px;
-          bottom: 0;
-          font-size: 11pt;
-          font-weight: bold;
+          right: 12mm;
+          bottom: 21mm;
+          font-size: 12px;
         }
 
-        @media print {
-          .print-toolbar {
-            display: none;
+        @media screen {
+          body {
+            padding: 10px;
           }
-
-          .certificates {
-            gap: 0.12in;
+          .tc-copy {
+            border: 1px dashed #bbb;
+            padding: 5px;
           }
         }
       </style>
     </head>
     <body>
-      <div class="print-toolbar">
-        <button onclick="window.print()">Print / Save as PDF</button>
-        <button onclick="window.close()">Close Preview</button>
-      </div>
-
-      <div class="certificates">
-        ${makeCertificate()}
-        ${makeCertificate()}
-      </div>
+      <main class="tc-sheet">
+        ${certificate()}
+        ${certificate()}
+      </main>
+      <script>
+        window.onload = function() {
+          setTimeout(function() {
+            window.print();
+          }, 300);
+        };
+      <\/script>
     </body>
-    </html>`);
-  preview.document.close();
+    </html>
+  `);
+
+  printWindow.document.close();
 }
-
-
   function renderDashboard() {
     const date = today();
     const todays = state.attendance.filter(a=>a.Date===date);
