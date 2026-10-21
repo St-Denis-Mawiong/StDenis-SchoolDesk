@@ -3730,6 +3730,305 @@ header .profile small {
 
 /* End Classes page redesign */
 
+/* ========================================
+   SCHOOLDESK — REPORTS PAGE REDESIGN
+   Scoped to Reports only
+======================================== */
+
+#page-reports {
+  --report-green: #173b32;
+  --report-green-light: #285849;
+  --report-border: #e2ebe6;
+  --report-muted: #718279;
+}
+
+/* Page heading */
+#page-reports > .page-title {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 28px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  color: #fff;
+  background:
+    radial-gradient(
+      circle at 92% 10%,
+      rgba(190, 225, 201, .20),
+      transparent 28%
+    ),
+    linear-gradient(125deg, #173b32 0%, #285849 58%, #39745b 100%);
+  box-shadow: 0 10px 28px rgba(23, 59, 50, .13);
+}
+
+#page-reports > .page-title::after {
+  content: "";
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  right: -48px;
+  bottom: -125px;
+  border: 1px solid rgba(255,255,255,.17);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 18px rgba(255,255,255,.035),
+    0 0 0 38px rgba(255,255,255,.025);
+  pointer-events: none;
+}
+
+#page-reports > .page-title h1 {
+  color: #fff;
+  font-size: clamp(23px, 3vw, 29px);
+  font-weight: 750;
+  letter-spacing: -.6px;
+  margin-bottom: 7px;
+}
+
+#page-reports > .page-title .muted {
+  color: rgba(255,255,255,.76);
+  font-size: 13px;
+}
+
+#page-reports > .page-title .btn {
+  position: relative;
+  z-index: 1;
+  color: #173b32;
+  background: #fff;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 10px;
+  font-weight: 650;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#page-reports > .page-title .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0,0,0,.12);
+}
+
+/* Statistics cards */
+#page-reports .stats {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+#page-reports .stat {
+  position: relative;
+  overflow: hidden;
+  padding: 23px 24px;
+  min-height: 126px;
+  border: 1px solid var(--report-border);
+  border-radius: 17px;
+  background: linear-gradient(145deg, #fff, #f9fcfa);
+  box-shadow: 0 5px 18px rgba(24, 58, 45, .045);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#page-reports .stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(24, 58, 45, .09);
+}
+
+#page-reports .stat::after {
+  content: "";
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  right: -28px;
+  top: -30px;
+  border-radius: 50%;
+  background: rgba(40, 88, 73, .055);
+}
+
+#page-reports .stat-top {
+  color: var(--report-muted);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .25px;
+}
+
+#page-reports .stat-num {
+  color: var(--report-green);
+  font-size: clamp(29px, 3vw, 36px);
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 9px 0 5px;
+}
+
+#page-reports .stat-foot {
+  color: #87958d;
+  font-size: 11px;
+}
+
+/* Attendance history panel */
+#page-reports > .panel {
+  overflow: hidden;
+  border: 1px solid var(--report-border);
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 7px 25px rgba(24, 58, 45, .055);
+}
+
+#page-reports > .panel > .panel-head {
+  padding: 22px 24px 16px;
+  gap: 14px;
+}
+
+#page-reports > .panel > .panel-head h2 {
+  color: var(--report-green);
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -.2px;
+}
+
+#page-reports .panel-head .btn {
+  border-radius: 10px;
+  font-weight: 650;
+  transition: background .2s ease, transform .2s ease;
+}
+
+#page-reports .panel-head .btn:hover {
+  background: #edf5f0;
+  transform: translateY(-1px);
+}
+
+/* Search field */
+#page-reports .toolbar {
+  padding: 0 24px 19px;
+}
+
+#page-reports #report-search {
+  width: 100%;
+  max-width: 380px;
+  min-height: 43px;
+  padding: 11px 14px;
+  border: 1px solid #dce7e0;
+  border-radius: 11px;
+  background: #f9fcfa;
+  color: #233e33;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease,
+    background .2s ease;
+}
+
+#page-reports #report-search:focus {
+  border-color: #52836b;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(40, 88, 73, .09);
+}
+
+/* Attendance table */
+#page-reports .table-wrap {
+  margin: 0 24px 24px;
+  border: 1px solid #e8efeb;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+#page-reports .table-wrap table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#page-reports .table-wrap thead th {
+  padding: 14px 13px;
+  background: #f2f7f4;
+  color: #60766a;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .8px;
+  white-space: nowrap;
+  border-bottom: 1px solid #e0eae4;
+}
+
+#page-reports .table-wrap tbody td {
+  padding: 14px 13px;
+  color: #354b40;
+  font-size: 12px;
+  border-bottom: 1px solid #edf2ef;
+  transition: background .15s ease;
+}
+
+#page-reports .table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#page-reports .table-wrap tbody tr:hover td {
+  background: #f7fbf8;
+}
+
+#page-reports .table-wrap tbody td a {
+  color: #267052;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+#page-reports .table-wrap tbody td a:hover {
+  color: #173b32;
+  text-decoration: underline;
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  #page-reports > .page-title {
+    padding: 21px 18px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  #page-reports > .page-title h1 {
+    font-size: 23px;
+  }
+
+  #page-reports .stats {
+    gap: 10px;
+  }
+
+  #page-reports .stat {
+    padding: 17px 14px;
+    min-height: 110px;
+    border-radius: 14px;
+  }
+
+  #page-reports .stat-num {
+    font-size: 27px;
+  }
+
+  #page-reports > .panel {
+    border-radius: 15px;
+  }
+
+  #page-reports > .panel > .panel-head {
+    padding: 18px 16px 14px;
+    flex-wrap: wrap;
+  }
+
+  #page-reports .toolbar {
+    padding: 0 16px 16px;
+  }
+
+  #page-reports #report-search {
+    max-width: none;
+  }
+
+  #page-reports .table-wrap {
+    margin: 0 12px 16px;
+  }
+
+  #page-reports .table-wrap thead th,
+  #page-reports .table-wrap tbody td {
+    padding: 12px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-reports .stat,
+  #page-reports .btn,
+  #page-reports #report-search {
+    transition: none;
+  }
+}
+
   </style>
 </head>
 <body>
