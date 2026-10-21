@@ -4779,15 +4779,23 @@ header .profile small {
       <textarea id="tc-remarks" rows="2"></textarea>
     </div>
 
-    <div class="promotion-actions">
-      <button type="button" class="btn" onclick="clearTCForm()">
-        Clear Form
-      </button>
-      <button type="button" class="btn" id="tc-issue-btn"
-        onclick="previewTC()">
-        Preview Certificate
-      </button>
-    </div>
+    
+<div class="promotion-actions">
+  <button type="button" class="btn" onclick="clearTCForm()">
+    Clear Form
+  </button>
+
+  <button type="button" class="btn" id="tc-issue-btn"
+    onclick="previewTC()">
+    Preview Certificate
+  </button>
+
+  <button type="button" class="btn" id="tc-confirm-issue-btn"
+    onclick="issueTC()">
+    Issue TC
+  </button>
+</div>
+
 
     <p class="muted">
       Previewing a certificate will not issue it or change the student's status.
@@ -5584,7 +5592,7 @@ function tcEscapeHtml(value) {
 
 
 
-function previewTC() {
+function previewTC(targetWindow) {
   const select = document.getElementById('tc-student');
   const student = (state.students || []).find(s =>
     String(s.StudentID) === String(select.value)
@@ -5728,7 +5736,7 @@ const female = [
     `;
   }
 
-  const printWindow = window.open('', '_blank');
+  const printWindow = targetWindow || window.open('', '_blank');
 
   if (!printWindow) {
     alert('Please allow pop-ups to preview the certificate.');
@@ -5889,6 +5897,125 @@ const female = [
 
   printWindow.document.close();
 }
+  
+function issueTC() {
+  const select = document.getElementById('tc-student');
+  const studentId = select.value;
+
+  const student = (state.students || []).find(s =>
+    String(s.StudentID) === String(studentId)
+  );
+
+  if (!student) {
+    alert('Please select a student first.');
+    return;
+  }
+
+  const leavingDate =
+    document.getElementById('tc-leaving-date').value;
+  const decision =
+    document.getElementById('tc-decision').value;
+  const nextClass =
+    document.getElementById('tc-next-class').value;
+
+  if (!leavingDate) {
+    alert('Please select the date of leaving.');
+    return;
+  }
+
+  if (!nextClass) {
+    alert('Please select the next class.');
+    return;
+  }
+
+  const checkedReasons = Array.from(
+    document.querySelectorAll('input[name="tc-reason"]:checked')
+  ).map(box => box.value);
+
+  const data = {
+    StudentID: student.StudentID,
+    StudentName: student.Name || '',
+    LastClass:
+      document.getElementById('tc-last-class').value ||
+      student.Class || '',
+    DateOfLeaving: leavingDate,
+    Decision: decision,
+    NextClass: nextClass,
+    MotherName:
+      document.getElementById('tc-mother-name').value ||
+      student.Guardian || '',
+    Address: document.getElementById('tc-address').value || '',
+    DateOfBirth: document.getElementById('tc-dob').value ||
+      student.DateOfBirth || '',
+    ReasonForLeaving: checkedReasons.join(', '),
+    FeesPaid: document.getElementById('tc-fees-paid').value,
+    FinesAndCharacter:
+      document.getElementById('tc-fines-character').value || '',
+    Remarks: document.getElementById('tc-remarks').value || ''
+  };
+
+  if (!confirm(
+    'Issue a Transfer Certificate for ' + data.StudentName +
+    '?\n\nThe TC will be saved and this student will be marked Inactive.'
+  )) {
+    return;
+  }
+
+ const printWindow = window.open('', '_blank');
+
+if (!printWindow) {
+  alert('Please allow pop-ups to issue and print the TC.');
+  return;
+}
+
+printWindow.document.write(
+  '<!DOCTYPE html><html><head><title>Preparing TC</title></head>' +
+  '<body style="font-family:Arial;padding:30px;">' +
+  'Issuing Transfer Certificate... Please wait.' +
+  '</body></html>'
+);
+printWindow.document.close();
+
+const button = document.getElementById('tc-confirm-issue-btn');
+
+if (button) {
+  button.disabled = true;
+  button.textContent = 'Issuing TC...';
+}
+
+  callServer('issueTC', [data], result => {
+    if (button) {
+      button.disabled = false;
+      button.textContent = 'Issue TC';
+    }
+
+    if (!result || !result.success) {
+      alert('The TC could not be issued. Please check the server response.');
+      return;
+    }
+
+  
+    alert('TC issued successfully. TC ID: ' + result.tcId);
+
+// Use the print window opened by the Issue TC button.
+previewTC(printWindow);
+
+refreshData();
+
+  }, error => {
+  if (button) {
+    button.disabled = false;
+    button.textContent = 'Issue TC';
+  }
+
+  if (printWindow && !printWindow.closed) {
+    printWindow.close();
+  }
+
+  alert('TC issuance failed: ' + error.message);
+});
+}
+
   function renderDashboard() {
     const date = today();
     const todays = state.attendance.filter(a=>a.Date===date);
