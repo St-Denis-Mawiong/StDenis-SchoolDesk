@@ -5587,6 +5587,11 @@ function previewTC() {
 
   const fields = {
     name: studentName,
+    gender: (
+  (state.students || []).find(s =>
+    String(s.StudentID) === String(studentSelect.value)
+    )?.Gender || ''
+    ).trim(),
     father: document.getElementById('tc-father-name').value,
     mother: document.getElementById('tc-mother-name').value,
     address: document.getElementById('tc-address').value,
