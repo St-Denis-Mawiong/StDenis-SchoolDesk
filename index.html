@@ -5567,8 +5567,19 @@ function previewTC() {
     return;
   }
 
-  const gender = String(student.Gender || '').trim().toLowerCase();
-  const female = ['female', 'f', 'girl'].includes(gender);
+  
+const gender = String(student.Gender || '')
+  .trim()
+  .toLowerCase();
+
+const female = [
+  'female',
+  'f',
+  'girl',
+  'woman',
+  'kynthei'
+].includes(gender);
+
 
   const child = female ? 'Daughter' : 'Son';
   const pronoun = female ? 'She' : 'He';
