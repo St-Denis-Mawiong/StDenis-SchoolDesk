@@ -4708,38 +4708,20 @@ header .profile small {
       </div>
     </div>
 
-    <div class="toolbar">
-      <div class="field">
-        <label for="tc-father-name">Father's Name</label>
-        <input id="tc-father-name" placeholder="Enter father's name">
-      </div>
-      <div class="field">
-        <label for="tc-mother-name">Mother's Name</label>
-        <input id="tc-mother-name" placeholder="Enter mother's name">
-      </div>
-    </div>
+   
+<div class="toolbar">
+  <div class="field">
+    <label for="tc-mother-name">Mother's Name</label>
+    <input id="tc-mother-name" readonly>
+  </div>
+</div>
 
     <div class="field">
       <label for="tc-address">Address</label>
       <textarea id="tc-address" rows="2"
         placeholder="Enter student's address"></textarea>
     </div>
-
-    <div class="toolbar">
-      <div class="field">
-        <label for="tc-admission-number">Admission Register No.</label>
-        <input id="tc-admission-number">
-      </div>
-      <div class="field">
-        <label for="tc-admission-date">Date of Admission</label>
-        <input type="date" id="tc-admission-date">
-      </div>
-      <div class="field">
-        <label for="tc-academic-year">Academic Year</label>
-        <input id="tc-academic-year" placeholder="e.g. 2026-2027">
-      </div>
-    </div>
-
+   
     <div class="toolbar">
       <div class="field">
         <label for="tc-fees-paid">School Dues</label>
@@ -5546,13 +5528,9 @@ function clearTCForm() {
   fillTCStudentDetails();
 
   document.getElementById('tc-leaving-date').value = '';
-  document.getElementById('tc-father-name').value = '';
-  document.getElementById('tc-mother-name').value = '';
+    document.getElementById('tc-mother-name').value = '';
   document.getElementById('tc-address').value = '';
-  document.getElementById('tc-admission-number').value = '';
-  document.getElementById('tc-admission-date').value = '';
-  document.getElementById('tc-academic-year').value = '';
-  document.getElementById('tc-fees-paid').value = 'Yes';
+   document.getElementById('tc-fees-paid').value = 'Yes';
   document.getElementById('tc-fines-character').value = '';
   document.getElementById('tc-remarks').value = '';
 
