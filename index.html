@@ -4057,6 +4057,7 @@ header .profile small {
       <button class="nav" data-page="classes"><span class="ico">▤</span> Classes</button>
       <button class="nav" data-page="attendance"><span class="ico">✓</span> Attendance</button>
       <button class="nav" data-page="promotion"><span class="ico">↑</span> Promotion</button>
+      <button class="nav" data-page="tc"><span class="ico">▧</span> Transfer Certificate</button>
       <button class="nav" data-page="reports"><span class="ico">▥</span> Reports</button>
     </div>
     <div class="side-note">
@@ -4645,6 +4646,24 @@ header .profile small {
 
   </div>
 </section>
+      
+<section id="page-tc" class="hidden">
+  <div class="page-title">
+    <div>
+      <h1>Transfer Certificate</h1>
+      <p class="muted">Issue, manage, and reprint student transfer certificates.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Transfer Certificates</h2>
+    </div>
+    <p class="muted">
+      The TC workspace will be added here next.
+    </p>
+  </div>
+</section>
  <section id="page-student-activity" class="hidden">
 
   <div class="activity-hero">
@@ -5003,6 +5022,7 @@ function showPage(page, options = {}) {
     classes: 'Classes',
     attendance: 'Attendance',
     promotion: 'Promotion',
+    tc: 'Transfer Certificate',
     reports: 'Reports',
     'student-activity': 'Student Attendance'
   })[page] || page;
