@@ -4647,21 +4647,176 @@ header .profile small {
   </div>
 </section>
       
+
 <section id="page-tc" class="hidden">
   <div class="page-title">
     <div>
       <h1>Transfer Certificate</h1>
-      <p class="muted">Issue, manage, and reprint student transfer certificates.</p>
+      <p class="muted">
+        Issue, manage, and reprint student transfer certificates.
+      </p>
+    </div>
+    <button class="btn" type="button" onclick="loadTCStudents()">
+      ↻ Refresh
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-top">Active Students</div>
+      <div class="stat-num" id="tc-active-count">0</div>
+      <div class="stat-foot">Eligible for TC</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top">TC Issued</div>
+      <div class="stat-num" id="tc-issued-count">0</div>
+      <div class="stat-foot">Saved certificates</div>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-head">
-      <h2>Transfer Certificates</h2>
+      <h2>Issue Transfer Certificate</h2>
     </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="tc-student">Select Student</label>
+        <select id="tc-student" onchange="fillTCStudentDetails()">
+          <option value="">Loading students...</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="tc-leaving-date">Date of Leaving</label>
+        <input type="date" id="tc-leaving-date">
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="tc-student-name">Student Name</label>
+        <input id="tc-student-name" readonly>
+      </div>
+      <div class="field">
+        <label for="tc-last-class">Last Class Attended</label>
+        <input id="tc-last-class" readonly>
+      </div>
+      <div class="field">
+        <label for="tc-dob">Date of Birth</label>
+        <input type="date" id="tc-dob">
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="tc-father-name">Father's Name</label>
+        <input id="tc-father-name" placeholder="Enter father's name">
+      </div>
+      <div class="field">
+        <label for="tc-mother-name">Mother's Name</label>
+        <input id="tc-mother-name" placeholder="Enter mother's name">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="tc-address">Address</label>
+      <textarea id="tc-address" rows="2"
+        placeholder="Enter student's address"></textarea>
+    </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="tc-admission-number">Admission Register No.</label>
+        <input id="tc-admission-number">
+      </div>
+      <div class="field">
+        <label for="tc-admission-date">Date of Admission</label>
+        <input type="date" id="tc-admission-date">
+      </div>
+      <div class="field">
+        <label for="tc-academic-year">Academic Year</label>
+        <input id="tc-academic-year" placeholder="e.g. 2026-2027">
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="tc-fees-paid">School Dues</label>
+        <select id="tc-fees-paid">
+          <option value="Yes">Paid</option>
+          <option value="No">Not paid</option>
+          <option value="Not applicable">Not applicable</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="tc-fines-character">Fines and Character</label>
+        <textarea id="tc-fines-character" rows="2"></textarea>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Reason for Leaving</label>
+      <div class="toolbar">
+        <label><input type="checkbox" name="tc-reason" value="Parent's request"> Parent's request</label>
+        <label><input type="checkbox" name="tc-reason" value="Transfer"> Transfer</label>
+        <label><input type="checkbox" name="tc-reason" value="Completion of studies"> Completion of studies</label>
+        <label><input type="checkbox" name="tc-reason" value="Other"> Other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="tc-remarks">Additional Remarks</label>
+      <textarea id="tc-remarks" rows="2"></textarea>
+    </div>
+
+    <div class="promotion-actions">
+      <button type="button" class="btn" onclick="clearTCForm()">
+        Clear Form
+      </button>
+      <button type="button" class="btn" id="tc-issue-btn"
+        onclick="previewTC()">
+        Preview Certificate
+      </button>
+    </div>
+
     <p class="muted">
-      The TC workspace will be added here next.
+      Previewing a certificate will not issue it or change the student's status.
     </p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>TC Archive</h2>
+    </div>
+
+    <div class="field">
+      <label for="tc-search">Search Issued Certificates</label>
+      <input id="tc-search"
+        placeholder="Search by student name or TC number"
+        oninput="filterTCArchive()">
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>TC NUMBER</th>
+            <th>STUDENT NAME</th>
+            <th>LAST CLASS</th>
+            <th>DATE OF LEAVING</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="tc-archive-rows">
+          <tr>
+            <td colspan="5" class="muted">
+              TC archive will appear here after it is connected to the database.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
  <section id="page-student-activity" class="hidden">
