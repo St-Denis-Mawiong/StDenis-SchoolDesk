@@ -5573,8 +5573,10 @@ function tcEscapeHtml(value) {
 }
 
 
+
 function previewTC() {
   const select = document.getElementById('tc-student');
+
   const student = (state.students || []).find(s =>
     String(s.StudentID) === String(select.value)
   );
@@ -5589,285 +5591,310 @@ function previewTC() {
 
   const pronoun = female ? 'She' : 'He';
   const possessive = female ? 'Her' : 'His';
-  const childWord = female ? 'daughter' : 'son';
+  const childWord = female ? 'Daughter' : 'Son';
+  const himHer = female ? 'her' : 'him';
 
-  const fields = {
-    name: student.Name || '',
-    mother: student.Guardian ||
-      document.getElementById('tc-mother-name').value || '',
-    address: document.getElementById('tc-address').value,
-    dob: document.getElementById('tc-dob').value ||
-      student.DateOfBirth || '',
-    lastClass: student.Class || '',
-    leavingDate: document.getElementById('tc-leaving-date').value,
-    fees: document.getElementById('tc-fees-paid').value,
-    fines: document.getElementById('tc-fines-character').value,
-    remarks: document.getElementById('tc-remarks').value
-  };
+  function safe(value) {
+    return typeof esc === 'function'
+      ? esc(String(value ?? ''))
+      : String(value ?? '').replace(/[&<>"']/g, ch => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[ch]));
+  }
 
-  const safe = value => tcEscapeHtml(value || '');
-  const blank = value => safe(value) ||
-    '................................................';
+  function formatDate(value) {
+    if (!value) return '........................';
 
-  const checkedReasons = Array.from(
+    const parts = String(value).split('-');
+    if (parts.length === 3) {
+      return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+
+    return value;
+  }
+
+  const name = student.Name || '';
+  const mother = student.Guardian ||
+    document.getElementById('tc-mother-name').value || '';
+  const address = document.getElementById('tc-address').value || '';
+  const dob = document.getElementById('tc-dob').value ||
+    student.DateOfBirth || '';
+  const lastClass = student.Class || '';
+  const leavingDate =
+    document.getElementById('tc-leaving-date').value || '';
+
+  const fees = document.getElementById('tc-fees-paid').value;
+  const finesCharacter =
+    document.getElementById('tc-fines-character').value.trim();
+  const remarks =
+    document.getElementById('tc-remarks').value.trim();
+
+  const selectedReasons = Array.from(
     document.querySelectorAll('input[name="tc-reason"]:checked')
   ).map(box => box.value);
 
-  function reasonLine(reason) {
-    const checked = checkedReasons.includes(reason);
+  // Match the existing form choices to the original certificate choices.
+  const reasonMap = {
+    "Transfer": "Unavoidable change of residence",
+    "Completion of studies": "Completion of the School Course",
+    "Parent's request": "Minor Reasons",
+    "Other": "Minor Reasons"
+  };
 
-    return '<div class="reason-item"><span class="check">' +
-      (checked ? '&#10003;' : '&nbsp;') +
-      '</span>' + safe(reason) + '</div>';
-  }
+  const reasons = [
+    'Unavoidable change of residence',
+    'Ill Health',
+    'Completion of the School Course',
+    'Minor Reasons'
+  ];
 
-  function certificate() {
+  const checkedReasons = selectedReasons.map(reason =>
+    reasonMap[reason] || reason
+  );
+
+  function makeCertificate() {
     return `
-      <article class="certificate">
-        <header class="school-header">
-          <div class="school-name">ST. DENIS SECONDARY SCHOOL</div>
-          <div class="school-address">Mawiong Umjapung, Shillong</div>
-          <h1>TRANSFER CERTIFICATE</h1>
-        </header>
-
-        <p class="opening">
-          This is to certify that <b>${blank(fields.name)}</b>,
-          ${childWord} of <b>${blank(fields.mother)}</b>,
-          residing at <b>${blank(fields.address)}</b>, was a student
-          of this school.
-        </p>
-
-        <p class="statement">
-          ${possessive} date of birth, according to the school records,
-          is <b>${blank(fields.dob)}</b>.
-        </p>
-
-        <p class="statement">
-          ${pronoun} was studying in Class
-          <b>${blank(fields.lastClass)}</b>.
-          ${pronoun} left the school on
-          <b>${blank(fields.leavingDate)}</b>.
-        </p>
-
-        <p class="statement">
-          The school dues have been
-          <b>${safe(fields.fees) === 'Yes' ? 'paid' :
-            safe(fields.fees) === 'No' ? 'not paid' :
-            safe(fields.fees) || '................................'}</b>.
-        </p>
-
-        <p class="statement">
-          <b>Fines and Character:</b>
-          ${blank(fields.fines)}
-        </p>
-
-        <div class="reason-heading">Reason for Leaving</div>
-        <div class="reason-list">
-          ${reasonLine("Parent's request")}
-          ${reasonLine('Transfer')}
-          ${reasonLine('Completion of studies')}
-          ${reasonLine('Other')}
+      <div class="certificate">
+        <div class="school-name">ST. DENIS SECONDARY SCHOOL</div>
+        <div class="school-address">
+          MAWIONG UMJAPUNG, SHILLONG - 793016
         </div>
 
-        <p class="remarks">
-          <b>Remarks:</b> ${safe(fields.remarks) ||
-            '........................................................'}
-        </p>
+        <div class="certificate-title">Transfer Certificate</div>
 
-        <p class="certification">
-          Certified that the particulars stated above are true
-          according to the school records.
-        </p>
+        <div class="certificate-body">
+          <p>
+            CERTIFIED that <strong>${safe(name)}</strong>
+            ${childWord} of <strong>${safe(mother)}</strong>
+            an inhabitant of <strong>${safe(address)}</strong>.
+            ${pronoun} left the school on
+            <strong>${safe(formatDate(leavingDate))}</strong>.
+            ${possessive} date of birth according to the Admission
+            Register is <strong>${safe(formatDate(dob))}</strong>.
+            ${pronoun} was reading in Class
+            <strong>${safe(lastClass)}</strong> has passed the
+            examination for promotion to .
+          </p>
 
-        <footer class="signature-row">
-          <div>Date: __________________</div>
-          <div class="signature">
-            ______________________<br>
-            Headmaster
+          <p class="dues">
+            All Sums due by ${himHer} have been
+            ${fees === 'No' ? 'not ' : ''}paid, viz. fees up to December.
+          </p>
+
+          <p class="detail-line">
+            <strong>Fines :</strong>
+            ${safe(finesCharacter || 'None')}
+          </p>
+
+          <p class="detail-line">
+            <strong>Character :</strong>
+            ${safe(remarks || 'Good')}
+          </p>
+
+          <div class="reason-heading"><em>Reason for Leaving :-</em></div>
+
+          <div class="reason-list">
+            ${reasons.map(reason => `
+              <div class="reason-option">
+                <span class="check-box">${
+                  checkedReasons.includes(reason) ? '&#10003;' : ''
+                }</span>
+                <span>${safe(reason)}</span>
+              </div>
+            `).join('')}
           </div>
-        </footer>
-      </article>
+
+          <div class="signature-area">
+            <div class="date-line">
+              <strong><em>Date :</em></strong>
+            </div>
+            <div class="headmaster"><em>Headmaster</em></div>
+          </div>
+        </div>
+      </div>
     `;
   }
 
   const preview = window.open('', '_blank');
 
   if (!preview) {
-    alert('Please allow pop-ups for SchoolDesk, then try again.');
+    alert('Please allow pop-ups for SchoolDesk to preview the certificate.');
     return;
   }
 
   preview.document.open();
   preview.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Transfer Certificate Preview</title>
-<style>
-  @page {
-    size: A4 landscape;
-    margin: 8mm;
-  }
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Transfer Certificate Preview</title>
+      <style>
+        @page {
+          size: A4 landscape;
+          margin: 0.25in;
+        }
 
-  * { box-sizing: border-box; }
+        * {
+          box-sizing: border-box;
+        }
 
-  body {
-    margin: 0;
-    font-family: "Times New Roman", serif;
-    font-size: 12px;
-    line-height: 1.45;
-    color: #111;
-    background: #eee;
-  }
+        body {
+          margin: 0;
+          color: #111;
+          background: #fff;
+          font-family: "Times New Roman", Times, serif;
+        }
 
-  .preview-toolbar {
-    padding: 12px;
-    text-align: center;
-    background: #173b32;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
+        .print-toolbar {
+          padding: 12px;
+          text-align: center;
+          font-family: Arial, sans-serif;
+        }
 
-  .preview-toolbar button {
-    padding: 8px 16px;
-    margin-left: 8px;
-    cursor: pointer;
-  }
+        .print-toolbar button {
+          padding: 9px 18px;
+          margin: 0 5px;
+          border: 0;
+          border-radius: 4px;
+          background: #173b32;
+          color: white;
+          cursor: pointer;
+        }
 
-  .sheet {
-    width: 281mm;
-    min-height: 194mm;
-    margin: 12px auto;
-    background: white;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
+        .certificates {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.12in;
+          width: 100%;
+        }
 
-  .certificate {
-    padding: 7mm;
-    min-width: 0;
-    border: 1px solid #555;
-    overflow-wrap: anywhere;
-  }
+        .certificate {
+          min-width: 0;
+          padding: 0;
+          page-break-inside: avoid;
+          break-inside: avoid;
+          font-size: 10pt;
+          line-height: 1.22;
+        }
 
-  .certificate + .certificate {
-    border-left: 1px dashed #777;
-  }
+        .school-name {
+          text-align: center;
+          font-family: Arial, sans-serif;
+          font-size: 14pt;
+          font-weight: bold;
+          line-height: 1.15;
+          white-space: nowrap;
+        }
 
-  .school-header {
-    text-align: center;
-    border-bottom: 1px solid #222;
-    padding-bottom: 8px;
-  }
+        .school-address {
+          margin-top: 3px;
+          text-align: center;
+          font-family: Arial, sans-serif;
+          font-size: 9pt;
+        }
 
-  .school-name {
-    font-size: 20px;
-    font-weight: bold;
-  }
+        .certificate-title {
+          margin: 19px 0 12px;
+          text-align: center;
+          font-size: 11pt;
+          font-weight: bold;
+        }
 
-  .school-address {
-    font-size: 12px;
-    margin-top: 3px;
-  }
+        .certificate-body p {
+          margin: 0 0 10px;
+          text-align: left;
+        }
 
-  h1 {
-    font-size: 17px;
-    margin: 10px 0 0;
-    text-decoration: underline;
-    letter-spacing: 1px;
-  }
+        .certificate-body .dues {
+          margin-top: 14px;
+          margin-bottom: 10px;
+        }
 
-  .opening {
-    margin-top: 18px;
-    text-align: justify;
-  }
+        .certificate-body .detail-line {
+          margin-bottom: 6px;
+          font-size: 10.5pt;
+        }
 
-  .statement {
-    margin: 13px 0;
-    text-align: justify;
-  }
+        .reason-heading {
+          margin-top: 14px;
+          margin-bottom: 5px;
+        }
 
-  .reason-heading {
-    margin-top: 16px;
-    font-weight: bold;
-    text-decoration: underline;
-  }
+        .reason-list {
+          margin-left: 1.5in;
+          font-size: 9pt;
+        }
 
-  .reason-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 9px;
-    margin-top: 8px;
-  }
+        .reason-option {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          min-height: 17px;
+          white-space: nowrap;
+        }
 
-  .reason-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
+        .check-box {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 12px;
+          height: 12px;
+          border: 1px solid #333;
+          font-family: Arial, sans-serif;
+          font-size: 10px;
+          flex-shrink: 0;
+        }
 
-  .check {
-    display: inline-flex;
-    width: 13px;
-    height: 13px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #222;
-    font-family: Arial, sans-serif;
-    font-size: 10px;
-    flex-shrink: 0;
-  }
+        .signature-area {
+          position: relative;
+          height: 58px;
+          margin-top: 20px;
+        }
 
-  .remarks {
-    margin-top: 17px;
-  }
+        .date-line {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
 
-  .certification {
-    margin-top: 17px;
-    text-align: justify;
-  }
+        .headmaster {
+          position: absolute;
+          right: 12px;
+          bottom: 0;
+          font-size: 11pt;
+          font-weight: bold;
+        }
 
-  .signature-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    margin-top: 28px;
-  }
+        @media print {
+          .print-toolbar {
+            display: none;
+          }
 
-  .signature {
-    min-width: 125px;
-    text-align: center;
-  }
+          .certificates {
+            gap: 0.12in;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="print-toolbar">
+        <button onclick="window.print()">Print / Save as PDF</button>
+        <button onclick="window.close()">Close Preview</button>
+      </div>
 
-  @media print {
-    body { background: white; }
-    .preview-toolbar { display: none; }
-
-    .sheet {
-      margin: 0;
-      width: 281mm;
-      min-height: 194mm;
-    }
-
-    .certificate { break-inside: avoid; }
-  }
-</style>
-</head>
-<body>
-  <div class="preview-toolbar">
-    PREVIEW ONLY — Not yet issued.
-    <button onclick="window.print()">Print / Save PDF</button>
-    <button onclick="window.close()">Close Preview</button>
-  </div>
-
-  <main class="sheet">
-    ${certificate()}
-    ${certificate()}
-  </main>
-</body>
-</html>`);
+      <div class="certificates">
+        ${makeCertificate()}
+        ${makeCertificate()}
+      </div>
+    </body>
+    </html>`);
   preview.document.close();
 }
+
 
   function renderDashboard() {
     const date = today();
