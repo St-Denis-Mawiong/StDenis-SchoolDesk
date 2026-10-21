@@ -5498,8 +5498,49 @@ function refreshData() {
 }
 
   function renderAll() {
-    renderDashboard(); renderStudents(); renderClasses(); populateClassSelectors(); renderReports();
+    renderDashboard(); renderStudents(); renderClasses(); populateClassSelectors(); renderReports(); loadTCStudents();
   }
+  
+function loadTCStudents() {
+  const select = document.getElementById('tc-student');
+  if (!select) return;
+
+  const activeStudents = (state.students || []).filter(student =>
+    String(student.Status || 'Active').toLowerCase() === 'active'
+  );
+
+  document.getElementById('tc-active-count').textContent =
+    activeStudents.length;
+
+  select.innerHTML =
+    '<option value="">Select a student</option>' +
+    activeStudents.map(student =>
+      '<option value="' + esc(String(student.StudentID || '')) + '">' +
+      esc(String(student.Name || 'Unnamed student')) +
+      ' — ' + esc(String(student.Class || '')) +
+      '</option>'
+    ).join('');
+}
+
+function fillTCStudentDetails() {
+  const studentId = document.getElementById('tc-student').value;
+
+  const student = (state.students || []).find(s =>
+    String(s.StudentID) === studentId
+  );
+
+  document.getElementById('tc-student-name').value =
+    student ? student.Name || '' : '';
+
+  document.getElementById('tc-last-class').value =
+    student ? student.Class || '' : '';
+
+  document.getElementById('tc-dob').value =
+    student && /^\d{4}-\d{2}-\d{2}$/.test(student.DateOfBirth || '')
+      ? student.DateOfBirth
+      : '';
+}
+
   function renderDashboard() {
     const date = today();
     const todays = state.attendance.filter(a=>a.Date===date);
