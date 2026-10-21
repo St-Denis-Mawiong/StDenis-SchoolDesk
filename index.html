@@ -5541,6 +5541,25 @@ function fillTCStudentDetails() {
       : '';
 }
 
+function clearTCForm() {
+  document.getElementById('tc-student').value = '';
+  fillTCStudentDetails();
+
+  document.getElementById('tc-leaving-date').value = '';
+  document.getElementById('tc-father-name').value = '';
+  document.getElementById('tc-mother-name').value = '';
+  document.getElementById('tc-address').value = '';
+  document.getElementById('tc-admission-number').value = '';
+  document.getElementById('tc-admission-date').value = '';
+  document.getElementById('tc-academic-year').value = '';
+  document.getElementById('tc-fees-paid').value = 'Yes';
+  document.getElementById('tc-fines-character').value = '';
+  document.getElementById('tc-remarks').value = '';
+
+  document.querySelectorAll('input[name="tc-reason"]')
+    .forEach(box => box.checked = false);
+}
+
   function renderDashboard() {
     const date = today();
     const todays = state.attendance.filter(a=>a.Date===date);
