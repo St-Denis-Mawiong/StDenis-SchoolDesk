@@ -4299,15 +4299,7 @@ header .profile small {
     <input id="s-phone" type="tel" maxlength="30">
   </div>
 
-  <div class="field">
-    <label for="s-status">Status</label>
-    <select id="s-status">
-      <option>Active</option>
-      <option>Inactive</option>
-    </select>
-  </div>
-
-  <div class="field">
+   <div class="field">
     <label for="s-photo">Dur jong khynnah</label>
     <input id="s-photo" type="file" accept="image/*">
     <small class="muted">Jied da ka Passport-size ba clear.</small>
@@ -5397,7 +5389,10 @@ schoolDeskStudentForm.addEventListener(
     $('s-dob').value = student ? student.DateOfBirth || '' : '';
     $('s-guardian').value = student ? student.Guardian || '' : '';
     $('s-phone').value = student ? student.Phone || '' : '';
-    $('s-status').value = student ? student.Status || 'Active' : 'Active';
+   const statusField = $('s-status');
+    if (statusField) {
+    statusField.value = student ? student.Status || 'Active' : 'Active';
+  }
     $('student-form-title').textContent = student ? 'Edit student' : 'Add student';
    $('student-form-panel').classList.remove('hidden');
     $('student-form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5483,7 +5478,9 @@ const student = {
     DateOfBirth: $('s-dob').value,
     Guardian: $('s-guardian').value.trim(),
     Phone: $('s-phone').value.trim(),
-    Status: $('s-status').value,
+   Status: editingStudentId
+  ? (state.students.find(s => String(s.StudentID) === String(editingStudentId))?.Status || 'Active')
+  : 'Active',
   PhotoURL: (state.students.find(s => String(s.StudentID) === String($('s-id').value)) || {}).PhotoURL || ''
   };
 
