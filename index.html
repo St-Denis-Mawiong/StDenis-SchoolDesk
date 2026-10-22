@@ -5775,13 +5775,21 @@ const female = [
   function certificate() {
     return `
       <article class="tc-copy">
-        <header class="tc-school">
-          <div class="tc-school-name">ST. DENIS SECONDARY SCHOOL</div>
-          <div class="tc-address">
-            MAWIONG UMJAPUNG, SHILLONG - 793016
-          </div>
-        </header>
+        
 
+<header class="tc-school">
+  <img
+    src="./icon-192.png"
+    alt="St. Denis School Logo"
+    class="tc-logo"
+  >
+  <div class="tc-school-info">
+    <div class="tc-school-name">ST. DENIS SECONDARY SCHOOL</div>
+    <div class="tc-address">
+      MAWIONG UMJAPUNG, SHILLONG - 793016
+    </div>
+  </div>
+</header>
         <div class="tc-heading">Transfer Certificate</div>
 
         <div class="tc-paragraph">
@@ -5882,11 +5890,27 @@ const female = [
           height: 190mm;
           overflow: hidden;
         }
+        
+         
+.tc-school {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: Arial, sans-serif;
+  text-align: left;
+}
 
-        .tc-school {
-          text-align: center;
-          font-family: Arial, sans-serif;
-        }
+.tc-logo {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.tc-school-info {
+  text-align: left;
+}
 
         .tc-school-name {
           font-size: 23px;
