@@ -5910,10 +5910,30 @@ const female = [
       </style>
     </head>
     <body>
-      <main class="tc-sheet">
-        ${certificate()}
-        ${certificate()}
-      </main>
+      
+<div class="tc-preview-actions" style="text-align:center; margin:10px 0 20px;">
+  <button type="button" onclick="window.print()"
+    style="padding:10px 20px; margin-right:10px; cursor:pointer;">
+    Print Certificate
+  </button>
+  <button type="button" onclick="window.close()"
+    style="padding:10px 20px; cursor:pointer;">
+    Close Preview
+  </button>
+</div>
+
+<style>
+  @media print {
+    .tc-preview-actions {
+      display: none !important;
+    }
+  }
+</style>
+
+<main class="tc-sheet">
+  ${certificate()}
+  ${certificate()}
+</main>
       <script>
        window.onload = function() {
       // Show the certificate without opening the print dialog.
