@@ -5934,12 +5934,11 @@ const female = [
         ${certificate()}
       </main>
       <script>
-        window.onload = function() {
-          setTimeout(function() {
-            window.print();
-          }, 300);
+       window.onload = function() {
+  // Show the certificate without opening the print dialog.
+      };
         };
-      <\/script>
+      </script>
     </body>
     </html>
   `);
