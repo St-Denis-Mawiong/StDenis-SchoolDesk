@@ -6921,9 +6921,10 @@ $('class-form').addEventListener('submit', function(e) {
 function renderClasses() {
   $('class-rows').innerHTML = state.classes.length
     ? state.classes.map(c => {
-        const count = state.students.filter(
-          s => s.Class === c.ClassName
-        ).length;
+       const count = state.students.filter(
+  s => s.Class === c.ClassName &&
+       String(s.Status || 'Active').toLowerCase() === 'active'
+).length;
 
         return '<tr><td><strong data-act="view-class" data-class="' +
           esc(c.ClassName) +
@@ -6945,9 +6946,10 @@ function viewClassStudents(className) {
   const title = $('class-students-title');
   const rows = $('class-students-rows');
 
-  const students = state.students.filter(
-    s => s.Class === className
-  );
+const students = state.students.filter(
+  s => s.Class === className &&
+       String(s.Status || 'Active').toLowerCase() === 'active'
+);
 
   title.textContent = className + ' — Students (' + students.length + ')';
 
