@@ -5537,8 +5537,37 @@ function loadTCStudents() {
       ' — ' + esc(String(student.Class || '')) +
       '</option>'
     ).join('');
-}
 
+  callServer('getIssuedTCs', [], function(records) {
+    records = Array.isArray(records) ? records : [];
+
+    document.getElementById('tc-issued-count').textContent =
+      records.length;
+
+    const tbody = document.getElementById('tc-archive-rows');
+    if (!tbody) return;
+
+    if (records.length === 0) {
+      tbody.innerHTML =
+        '<tr><td colspan="5" class="muted">' +
+        'Klem pat TC ia ine i Khynnah.' +
+        '</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = records.map(record =>
+      '<tr>' +
+        '<td>' + esc(String(record.TC_ID || '')) + '</td>' +
+        '<td>' + esc(String(record.StudentName || '')) + '</td>' +
+        '<td>' + esc(String(record.LastClass || '')) + '</td>' +
+        '<td>' + esc(String(record.DateOfLeaving || '')) + '</td>' +
+        '<td>Issued</td>' +
+      '</tr>'
+    ).join('');
+  }, function(error) {
+    console.error('Khlem lap ia ka TC:', error);
+  });
+}
 
 function fillTCStudentDetails() {
   const studentId = document.getElementById('tc-student').value;
