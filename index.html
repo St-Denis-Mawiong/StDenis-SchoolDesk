@@ -6527,9 +6527,12 @@ setTimeout(() => {
   }
 });
 
+
 function renderStudents() {
   const q = ($('student-search')?.value || '').toLowerCase();
+
   const filtered = state.students.filter(s =>
+    String(s.Status || 'Active').toLowerCase() === 'active' &&
     [s.Name, s.StudentID, s.Class, s.Guardian]
       .some(v => String(v || '').toLowerCase().includes(q))
   );
@@ -6538,14 +6541,14 @@ function renderStudents() {
 
   $('student-rows').innerHTML = filtered.length
     ? filtered.map(s =>
-        '<tr><td><div class="student-cell"><div class="mini-avatar">' +   
-esc(initials(s.Name)) +
-'</div><div><strong class="student-name" data-act="view-student" data-id="' +
-esc(String(s.StudentID || '')) + '" style="cursor:pointer;color:var(--blue)">' +
-esc(s.Name) +
-'</strong><small>PEN: ' + esc(shortId(s.StudentID)) +
-' · Roll No.: ' + esc(s.RollNo || '—') +
-'</small></div></div></td><td>' + esc(s.Class || '—') +
+        '<tr><td><div class="student-cell"><div class="mini-avatar">' +
+        esc(initials(s.Name)) +
+        '</div><div><strong class="student-name" data-act="view-student" data-id="' +
+        esc(String(s.StudentID || '')) + '" style="cursor:pointer;color:var(--blue)">' +
+        esc(s.Name) +
+        '</strong><small>PEN: ' + esc(shortId(s.StudentID)) +
+        ' · Roll No.: ' + esc(s.RollNo || '—') +
+        '</small></div></div></td><td>' + esc(s.Class || '—') +
         '</td><td>' + esc(s.Gender || '—') +
         '</td><td>' + esc(s.Guardian || '—') +
         '</td><td><span class="pill ' +
@@ -6555,9 +6558,8 @@ esc(s.Name) +
         esc(String(s.StudentID || '')) +
         '">Edit</button></td></tr>'
       ).join('')
-    : '<tr><td colspan="6" class="empty">No students found. Add a test student to begin.</td></tr>';
+    : '<tr><td colspan="6" class="empty">No active students found.</td></tr>';
 }
-
 
 function renderPromotionStudents() {
   const selectedClass = $('promotion-class').value;
