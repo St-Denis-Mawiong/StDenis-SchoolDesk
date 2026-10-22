@@ -5765,12 +5765,32 @@ const female = [
     `;
   }
 
-  const printWindow = targetWindow || window.open('', '_blank');
+ 
+  let printWindow = targetWindow;
+  let printFrame = null;
 
   if (!printWindow) {
-    alert('Please allow pop-ups to preview the certificate.');
-    return;
+    printFrame = document.createElement('iframe');
+    printFrame.style.position = 'fixed';
+    printFrame.style.right = '0';
+    printFrame.style.bottom = '0';
+    printFrame.style.width = '1px';
+    printFrame.style.height = '1px';
+    printFrame.style.border = '0';
+    printFrame.style.opacity = '0';
+
+    document.body.appendChild(printFrame);
+    printWindow = printFrame.contentWindow;
+
+    printWindow.addEventListener('afterprint', function() {
+      setTimeout(function() {
+        if (printFrame && printFrame.parentNode) {
+          printFrame.parentNode.removeChild(printFrame);
+        }
+      }, 1000);
+    }, { once: true });
   }
+
 
   printWindow.document.write(`
     <!DOCTYPE html>
