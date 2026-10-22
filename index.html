@@ -4680,12 +4680,22 @@ header .profile small {
     </div>
 
     <div class="toolbar">
-      <div class="field">
-        <label for="tc-student">Select Student</label>
-        <select id="tc-student" onchange="fillTCStudentDetails()">
-          <option value="">Loading students...</option>
-        </select>
-      </div>
+      
+<div class="field">
+  <label for="tc-student-search">Select Student</label>
+  <input
+    type="text"
+    id="tc-student-search"
+    list="tc-student-options"
+    placeholder="Search student by name..."
+    autocomplete="off"
+    onchange="selectTCStudentByName()"
+  >
+  <datalist id="tc-student-options"></datalist>
+  <select id="tc-student" onchange="fillTCStudentDetails()" hidden>
+    <option value="">Loading students...</option>
+  </select>
+</div>
 
       <div class="field">
         <label for="tc-leaving-date">Date of Leaving</label>
@@ -5537,7 +5547,17 @@ function loadTCStudents() {
       ' — ' + esc(String(student.Class || '')) +
       '</option>'
     ).join('');
+      const searchOptions = document.getElementById('tc-student-options');
 
+  if (searchOptions) {
+    searchOptions.innerHTML = activeStudents.map(student =>
+      '<option value="' +
+      esc(String(student.Name || 'Unnamed student')) +
+      ' — ' +
+      esc(String(student.Class || '')) +
+      '"></option>'
+    ).join('');
+  }
   callServer('getIssuedTCs', [], function(records) {
     records = Array.isArray(records) ? records : [];
 
@@ -5570,9 +5590,34 @@ function loadTCStudents() {
       '</tr>'
     ).join('');
 
-  }, function(error) {
+    }, function(error) {
     console.error('Khlem lap ia ka TC:', error);
   });
+}
+
+function selectTCStudentByName() {
+  const search = document.getElementById('tc-student-search');
+  const select = document.getElementById('tc-student');
+
+  const chosenName = search.value.trim().toLowerCase();
+
+  const student = (state.students || []).find(student =>
+    String(student.Status || 'Active').toLowerCase() === 'active' &&
+    (
+      String(student.Name || '').trim().toLowerCase() +
+      ' — ' +
+      String(student.Class || '').trim().toLowerCase()
+    ) === chosenName
+  );
+
+  if (!student) {
+    select.value = '';
+    fillTCStudentDetails();
+    return;
+  }
+
+  select.value = String(student.StudentID || '');
+  fillTCStudentDetails();
 }
 
 function fillTCStudentDetails() {
@@ -5599,6 +5644,7 @@ function fillTCStudentDetails() {
 
 function clearTCForm() {
   document.getElementById('tc-student').value = '';
+  document.getElementById('tc-student-search').value = '';
   fillTCStudentDetails();
 
   document.getElementById('tc-leaving-date').value = '';
