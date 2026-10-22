@@ -5550,10 +5550,13 @@ function loadTCStudents() {
     if (records.length === 0) {
       tbody.innerHTML =
         '<tr><td colspan="5" class="muted">' +
-        'Klem pat TC ia ine i Khynnah.' +
+        'Klem pat ai TC ia ine i Khynnah.' +
         '</td></tr>';
       return;
     }
+
+   
+    window.schoolDeskIssuedTCs = records;
 
     tbody.innerHTML = records.map(record =>
       '<tr>' +
@@ -5561,9 +5564,12 @@ function loadTCStudents() {
         '<td>' + esc(String(record.StudentName || '')) + '</td>' +
         '<td>' + esc(String(record.LastClass || '')) + '</td>' +
         '<td>' + esc(String(record.DateOfLeaving || '')) + '</td>' +
-        '<td>Issued</td>' +
+        '<td><button type="button" class="btn" onclick="previewIssuedTC(\'' +
+          esc(String(record.TC_ID || '')) +
+          '\')">Reprint</button></td>' +
       '</tr>'
     ).join('');
+
   }, function(error) {
     console.error('Khlem lap ia ka TC:', error);
   });
@@ -5619,20 +5625,22 @@ function tcEscapeHtml(value) {
 }
 
 
-
-
-function previewTC(targetWindow) {
+function previewTC(targetWindow, issuedRecord) {
   const select = document.getElementById('tc-student');
-  const student = (state.students || []).find(s =>
-    String(s.StudentID) === String(select.value)
-  );
+
+  const student = issuedRecord
+    ? (state.students || []).find(s =>
+        String(s.StudentID) === String(issuedRecord.StudentID)
+      ) || issuedRecord
+    : (state.students || []).find(s =>
+        String(s.StudentID) === String(select.value)
+      );
 
   if (!student) {
     alert('Please select a student first.');
     return;
   }
-
-  
+ 
 const gender = String(student.Gender || '')
   .trim()
   .toLowerCase();
