@@ -5658,25 +5658,46 @@ const female = [
   const pronoun = female ? 'She' : 'He';
   const possessive = female ? 'her' : 'his';
 
-  const name = student.Name || '';
-  const mother =
-    student.Guardian ||
-    document.getElementById('tc-mother-name').value ||
-    '';
-  const address = document.getElementById('tc-address').value || '';
-  const dob = document.getElementById('tc-dob').value ||
-    student.DateOfBirth || '';
-  const lastClass =
-    document.getElementById('tc-last-class').value ||
-    student.Class || '';
-  const leavingDate =
-    document.getElementById('tc-leaving-date').value || '';
-  const decision =
-  document.getElementById('tc-decision').value;
-  const fees = document.getElementById('tc-fees-paid').value;
+ 
+  const name = issuedRecord
+    ? issuedRecord.StudentName || student.Name || ''
+    : student.Name || '';
+
+  const mother = issuedRecord
+    ? issuedRecord.MotherName || ''
+    : student.Guardian ||
+      document.getElementById('tc-mother-name').value || '';
+
+  const address = issuedRecord
+    ? issuedRecord.Address || ''
+    : document.getElementById('tc-address').value || '';
+
+  const dob = issuedRecord
+    ? issuedRecord.DateOfBirth || student.DateOfBirth || ''
+    : document.getElementById('tc-dob').value ||
+      student.DateOfBirth || '';
+
+  const lastClass = issuedRecord
+    ? issuedRecord.LastClass || ''
+    : document.getElementById('tc-last-class').value ||
+      student.Class || '';
+
+  const leavingDate = issuedRecord
+    ? issuedRecord.DateOfLeaving || ''
+    : document.getElementById('tc-leaving-date').value || '';
+
+  const decision = issuedRecord
+    ? issuedRecord.Decision || 'Passed'
+    : document.getElementById('tc-decision').value;
+
+  const fees = issuedRecord
+    ? issuedRecord.FeesPaid || 'Yes'
+    : document.getElementById('tc-fees-paid').value;
   const fines = fees === 'Yes' ? 'None' : 'Please verify';
   const character = 'Good';
-
+  const nextClass = issuedRecord
+    ? issuedRecord.NextClass || ''
+    : document.getElementById('tc-next-class')?.value || '';
   const reasons = [
     'Unavoidable change of residence',
     'Ill Health',
@@ -5728,9 +5749,7 @@ const female = [
         and ${decision === 'Passed'
         ? 'had passed'
         : 'had not passed'} the examination for promotion to
-        Class ${escTC(
-        document.getElementById('tc-next-class')?.value || ''
-      ) || '................'}.
+       Class ${escTC(nextClass) || '................'}.
 
         </div>
 
@@ -5953,7 +5972,18 @@ const female = [
 
   printWindow.document.close();
 }
-  
+  function previewIssuedTC(tcId) {
+  const record = (window.schoolDeskIssuedTCs || []).find(
+    item => String(item.TC_ID) === String(tcId)
+  );
+
+  if (!record) {
+    alert('TC record not found. Please refresh the TC Archive.');
+    return;
+  }
+
+  previewTC(null, record);
+}
 function issueTC() {
   const select = document.getElementById('tc-student');
   const studentId = select.value;
@@ -5984,9 +6014,14 @@ function issueTC() {
     return;
   }
 
-  const checkedReasons = Array.from(
-    document.querySelectorAll('input[name="tc-reason"]:checked')
-  ).map(box => box.value);
+  const checkedReasons = issuedRecord
+  ? String(issuedRecord.ReasonForLeaving || '')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean)
+  : Array.from(
+      document.querySelectorAll('input[name="tc-reason"]:checked')
+    ).map(box => box.value);
 
   const data = {
     StudentID: student.StudentID,
