@@ -5847,14 +5847,28 @@ const female = [
   }
 
  
-  const printWindow = targetWindow || window.open('', '_blank');
+ 
+const previewContainer = document.getElementById('tc-preview-container');
+const previewContent = document.getElementById('tc-preview-content');
 
-  if (!printWindow) {
-    alert('Please allow pop-ups to preview the certificate.');
-    return;
-  }
+if (!previewContainer || !previewContent) {
+  alert('TC preview area could not be found. Please refresh SchoolDesk.');
+  return;
+}
 
-  printWindow.document.write(`
+previewContent.innerHTML = '';
+
+const previewFrame = document.createElement('iframe');
+previewFrame.title = 'Transfer Certificate Preview';
+previewFrame.style.width = '100%';
+previewFrame.style.height = 'calc(100vh - 100px)';
+previewFrame.style.minHeight = '650px';
+previewFrame.style.border = 'none';
+
+previewContent.appendChild(previewFrame);
+previewContainer.style.display = 'block';
+
+const previewHTML = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -6007,18 +6021,13 @@ const female = [
         }
       </style>
     </head>
-    <body>
-      
+    <body>   
 <div class="tc-preview-actions" style="text-align:center; margin:10px 0 20px;">
   <button type="button" onclick="window.print()"
-    style="padding:10px 20px; margin-right:10px; cursor:pointer;">
+    style="padding:10px 20px; cursor:pointer;">
     Print Certificate
-<button type="button" onclick="window.close()"
-  style="padding:10px 20px; cursor:pointer;">
-  Close Preview
-</button>
+  </button>
 </div>
-
 <style>
   @media print {
     .tc-preview-actions {
@@ -6038,10 +6047,19 @@ const female = [
       <\/script>
     </body>
     </html>
-  `);
+   `;
 
-  printWindow.document.close();
+  previewFrame.srcdoc = previewHTML;
 }
+  
+function closeTCPreview() {
+  const container = document.getElementById('tc-preview-container');
+  const content = document.getElementById('tc-preview-content');
+
+  if (container) container.style.display = 'none';
+  if (content) content.innerHTML = '';
+}
+
   function previewIssuedTC(tcId) {
   const record = (window.schoolDeskIssuedTCs || []).find(
     item => String(item.TC_ID) === String(tcId)
@@ -7982,6 +8000,46 @@ if (!schoolDeskProfileHistory) {
   });
 })();
 </script>
-<div id="tc-preview-container" style="display:none;"></div>
+  
+<style>
+  #tc-preview-container {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #f4f5f3;
+    padding: 16px;
+    overflow: auto;
+  }
+
+  #tc-preview-close {
+    display: block;
+    margin: 0 auto 16px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    background: #173b32;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  #tc-preview-content {
+    background: white;
+    padding: 12px;
+    overflow: auto;
+  }
+</style>
+
+<div id="tc-preview-container" style="display:none;">
+  <button type="button" id="tc-preview-close">Close Preview</button>
+  <div id="tc-preview-content"></div>
+</div>
+
+<script>
+  document.getElementById('tc-preview-close').addEventListener('click', closeTCPreview);
+    document.getElementById('tc-preview-container').style.display = 'none';
+    document.getElementById('tc-preview-content').innerHTML = '';
+  });
+</script>
  </body>
 </html>
