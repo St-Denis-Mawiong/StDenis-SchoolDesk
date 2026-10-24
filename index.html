@@ -8141,10 +8141,56 @@ if (!schoolDeskProfileHistory) {
 
 </style>
 
+
 <div id="tc-preview-container" style="display:none;">
-  <button type="button" id="tc-preview-close">Close Preview</button>
-  <div id="tc-preview-content"></div>
+
+  <header id="tc-preview-header">
+    <div class="tc-brand">
+      <img src="./icon-192.png" alt="SchoolDesk Logo">
+      <div>
+        <div class="tc-brand-name">SchoolDesk</div>
+        <div class="tc-brand-subtitle">St. Denis School Manager</div>
+      </div>
+    </div>
+
+    <div class="tc-preview-heading">
+      <div class="tc-preview-title">Transfer Certificate Preview</div>
+      <div class="tc-preview-subtitle">A4 Landscape · 2 Copies</div>
+    </div>
+
+    <div class="tc-ready">
+      <span class="tc-ready-dot"></span>
+      Ready to print
+    </div>
+
+    <button type="button" id="tc-preview-close" aria-label="Close preview">✕</button>
+  </header>
+
+  <div id="tc-preview-tip">
+    <span class="tc-tip-icon">↔</span>
+    <div>
+      <strong>Mobile tip</strong>
+      <span>Swipe horizontally to view both copies, and scroll vertically to read the full certificate.</span>
+    </div>
+    <span class="tc-mobile-note">Designed for mobile too</span>
+  </div>
+
+  <main id="tc-preview-content"></main>
+
+  <footer id="tc-preview-footer">
+    <div class="tc-footer-label">ST. DENIS SECONDARY SCHOOL</div>
+    <div class="tc-footer-actions">
+      <button type="button" id="tc-preview-print">
+        <span>▣</span> Print Certificate
+      </button>
+      <button type="button" id="tc-preview-close-bottom">
+        Close Preview
+      </button>
+    </div>
+  </footer>
+
 </div>
+
 
 <script>
   document.getElementById('tc-preview-close').onclick = closeTCPreview;
