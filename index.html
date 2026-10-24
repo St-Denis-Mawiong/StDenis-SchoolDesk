@@ -8003,32 +8003,68 @@ if (!schoolDeskProfileHistory) {
 </script>
   
 <style>
+ 
+#tc-preview-container {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #edf1ee;
+  padding: 20px;
+  overflow: auto;
+  font-family: Arial, sans-serif;
+  background-image:
+    radial-gradient(circle at 8% 5%, rgba(32, 164, 100, 0.09), transparent 28%),
+    linear-gradient(145deg, #f3f6f3, #e7ede8);
+}
+
+#tc-preview-close {
+  display: block;
+  margin: 0 0 18px auto;
+  padding: 11px 22px;
+  border: 1px solid #315b4b;
+  border-radius: 10px;
+  background: #173b32;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(23, 59, 50, 0.16);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#tc-preview-close:hover {
+  background: #245746;
+  transform: translateY(-1px);
+}
+
+#tc-preview-content {
+  width: 100%;
+  min-height: 70vh;
+  padding: 18px;
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid #d5e0d8;
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(22, 55, 43, 0.10);
+}
+
+@media (max-width: 600px) {
   #tc-preview-container {
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: #f4f5f3;
-    padding: 16px;
-    overflow: auto;
+    padding: 10px;
   }
 
   #tc-preview-close {
-    display: block;
-    margin: 0 auto 16px;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 8px;
-    background: #173b32;
-    color: white;
-    font-size: 15px;
-    cursor: pointer;
+    margin-bottom: 12px;
+    padding: 10px 17px;
   }
 
   #tc-preview-content {
-    background: white;
-    padding: 12px;
-    overflow: auto;
+    padding: 8px;
+    border-radius: 12px;
   }
+}
+
 </style>
 
 <div id="tc-preview-container" style="display:none;">
