@@ -8036,7 +8036,7 @@ if (!schoolDeskProfileHistory) {
 </div>
 
 <script>
-  document.getElementById('tc-preview-close').addEventListener('click', closeTCPreview);
+  document.getElementById('tc-preview-close').onclick = closeTCPreview;
     document.getElementById('tc-preview-container').style.display = 'none';
     document.getElementById('tc-preview-content').innerHTML = '';
   });
