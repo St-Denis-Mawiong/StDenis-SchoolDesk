@@ -5910,58 +5910,77 @@ body {
   margin: 0 auto;
 }
 
-/* Rich double-line forest-green certificate frame */
+/* Ornamental double-line certificate frame */
 .tc-copy {
   position: relative;
+  isolation: isolate;
   min-width: 0;
   height: 192mm;
   overflow: hidden;
   padding: 7mm 6mm;
-  border: 4px double #174d3b;
+  border: 3px double #174d3b;
   background: #fffef8;
   color: #102f27;
-  box-shadow: inset 0 0 0 1px rgba(183, 154, 91, .18);
 }
 
-/* Fine inner frame */
+/* Fine inner border */
 .tc-copy::before {
   content: "";
   position: absolute;
-  z-index: 0;
-  inset: 3mm;
+  z-index: -1;
+  inset: 2.5mm;
   border: 1px solid #24583f;
   pointer-events: none;
 }
 
-/* Decorative motifs at all four corners */
+/* Four symmetrical corner ornaments */
 .tc-copy::after {
   content: "";
   position: absolute;
-  z-index: 0;
+  z-index: -1;
   inset: 0;
   pointer-events: none;
   background:
-    /* Top-left corner */
-    linear-gradient(#174d3b, #174d3b) 4mm 7mm / 9mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b) 7mm 4mm / 1px 9mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1.2px, transparent 1.7px) 5.5mm 5.5mm / 5mm 5mm no-repeat,
+    /* Upper left */
+    radial-gradient(ellipse at 0 0, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
+      left 3mm top 3mm / 12mm 12mm no-repeat,
+    linear-gradient(135deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
+      left 2.7mm top 2.7mm / 8mm 8mm no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      left 4mm top 7mm / 8mm 1px no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      left 7mm top 4mm / 1px 8mm no-repeat,
 
-    /* Top-right corner */
-    linear-gradient(#174d3b, #174d3b) right 4mm top 7mm / 9mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b) right 7mm top 4mm / 1px 9mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1.2px, transparent 1.7px) right 5.5mm top 5.5mm / 5mm 5mm no-repeat,
+    /* Upper right */
+    radial-gradient(ellipse at 100% 0, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
+      right 3mm top 3mm / 12mm 12mm no-repeat,
+    linear-gradient(45deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
+      right 2.7mm top 2.7mm / 8mm 8mm no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      right 4mm top 7mm / 8mm 1px no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      right 7mm top 4mm / 1px 8mm no-repeat,
 
-    /* Bottom-left corner */
-    linear-gradient(#174d3b, #174d3b) left 4mm bottom 7mm / 9mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b) left 7mm bottom 4mm / 1px 9mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1.2px, transparent 1.7px) left 5.5mm bottom 5.5mm / 5mm 5mm no-repeat,
+    /* Lower left */
+    radial-gradient(ellipse at 0 100%, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
+      left 3mm bottom 3mm / 12mm 12mm no-repeat,
+    linear-gradient(45deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
+      left 2.7mm bottom 2.7mm / 8mm 8mm no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      left 4mm bottom 7mm / 8mm 1px no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      left 7mm bottom 4mm / 1px 8mm no-repeat,
 
-    /* Bottom-right corner */
-    linear-gradient(#174d3b, #174d3b) right 4mm bottom 7mm / 9mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b) right 7mm bottom 4mm / 1px 9mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1.2px, transparent 1.7px) right 5.5mm bottom 5.5mm / 5mm 5mm no-repeat;
+    /* Lower right */
+    radial-gradient(ellipse at 100% 100%, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
+      right 3mm bottom 3mm / 12mm 12mm no-repeat,
+    linear-gradient(135deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
+      right 2.7mm bottom 2.7mm / 8mm 8mm no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      right 4mm bottom 7mm / 8mm 1px no-repeat,
+    linear-gradient(#174d3b, #174d3b)
+      right 7mm bottom 4mm / 1px 8mm no-repeat;
 }
-
 /* School crest and heading */
 .tc-school {
   display: flex;
@@ -6005,11 +6024,10 @@ body {
   letter-spacing: .45px;
 }
 
-/* Classic italic certificate title */
-
+/* Traditional italic title, without horizontal rules */
 .tc-heading {
   position: relative;
-  margin: 5mm 0 5mm;
+  margin: 5mm 0 4mm;
   padding: 0;
   border: none;
   color: #174d3b;
@@ -6018,12 +6036,12 @@ body {
   font-size: 23px;
   font-weight: bold;
   font-style: italic;
+  line-height: 1.25;
 }
 
 .tc-heading::after {
   content: none;
 }
-
 
 /* Certificate body */
 .tc-paragraph {
