@@ -5910,7 +5910,8 @@ body {
   margin: 0 auto;
 }
 
-/* Ornamental double-line certificate frame */
+
+/* Elegant certificate frame with softened corners */
 .tc-copy {
   position: relative;
   isolation: isolate;
@@ -5919,68 +5920,27 @@ body {
   overflow: hidden;
   padding: 7mm 6mm;
   border: 3px double #174d3b;
+  border-radius: 4mm;
   background: #fffef8;
   color: #102f27;
+  box-shadow: inset 0 0 0 1px rgba(23, 77, 59, 0.08);
 }
 
-/* Fine inner border */
+/* Rounded inner frame — no crosses or corner marks */
 .tc-copy::before {
   content: "";
   position: absolute;
-  z-index: -1;
   inset: 2.5mm;
   border: 1px solid #24583f;
+  border-radius: 2.5mm;
   pointer-events: none;
 }
 
-/* Four symmetrical corner ornaments */
+/* Remove the old geometric ornaments completely */
 .tc-copy::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-  background:
-    /* Upper left */
-    radial-gradient(ellipse at 0 0, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
-      left 3mm top 3mm / 12mm 12mm no-repeat,
-    linear-gradient(135deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
-      left 2.7mm top 2.7mm / 8mm 8mm no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      left 4mm top 7mm / 8mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      left 7mm top 4mm / 1px 8mm no-repeat,
-
-    /* Upper right */
-    radial-gradient(ellipse at 100% 0, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
-      right 3mm top 3mm / 12mm 12mm no-repeat,
-    linear-gradient(45deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
-      right 2.7mm top 2.7mm / 8mm 8mm no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      right 4mm top 7mm / 8mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      right 7mm top 4mm / 1px 8mm no-repeat,
-
-    /* Lower left */
-    radial-gradient(ellipse at 0 100%, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
-      left 3mm bottom 3mm / 12mm 12mm no-repeat,
-    linear-gradient(45deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
-      left 2.7mm bottom 2.7mm / 8mm 8mm no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      left 4mm bottom 7mm / 8mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      left 7mm bottom 4mm / 1px 8mm no-repeat,
-
-    /* Lower right */
-    radial-gradient(ellipse at 100% 100%, transparent 0 5px, #174d3b 5.5px 6.5px, transparent 7px)
-      right 3mm bottom 3mm / 12mm 12mm no-repeat,
-    linear-gradient(135deg, transparent 42%, #174d3b 44% 49%, transparent 51%)
-      right 2.7mm bottom 2.7mm / 8mm 8mm no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      right 4mm bottom 7mm / 8mm 1px no-repeat,
-    linear-gradient(#174d3b, #174d3b)
-      right 7mm bottom 4mm / 1px 8mm no-repeat;
+  content: none;
 }
+
 /* School crest and heading */
 .tc-school {
   display: flex;
