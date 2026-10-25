@@ -6211,6 +6211,14 @@ document.addEventListener('click', function (event) {
   }
 });
 
+document.addEventListener('click', function (event) {
+  const button = event.target.closest('#tc-preview-close-bottom');
+
+  if (!button) return;
+
+  closeTCPreview();
+});
+
   function previewIssuedTC(tcId) {
   const record = (window.schoolDeskIssuedTCs || []).find(
     item => String(item.TC_ID) === String(tcId)
