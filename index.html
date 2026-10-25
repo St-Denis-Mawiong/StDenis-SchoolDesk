@@ -6193,19 +6193,24 @@ function closeTCPreview() {
   if (container) container.style.display = 'none';
   if (content) content.innerHTML = '';
 }
-document.getElementById('tc-preview-print')
-  ?.addEventListener('click', function () {
-    const previewFrame = document.querySelector(
-      '#tc-preview-content iframe'
-    );
 
-    if (previewFrame && previewFrame.contentWindow) {
-      previewFrame.contentWindow.focus();
-      previewFrame.contentWindow.print();
-    } else {
-      alert('Please open the certificate preview first.');
-    }
-  });
+document.addEventListener('click', function (event) {
+  const button = event.target.closest('#tc-preview-print');
+
+  if (!button) return;
+
+  const previewFrame = document.querySelector(
+    '#tc-preview-content iframe'
+  );
+
+  if (previewFrame && previewFrame.contentWindow) {
+    previewFrame.contentWindow.focus();
+    previewFrame.contentWindow.print();
+  } else {
+    alert('Please open the certificate preview first.');
+  }
+});
+
   function previewIssuedTC(tcId) {
   const record = (window.schoolDeskIssuedTCs || []).find(
     item => String(item.TC_ID) === String(tcId)
