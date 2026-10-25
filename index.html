@@ -5928,16 +5928,17 @@ body {
 
 /* Rounded inner frame — no crosses or corner marks */
 
+
 .tc-copy::before {
   content: "";
   position: absolute;
   inset: 2.5mm;
-  border: 1px solid #24583f;
-  outline: 1px solid #24583f;
-  outline-offset: 1.5mm;
-  border-radius: 0;
   pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 700' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%2324583f' stroke-width='2'%3E%3Cpath d='M 38,8 H 962 Q 962,8 962,38 V 42 Q 962,72 992,72 V 628 Q 962,628 962,658 Q 962,688 932,688 H 68 Q 38,688 38,658 Q 38,628 8,628 V 72 Q 38,72 38,42 Z'/%3E%3Cpath d='M 45,16 H 955 Q 955,16 955,45 V 49 Q 955,65 978,65 V 635 Q 955,635 955,655 Q 955,680 930,680 H 70 Q 45,680 45,655 Q 45,635 22,635 V 65 Q 45,65 45,45 Z'/%3E%3C/g%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  border: none;
+  outline: none;
 }
+
 
 /* Remove the old geometric ornaments completely */
 .tc-copy::after {
