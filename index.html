@@ -4432,6 +4432,53 @@ header .profile small {
   }
 }
 
+/* TC summary cards — forest green & antique gold */
+#page-tc .stat-card,
+#page-tc .stats-card,
+#page-tc .stat-box,
+#page-tc .summary-card,
+#page-tc .metric-card {
+  position: relative;
+  overflow: hidden;
+  color: #fff8e9;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(183,154,88,.20), transparent 48%),
+    linear-gradient(135deg, #102d26 0%, #173b32 65%, #285849 100%);
+  border: 1px solid rgba(183,154,88,.65);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(16,45,38,.13);
+}
+
+#page-tc .stat-card::before,
+#page-tc .stats-card::before,
+#page-tc .stat-box::before,
+#page-tc .summary-card::before,
+#page-tc .metric-card::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e4d4a5, #b79a58, transparent);
+}
+
+#page-tc .stat-card *,
+#page-tc .stats-card *,
+#page-tc .stat-box *,
+#page-tc .summary-card *,
+#page-tc .metric-card * {
+  color: #fff8e9;
+}
+
+#page-tc .stat-card h3,
+#page-tc .stats-card h3,
+#page-tc .stat-box h3,
+#page-tc .summary-card h3,
+#page-tc .metric-card h3 {
+  color: #e4d4a5;
+}
+
   </style>
 </head>
 <body>
