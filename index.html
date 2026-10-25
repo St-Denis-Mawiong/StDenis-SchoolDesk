@@ -6727,14 +6727,9 @@ function issueTC() {
     return;
   }
 
-  const checkedReasons = issuedRecord
-  ? String(issuedRecord.ReasonForLeaving || '')
-      .split(',')
-      .map(value => value.trim())
-      .filter(Boolean)
-  : Array.from(
-      document.querySelectorAll('input[name="tc-reason"]:checked')
-    ).map(box => box.value);
+ const checkedReasons = Array.from(
+  document.querySelectorAll('input[name="tc-reason"]:checked')
+).map(box => box.value);
 
   const data = {
     StudentID: student.StudentID,
