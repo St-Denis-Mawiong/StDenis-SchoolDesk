@@ -5911,20 +5911,18 @@ body {
 }
 
 /* Warm archival paper and ornamental green frame */
+
 .tc-copy {
   position: relative;
-  isolation: isolate;
   min-width: 0;
   height: 192mm;
   overflow: hidden;
   padding: 7mm 6mm;
-  color: #172f27;
-  background:
-    linear-gradient(135deg, rgba(194, 166, 105, .045), transparent 32%),
-    #fffef7;
-  border: 3px double #174d3b;
+  border: 1.5px solid #244c3b;
   outline: 1px solid #b79a5b;
-  outline-offset: -5px;
+  outline-offset: -4px;
+  background: #fffef8;
+  color: #102f27;
 }
 
 /* Fine inner gold frame */
@@ -5999,31 +5997,24 @@ body {
 }
 
 /* Classic italic certificate title */
+
 .tc-heading {
   position: relative;
-  margin: 4mm 0 3mm;
-  padding: 0 0 3mm;
-  border-bottom: 1px solid rgba(183, 154, 91, .75);
+  margin: 5mm 0 5mm;
+  padding: 0;
+  border: none;
   color: #174d3b;
   text-align: center;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 21px;
+  font-size: 23px;
+  font-weight: bold;
   font-style: italic;
-  font-weight: 700;
-  line-height: 1.2;
 }
 
 .tc-heading::after {
-  content: "◆";
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  padding: 0 5px;
-  color: #a48643;
-  background: #fffef7;
-  font-size: 7px;
-  transform: translateX(-50%);
+  content: none;
 }
+
 
 /* Certificate body */
 .tc-paragraph {
