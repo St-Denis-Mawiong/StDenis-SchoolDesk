@@ -5927,14 +5927,18 @@ body {
 }
 
 /* Rounded inner frame — no crosses or corner marks */
+
 .tc-copy::before {
   content: "";
   position: absolute;
   inset: 2.5mm;
   border: 1px solid #24583f;
   border-radius: 2.5mm;
+  outline: 1px solid #24583f;
+  outline-offset: 1.5mm;
   pointer-events: none;
 }
+
 
 /* Remove the old geometric ornaments completely */
 .tc-copy::after {
