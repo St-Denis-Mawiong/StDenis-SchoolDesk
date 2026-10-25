@@ -5882,25 +5882,25 @@ const previewHTML = `
 }
 
 * {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-html,
-body {
+html {
   margin: 0;
   padding: 0;
 }
 
 body {
-  color: #173b32;
-  background: #edf1ec;
-  font-family: "Times New Roman", Georgia, serif;
-  font-size: 11px;
+  margin: 0;
+  padding: 0;
+  color: #102f27;
+  background: #e9efeb;
+  font-family: "Times New Roman", serif;
+  font-size: 12px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* Two matching certificates on one landscape page */
 .tc-sheet {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -5910,167 +5910,107 @@ body {
   margin: 0 auto;
 }
 
-
-
-/* Ornate forest-green certificate frame */
 .tc-copy {
   position: relative;
-  isolation: isolate;
   min-width: 0;
   height: 192mm;
   overflow: hidden;
   padding: 7mm 6mm;
-  border: none;
-  border-radius: 0;
+  border: 3px double #174d3b;
+  outline: 1px solid #b79a5b;
+  outline-offset: -5px;
   background: #fffef8;
   color: #102f27;
-  box-shadow: none;
 }
 
-
-/* Double rectangular frame */
-.tc-copy::before {
-  content: "";
-  position: absolute;
-  inset: 2.5mm;
-  border: 1px solid #174d3b;
-  outline: 1px solid #24583f;
-  outline-offset: 1.5mm;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Ornamental gold and green edge decorations */
-.tc-copy::after {
-  content: "";
-  position: absolute;
-  inset: 2.5mm;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    /* Corner medallions */
-    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
-      left 2mm top 2mm / 5mm 5mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
-      right 2mm top 2mm / 5mm 5mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
-      left 2mm bottom 2mm / 5mm 5mm no-repeat,
-    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
-      right 2mm bottom 2mm / 5mm 5mm no-repeat,
-
-    /* Gold diamond details along the top and bottom */
-    linear-gradient(45deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
-      center top / 3mm 3mm no-repeat,
-    linear-gradient(135deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
-      center top / 3mm 3mm no-repeat,
-    linear-gradient(135deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
-      center bottom / 3mm 3mm no-repeat,
-    linear-gradient(45deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
-      center bottom / 3mm 3mm no-repeat,
-
-    /* Small repeating gold details on the vertical edges */
-    radial-gradient(ellipse, #b79a5b 0 1mm, transparent 1.1mm)
-      left center / 3mm 5mm repeat-y,
-    radial-gradient(ellipse, #b79a5b 0 1mm, transparent 1.1mm)
-      right center / 3mm 5mm repeat-y;
-}
-
-/* School crest and heading */
 .tc-school {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3mm;
-  padding: 1mm 0 3mm;
+  gap: 4mm;
+  padding: 2mm 0 4mm;
   border-bottom: 1px solid #b79a5b;
   font-family: Arial, sans-serif;
   text-align: left;
 }
 
 .tc-logo {
-  width: 17mm;
-  height: 17mm;
+  width: 21mm;
+  height: 21mm;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .tc-school-info {
-  flex: 1;
   min-width: 0;
   text-align: center;
 }
 
 .tc-school-name {
-  color: #174535;
+  color: #123f31;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: .35px;
-  text-transform: uppercase;
-}
-
-.tc-address {
-  margin-top: 3px;
-  color: #344d41;
-  font-size: 8px;
-  line-height: 1.4;
-  letter-spacing: .45px;
-}
-
-/* Traditional italic title, without horizontal rules */
-.tc-heading {
-  position: relative;
-  margin: 5mm 0 4mm;
-  padding: 0;
-  border: none;
-  color: #174d3b;
-  text-align: center;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 23px;
+  font-size: 17px;
   font-weight: bold;
-  font-style: italic;
   line-height: 1.25;
 }
 
-.tc-heading::after {
-  content: none;
+.tc-address {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.5px;
 }
 
-/* Certificate body */
+.tc-heading {
+  position: relative;
+  margin: 5mm 0 4mm;
+  padding-bottom: 3mm;
+  border-bottom: 1px solid #b79a5b;
+  color: #174d3b;
+  text-align: center;
+  font-family: "Old English Text MT", "Old English", Georgia, serif;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.tc-heading::after {
+  content: "✦";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  padding: 0 8px;
+  background: #fffef8;
+  color: #a48643;
+  transform: translateX(-50%);
+}
+
 .tc-paragraph {
-  color: #202e27;
   text-align: justify;
-  line-height: 1.85;
+  line-height: 1.75;
   overflow-wrap: anywhere;
 }
 
 .tc-fees {
   margin: 3mm 0;
-  color: #202e27;
   text-align: center;
   line-height: 1.5;
 }
 
 .tc-result {
   margin-top: 2mm;
-  color: #202e27;
-  font-size: 10px;
+  font-size: 11px;
 }
 
-/* Reason section */
 .tc-reasons {
   display: grid;
   grid-template-columns: 31mm minmax(0, 1fr);
   gap: 2mm;
-  margin-top: 3mm;
+  margin-top: 4mm;
   align-items: start;
 }
 
 .tc-reason-title {
-  color: #174535;
   font-style: italic;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .tc-reason-options {
@@ -6082,27 +6022,23 @@ body {
   align-items: center;
   gap: 2mm;
   margin-bottom: 2mm;
-  line-height: 1.35;
 }
 
 .tc-checkbox {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 4mm;
   height: 4mm;
-  flex-shrink: 0;
   border: 1px solid #174d3b;
-  color: #174d3b;
+  align-items: center;
+  justify-content: center;
   font-size: 9px;
+  flex-shrink: 0;
 }
 
-/* Date and principal signature */
 .tc-date {
   position: absolute;
   left: 6mm;
   bottom: 13mm;
-  color: #263b30;
 }
 
 .tc-signature {
@@ -6110,26 +6046,26 @@ body {
   right: 7mm;
   bottom: 12mm;
   min-width: 38mm;
-  padding-top: 2mm;
   border-top: 1px solid #174d3b;
-  color: #263b30;
+  padding-top: 2mm;
   text-align: center;
-  font-size: 10px;
+  font-size: 11px;
 }
 
-/* Screen preview: preserve the original landscape proportions */
 @media screen {
   html,
   body {
     min-height: 100%;
-    background: #edf1ec;
+    margin: 0;
+    padding: 0;
+    background: #e9efeb;
   }
 
-body {
+  body {
     padding: 14px;
   }
 
-.tc-sheet {
+  .tc-sheet {
     width: 281mm;
     min-width: 281mm;
     max-width: none;
@@ -6137,15 +6073,14 @@ body {
     gap: 5mm;
   }
 
-.tc-copy {
+  .tc-copy {
     box-shadow:
-      0 5px 16px rgba(16, 47, 39, .12),
-      0 0 0 1px rgba(183, 154, 91, .12);
+      0 8px 24px rgba(16, 47, 39, 0.14),
+      0 0 0 1px rgba(183, 154, 91, 0.15);
   }
 }
 
-/* Clean print output */
-@media print {
+ @media print {
   html,
   body {
     width: 281mm;
@@ -6154,23 +6089,23 @@ body {
     background: #fff;
   }
 
-.tc-preview-actions {
+  .tc-preview-actions {
     display: none !important;
   }
 
-.tc-sheet {
+  .tc-sheet {
     width: 281mm;
-    min-width: 0;
     margin: 0;
     gap: 5mm;
   }
 
-.tc-copy {
+  .tc-copy {
     break-inside: avoid;
     page-break-inside: avoid;
     box-shadow: none;
   }
 }
+
       </style>
     </head>
     <body>   
