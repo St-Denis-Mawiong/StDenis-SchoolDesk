@@ -5911,7 +5911,8 @@ body {
 }
 
 
-/* Elegant certificate frame with softened corners */
+
+/* Ornate forest-green certificate frame */
 .tc-copy {
   position: relative;
   isolation: isolate;
@@ -5923,29 +5924,80 @@ body {
   border-radius: 0;
   background: #fffef8;
   color: #102f27;
-  box-shadow: inset 0 0 0 1px rgba(23, 77, 59, 0.08);
+  box-shadow: none;
 }
 
-/* Rounded inner frame — no crosses or corner marks */
-
-
-
+/* Double-line frame with inward-curving corners */
 .tc-copy::before {
   content: "";
   position: absolute;
   inset: 2.5mm;
   pointer-events: none;
-  border: 1px solid #24583f;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5mm #fffef8;
+  background:
+    /* Inner continuous line */
+    linear-gradient(#24583f, #24583f) center top / calc(100% - 24mm) 0.45mm no-repeat,
+    linear-gradient(#24583f, #24583f) center bottom / calc(100% - 24mm) 0.45mm no-repeat,
+    linear-gradient(#24583f, #24583f) left center / 0.45mm calc(100% - 24mm) no-repeat,
+    linear-gradient(#24583f, #24583f) right center / 0.45mm calc(100% - 24mm) no-repeat,
+
+    /* Outer line */
+    linear-gradient(#174d3b, #174d3b) center 1.5mm / calc(100% - 26mm) 0.55mm no-repeat,
+    linear-gradient(#174d3b, #174d3b) center calc(100% - 1.5mm) / calc(100% - 26mm) 0.55mm no-repeat,
+    linear-gradient(#174d3b, #174d3b) 1.5mm center / 0.55mm calc(100% - 26mm) no-repeat,
+    linear-gradient(#174d3b, #174d3b) calc(100% - 1.5mm) center / 0.55mm calc(100% - 26mm) no-repeat;
 }
 
-
-
-/* Remove the old geometric ornaments completely */
+/* Curled corner ornaments — no cut-out corners */
 .tc-copy::after {
-  content: none;
+  content: "";
+  position: absolute;
+  inset: 2.5mm;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 100% 100%,
+      transparent 0 7mm,
+      #174d3b 7.1mm 7.45mm,
+      transparent 7.55mm)
+      left top / 15mm 15mm no-repeat,
+
+    radial-gradient(ellipse at 0 100%,
+      transparent 0 7mm,
+      #174d3b 7.1mm 7.45mm,
+      transparent 7.55mm)
+      right top / 15mm 15mm no-repeat,
+
+    radial-gradient(ellipse at 100% 0,
+      transparent 0 7mm,
+      #174d3b 7.1mm 7.45mm,
+      transparent 7.55mm)
+      left bottom / 15mm 15mm no-repeat,
+
+    radial-gradient(ellipse at 0 0,
+      transparent 0 7mm,
+      #174d3b 7.1mm 7.45mm,
+      transparent 7.55mm)
+      right bottom / 15mm 15mm no-repeat,
+
+    /* Antique-gold corner flourishes */
+    radial-gradient(ellipse at center,
+      #b79a5b 0 0.8mm,
+      transparent 0.9mm)
+      3mm 3mm / 3mm 3mm no-repeat,
+
+    radial-gradient(ellipse at center,
+      #b79a5b 0 0.8mm,
+      transparent 0.9mm)
+      calc(100% - 6mm) 3mm / 3mm 3mm no-repeat,
+
+    radial-gradient(ellipse at center,
+      #b79a5b 0 0.8mm,
+      transparent 0.9mm)
+      3mm calc(100% - 6mm) / 3mm 3mm no-repeat,
+
+    radial-gradient(ellipse at center,
+      #b79a5b 0 0.8mm,
+      transparent 0.9mm)
+      calc(100% - 6mm) calc(100% - 6mm) / 3mm 3mm no-repeat;
 }
 
 /* School crest and heading */
