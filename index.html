@@ -5927,77 +5927,52 @@ body {
   box-shadow: none;
 }
 
-/* Double-line frame with inward-curving corners */
+
+/* Double rectangular frame */
 .tc-copy::before {
   content: "";
   position: absolute;
   inset: 2.5mm;
+  border: 1px solid #174d3b;
+  outline: 1px solid #24583f;
+  outline-offset: 1.5mm;
   pointer-events: none;
-  background:
-    /* Inner continuous line */
-    linear-gradient(#24583f, #24583f) center top / calc(100% - 24mm) 0.45mm no-repeat,
-    linear-gradient(#24583f, #24583f) center bottom / calc(100% - 24mm) 0.45mm no-repeat,
-    linear-gradient(#24583f, #24583f) left center / 0.45mm calc(100% - 24mm) no-repeat,
-    linear-gradient(#24583f, #24583f) right center / 0.45mm calc(100% - 24mm) no-repeat,
-
-    /* Outer line */
-    linear-gradient(#174d3b, #174d3b) center 1.5mm / calc(100% - 26mm) 0.55mm no-repeat,
-    linear-gradient(#174d3b, #174d3b) center calc(100% - 1.5mm) / calc(100% - 26mm) 0.55mm no-repeat,
-    linear-gradient(#174d3b, #174d3b) 1.5mm center / 0.55mm calc(100% - 26mm) no-repeat,
-    linear-gradient(#174d3b, #174d3b) calc(100% - 1.5mm) center / 0.55mm calc(100% - 26mm) no-repeat;
+  z-index: 0;
 }
 
-/* Curled corner ornaments — no cut-out corners */
+/* Ornamental gold and green edge decorations */
 .tc-copy::after {
   content: "";
   position: absolute;
   inset: 2.5mm;
   pointer-events: none;
+  z-index: 0;
   background:
-    radial-gradient(ellipse at 100% 100%,
-      transparent 0 7mm,
-      #174d3b 7.1mm 7.45mm,
-      transparent 7.55mm)
-      left top / 15mm 15mm no-repeat,
+    /* Corner medallions */
+    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
+      left 2mm top 2mm / 5mm 5mm no-repeat,
+    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
+      right 2mm top 2mm / 5mm 5mm no-repeat,
+    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
+      left 2mm bottom 2mm / 5mm 5mm no-repeat,
+    radial-gradient(circle, #b79a5b 0 1mm, #fffef8 1.1mm 1.5mm, #174d3b 1.6mm 1.9mm, transparent 2mm)
+      right 2mm bottom 2mm / 5mm 5mm no-repeat,
 
-    radial-gradient(ellipse at 0 100%,
-      transparent 0 7mm,
-      #174d3b 7.1mm 7.45mm,
-      transparent 7.55mm)
-      right top / 15mm 15mm no-repeat,
+    /* Gold diamond details along the top and bottom */
+    linear-gradient(45deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
+      center top / 3mm 3mm no-repeat,
+    linear-gradient(135deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
+      center top / 3mm 3mm no-repeat,
+    linear-gradient(135deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
+      center bottom / 3mm 3mm no-repeat,
+    linear-gradient(45deg, transparent 42%, #b79a5b 43% 57%, transparent 58%)
+      center bottom / 3mm 3mm no-repeat,
 
-    radial-gradient(ellipse at 100% 0,
-      transparent 0 7mm,
-      #174d3b 7.1mm 7.45mm,
-      transparent 7.55mm)
-      left bottom / 15mm 15mm no-repeat,
-
-    radial-gradient(ellipse at 0 0,
-      transparent 0 7mm,
-      #174d3b 7.1mm 7.45mm,
-      transparent 7.55mm)
-      right bottom / 15mm 15mm no-repeat,
-
-    /* Antique-gold corner flourishes */
-    radial-gradient(ellipse at center,
-      #b79a5b 0 0.8mm,
-      transparent 0.9mm)
-      3mm 3mm / 3mm 3mm no-repeat,
-
-    radial-gradient(ellipse at center,
-      #b79a5b 0 0.8mm,
-      transparent 0.9mm)
-      calc(100% - 6mm) 3mm / 3mm 3mm no-repeat,
-
-    radial-gradient(ellipse at center,
-      #b79a5b 0 0.8mm,
-      transparent 0.9mm)
-      3mm calc(100% - 6mm) / 3mm 3mm no-repeat,
-
-    radial-gradient(ellipse at center,
-      #b79a5b 0 0.8mm,
-      transparent 0.9mm)
-      calc(100% - 6mm) calc(100% - 6mm) / 3mm 3mm no-repeat;
+    /* Small repeating gold details on the vertical edges */
+    radial-gradient(ellipse, #b79a5b 0 1mm, transparent 1.1mm)
+      left center / 3mm 5mm repeat-y,
+    radial-gradient(ellipse, #b79a5b 0 1mm, transparent 1.1mm)
+      right center / 3mm 5mm repeat-y;
 }
 
 /* School crest and heading */
