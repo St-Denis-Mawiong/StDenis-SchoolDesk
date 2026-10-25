@@ -6053,22 +6053,34 @@ body {
 }
 
 @media screen {
+  html,
   body {
-    padding: 8px;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #e9efeb;
+  }
+
+  body {
+    padding: 14px;
   }
 
   .tc-sheet {
     width: 281mm;
+    min-width: 281mm;
     max-width: none;
     margin: 0 auto;
+    gap: 5mm;
   }
 
   .tc-copy {
-    box-shadow: 0 3px 12px rgba(16, 47, 39, 0.12);
+    box-shadow:
+      0 8px 24px rgba(16, 47, 39, 0.14),
+      0 0 0 1px rgba(183, 154, 91, 0.15);
   }
 }
 
-@media print {
+ @media print {
   html,
   body {
     width: 281mm;
