@@ -4477,6 +4477,34 @@ header .profile small {
   font-size: .82rem;
 }
 
+/* Compact TC statistics on mobile */
+@media (max-width: 700px) {
+  #page-tc .stats .stat {
+    padding: 12px 14px 13px;
+    border-radius: 10px;
+  }
+
+  #page-tc .stats .stat-top {
+    font-size: .7rem;
+    letter-spacing: .035em;
+  }
+
+  #page-tc .stats .stat-num {
+    margin: 5px 0 3px;
+    font-size: 1.55rem;
+  }
+
+  #page-tc .stats .stat-foot {
+    font-size: .7rem;
+    line-height: 1.3;
+  }
+
+  #page-tc .stats .stat::after {
+    left: 14px;
+    right: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
