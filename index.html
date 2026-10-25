@@ -5933,7 +5933,29 @@ body {
   position: absolute;
   inset: 2.5mm;
   border: 1px solid #24583f;
-  border-radius: 2.5mm;
+  border-radius: 0;
+clip-path: polygon(
+  0 8mm,
+  3mm 8mm,
+  5mm 5mm,
+  8mm 3mm,
+  8mm 0,
+  calc(100% - 8mm) 0,
+  calc(100% - 8mm) 3mm,
+  calc(100% - 5mm) 5mm,
+  calc(100% - 3mm) 8mm,
+  100% 8mm,
+  100% calc(100% - 8mm),
+  calc(100% - 3mm) calc(100% - 8mm),
+  calc(100% - 5mm) calc(100% - 5mm),
+  calc(100% - 8mm) calc(100% - 3mm),
+  calc(100% - 8mm) 100%,
+  8mm 100%,
+  8mm calc(100% - 3mm),
+  5mm calc(100% - 5mm),
+  3mm calc(100% - 8mm),
+  0 calc(100% - 8mm)
+);
   outline: 1px solid #24583f;
   outline-offset: 1.5mm;
   pointer-events: none;
