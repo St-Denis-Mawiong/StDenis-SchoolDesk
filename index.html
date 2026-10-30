@@ -4658,6 +4658,62 @@ header .profile small {
   }
 }
 
+/* ===== TC SUCCESS DIALOG ===== */
+.tc-success-dialog {
+  text-align: center;
+}
+
+.tc-success-mark {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 17px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #b79a5b;
+  border-radius: 50%;
+  background: #173b32;
+  color: #e2c982;
+  font-size: 35px;
+  font-weight: 700;
+  box-shadow: 0 0 0 6px #edf1ec;
+}
+
+.tc-success-heading {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #173b32;
+  margin-bottom: 5px;
+}
+
+.tc-success-dialog h2 {
+  margin-top: 0;
+  color: #173b32;
+  font-size: 23px;
+}
+
+#tc-success-id {
+  color: #173b32;
+  letter-spacing: 1px;
+  font-family: monospace;
+}
+
+#tc-success-view {
+  background: #173b32;
+  color: #fffdf4;
+  border: 1px solid #b79a5b;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#tc-success-view:active {
+  transform: scale(0.98);
+}
+
   </style>
 </head>
 <body>
@@ -6474,7 +6530,16 @@ const female = [
  
 const previewContainer = document.getElementById('tc-preview-container');
 const previewContent = document.getElementById('tc-preview-content');
+const downloadButton = document.getElementById('tc-preview-download');
+const closeButton = document.getElementById('tc-preview-close-bottom');
 
+if (issuedRecord) {
+  if (downloadButton) downloadButton.style.display = 'inline-block';
+  if (closeButton) closeButton.style.display = 'none';
+} else {
+  if (downloadButton) downloadButton.style.display = 'none';
+  if (closeButton) closeButton.style.display = 'inline-block';
+}
 if (!previewContainer || !previewContent) {
   alert('TC preview area could not be found. Please refresh SchoolDesk.');
   return;
@@ -6834,7 +6899,22 @@ document.addEventListener('click', function (event) {
     alert('Please open the certificate preview first.');
   }
 });
+document.addEventListener('click', function (event) {
+  const button = event.target.closest('#tc-preview-download');
 
+  if (!button) return;
+
+  const previewFrame = document.querySelector(
+    '#tc-preview-content iframe'
+  );
+
+  if (previewFrame && previewFrame.contentWindow) {
+    previewFrame.contentWindow.focus();
+    previewFrame.contentWindow.print();
+  } else {
+    alert('Please open the certificate first.');
+  }
+});
 document.addEventListener('click', function (event) {
   const button = event.target.closest('#tc-preview-close-bottom');
 
@@ -6936,11 +7016,14 @@ if (button) {
       return;
     }
 
-  
-    alert('TC issued successfully. TC ID: ' + result.tcId);
+ window.lastIssuedTCRecord = {
+  ...data,
+  TC_ID: result.tcId
+};
 
-// Use the print window opened by the Issue TC button.
-previewTC();
+document.getElementById('tc-success-id').textContent = result.tcId;
+
+document.getElementById('tc-success-overlay').style.display = 'flex';
 
 refreshData();
 
@@ -9256,17 +9339,24 @@ if (!schoolDeskProfileHistory) {
 
   <main id="tc-preview-content"></main>
 
-  <footer id="tc-preview-footer">
-    <div class="tc-footer-label">ST. DENIS SECONDARY SCHOOL</div>
-    <div class="tc-footer-actions">
-      <button type="button" id="tc-preview-print">
-        <span>▣</span> Print Certificate
-      </button>
-      <button type="button" id="tc-preview-close-bottom">
-        Close Preview
-      </button>
-    </div>
-  </footer>
+  
+<footer id="tc-preview-footer">
+  <div class="tc-footer-label">ST. DENIS SECONDARY SCHOOL</div>
+  <div class="tc-footer-actions">
+    <button type="button" id="tc-preview-print">
+      <span>▣</span> Print Certificate
+    </button>
+
+    <button type="button" id="tc-preview-download" style="display:none;">
+      ↓ Download Certificate
+    </button>
+
+    <button type="button" id="tc-preview-close-bottom">
+      Close Preview
+    </button>
+  </div>
+</footer>
+
 </div>
   
 <!-- TC ISSUE CONFIRMATION -->
@@ -9302,6 +9392,43 @@ if (!schoolDeskProfileHistory) {
   </div>
 </div>
 
+<!-- TC ISSUE SUCCESS -->
+<div id="tc-success-overlay" class="tc-confirm-overlay" style="display:none;">
+  <div class="tc-confirm-dialog tc-success-dialog">
+
+    <div class="tc-success-mark">✓</div>
+
+    <div class="tc-success-heading">
+      Transfer Certificate
+    </div>
+
+    <div class="tc-confirm-school">
+      ST. DENIS SECONDARY SCHOOL
+    </div>
+
+    <div class="tc-confirm-divider"></div>
+
+    <h2>TC Issued Successfully!</h2>
+
+    <p class="tc-confirm-message">
+      The Transfer Certificate has been saved successfully.
+    </p>
+
+    <div class="tc-confirm-student">
+      <span>TRANSFER CERTIFICATE ID</span>
+      <strong id="tc-success-id"></strong>
+      <small>The student has been marked Inactive.</small>
+    </div>
+
+    <div class="tc-confirm-actions">
+      <button type="button" id="tc-success-view">
+        View Certificate
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <script>
   document.getElementById('tc-preview-close').onclick = closeTCPreview;
     document.getElementById('tc-confirm-cancel').onclick = function () {
@@ -9312,6 +9439,10 @@ if (!schoolDeskProfileHistory) {
     document.getElementById('tc-confirm-overlay').style.display = 'none';
     issueTC(true);
   };
+  document.getElementById('tc-success-view').onclick = function () {
+  document.getElementById('tc-success-overlay').style.display = 'none';
+  previewTC(null, window.lastIssuedTCRecord);
+};
 </script>
  </body>
 </html>
