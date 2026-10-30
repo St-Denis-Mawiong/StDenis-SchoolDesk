@@ -4505,6 +4505,159 @@ header .profile small {
   }
 }
 
+/* ===== TC ISSUE CONFIRMATION ===== */
+.tc-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(7, 20, 15, 0.76);
+  backdrop-filter: blur(7px);
+}
+
+.tc-confirm-dialog {
+  width: 100%;
+  max-width: 430px;
+  padding: 27px;
+  background: #fffdf4;
+  border: 1px solid #b79a5b;
+  border-radius: 17px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  color: #173b32;
+  animation: tcConfirmAppear 0.22s ease-out;
+}
+
+@keyframes tcConfirmAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tc-confirm-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.tc-confirm-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: #173b32;
+  color: #d7bd7a;
+  border-radius: 12px;
+  font-size: 25px;
+}
+
+.tc-confirm-title {
+  font-family: Georgia, serif;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.tc-confirm-school {
+  margin-top: 4px;
+  color: #927b48;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+.tc-confirm-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: linear-gradient(90deg, #b79a5b, #e8dfc8, transparent);
+}
+
+.tc-confirm-dialog h2 {
+  margin: 0 0 9px;
+  font-family: Georgia, serif;
+  font-size: 23px;
+}
+
+.tc-confirm-message {
+  margin: 0;
+  color: #52645b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tc-confirm-student {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 21px;
+  padding: 15px;
+  background: #edf1ec;
+  border-left: 3px solid #b79a5b;
+  border-radius: 8px;
+}
+
+.tc-confirm-student span {
+  color: #718075;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tc-confirm-student strong {
+  font-size: 16px;
+}
+
+.tc-confirm-student small {
+  color: #66746b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.tc-confirm-actions {
+  display: flex;
+  gap: 11px;
+  margin-top: 24px;
+}
+
+.tc-confirm-actions button {
+  flex: 1;
+  min-height: 46px;
+  border: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#tc-confirm-cancel {
+  background: #e8e9e3;
+  color: #43534a;
+}
+
+#tc-confirm-yes {
+  background: #173b32;
+  color: #fffdf4;
+  border: 1px solid #b79a5b;
+}
+
+#tc-confirm-yes:active,
+#tc-confirm-cancel:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .tc-confirm-dialog {
+    padding: 22px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -6702,7 +6855,7 @@ document.addEventListener('click', function (event) {
 
   previewTC(null, record);
 }
-function issueTC() {
+function issueTC(confirmed = false) {
   const select = document.getElementById('tc-student');
   const studentId = select.value;
 
@@ -6758,7 +6911,11 @@ function issueTC() {
     Remarks: document.getElementById('tc-remarks').value || ''
   };
 
-if (!confirm('Phi lah tikna ban ai TC ia ine i khynnah')) {
+if (!confirmed) {
+  document.getElementById('tc-confirm-student-name').textContent =
+    data.StudentName;
+
+  document.getElementById('tc-confirm-overlay').style.display = 'flex';
   return;
 }
 const button = document.getElementById('tc-confirm-issue-btn');
@@ -9110,12 +9267,51 @@ if (!schoolDeskProfileHistory) {
       </button>
     </div>
   </footer>
-
 </div>
+  
+<!-- TC ISSUE CONFIRMATION -->
+<div id="tc-confirm-overlay" class="tc-confirm-overlay" style="display:none;">
+  <div class="tc-confirm-dialog">
 
+    <div class="tc-confirm-header">
+      <div class="tc-confirm-icon">✦</div>
+      <div>
+        <div class="tc-confirm-title">Transfer Certificate</div>
+        <div class="tc-confirm-school">ST. DENIS SECONDARY SCHOOL</div>
+      </div>
+    </div>
+
+    <div class="tc-confirm-divider"></div>
+
+    <h2>Are you sure?</h2>
+    <p class="tc-confirm-message">
+      Phi lah tikna ban ai TC ia ine i khynnah
+    </p>
+
+    <div class="tc-confirm-student">
+      <span>STUDENT</span>
+      <strong id="tc-confirm-student-name"></strong>
+      <small>The student will be marked Inactive after the TC is issued.</small>
+    </div>
+
+    <div class="tc-confirm-actions">
+      <button type="button" id="tc-confirm-cancel">Em</button>
+      <button type="button" id="tc-confirm-yes">Hooid</button>
+    </div>
+
+  </div>
+</div>
 
 <script>
   document.getElementById('tc-preview-close').onclick = closeTCPreview;
+    document.getElementById('tc-confirm-cancel').onclick = function () {
+    document.getElementById('tc-confirm-overlay').style.display = 'none';
+  };
+
+  document.getElementById('tc-confirm-yes').onclick = function () {
+    document.getElementById('tc-confirm-overlay').style.display = 'none';
+    issueTC(true);
+  };
 </script>
  </body>
 </html>
