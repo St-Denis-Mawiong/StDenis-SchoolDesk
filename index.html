@@ -6217,9 +6217,14 @@ const female = [
     'Minor Reasons'
   ];
 
-  const checkedReasons = Array.from(
-    document.querySelectorAll('input[name="tc-reason"]:checked')
-  ).map(box => box.value);
+ const checkedReasons = issuedRecord
+  ? String(issuedRecord.ReasonForLeaving || '')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean)
+  : Array.from(
+      document.querySelectorAll('input[name="tc-reason"]:checked')
+    ).map(box => box.value);
 
   function escTC(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
