@@ -6758,28 +6758,9 @@ function issueTC() {
     Remarks: document.getElementById('tc-remarks').value || ''
   };
 
-  if (!confirm(
-    'Issue a Transfer Certificate for ' + data.StudentName +
-    '?\n\nThe TC will be saved and this student will be marked Inactive.'
-  )) {
-    return;
-  }
-
- const printWindow = window.open('', '_blank');
-
-if (!printWindow) {
-  alert('Please allow pop-ups to issue and print the TC.');
+if (!confirm('Phi lah tikna ban ai TC ia ine i khynnah')) {
   return;
 }
-
-printWindow.document.write(
-  '<!DOCTYPE html><html><head><title>Preparing TC</title></head>' +
-  '<body style="font-family:Arial;padding:30px;">' +
-  'Issuing Transfer Certificate... Please wait.' +
-  '</body></html>'
-);
-printWindow.document.close();
-
 const button = document.getElementById('tc-confirm-issue-btn');
 
 if (button) {
@@ -6802,7 +6783,7 @@ if (button) {
     alert('TC issued successfully. TC ID: ' + result.tcId);
 
 // Use the print window opened by the Issue TC button.
-previewTC(printWindow);
+previewTC();
 
 refreshData();
 
@@ -6810,10 +6791,6 @@ refreshData();
   if (button) {
     button.disabled = false;
     button.textContent = 'Issue TC';
-  }
-
-  if (printWindow && !printWindow.closed) {
-    printWindow.close();
   }
 
   alert('TC issuance failed: ' + error.message);
