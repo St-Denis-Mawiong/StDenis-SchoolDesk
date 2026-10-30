@@ -6906,9 +6906,20 @@ document.addEventListener('click', function (event) {
 
   if (window.SchoolDeskAndroid &&
       typeof window.SchoolDeskAndroid.printCertificate === 'function') {
+
     window.SchoolDeskAndroid.printCertificate();
+
   } else {
-    alert('Android printing is unavailable.');
+    const previewFrame = document.querySelector(
+      '#tc-preview-content iframe'
+    );
+
+    if (previewFrame && previewFrame.contentWindow) {
+      previewFrame.contentWindow.focus();
+      previewFrame.contentWindow.print();
+    } else {
+      alert('Please open the certificate first.');
+    }
   }
 });
 document.addEventListener('click', function (event) {
