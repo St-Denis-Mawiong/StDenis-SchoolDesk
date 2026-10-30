@@ -6904,22 +6904,23 @@ document.addEventListener('click', function (event) {
 
   if (!button) return;
 
-  if (window.SchoolDeskAndroid &&
-      typeof window.SchoolDeskAndroid.printCertificate === 'function') {
+  const previewFrame = document.querySelector(
+    '#tc-preview-content iframe'
+  );
 
-    window.SchoolDeskAndroid.printCertificate();
+  if (!previewFrame) {
+    alert('Please open the certificate first.');
+    return;
+  }
 
+  if (
+    window.SchoolDeskAndroid &&
+    typeof window.SchoolDeskAndroid.printCertificate === 'function'
+  ) {
+    window.SchoolDeskAndroid.printCertificate(previewFrame.srcdoc);
   } else {
-    const previewFrame = document.querySelector(
-      '#tc-preview-content iframe'
-    );
-
-    if (previewFrame && previewFrame.contentWindow) {
-      previewFrame.contentWindow.focus();
-      previewFrame.contentWindow.print();
-    } else {
-      alert('Please open the certificate first.');
-    }
+    previewFrame.contentWindow.focus();
+    previewFrame.contentWindow.print();
   }
 });
 document.addEventListener('click', function (event) {
