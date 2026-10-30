@@ -6904,15 +6904,11 @@ document.addEventListener('click', function (event) {
 
   if (!button) return;
 
-  const previewFrame = document.querySelector(
-    '#tc-preview-content iframe'
-  );
-
-  if (previewFrame && previewFrame.contentWindow) {
-    previewFrame.contentWindow.focus();
-    previewFrame.contentWindow.print();
+  if (window.SchoolDeskAndroid &&
+      typeof window.SchoolDeskAndroid.printCertificate === 'function') {
+    window.SchoolDeskAndroid.printCertificate();
   } else {
-    alert('Please open the certificate first.');
+    alert('Android printing is unavailable.');
   }
 });
 document.addEventListener('click', function (event) {
@@ -9124,6 +9120,7 @@ if (!schoolDeskProfileHistory) {
 }
 
 #tc-preview-print,
+#tc-preview-download,
 #tc-preview-close-bottom {
   display: inline-flex;
   align-items: center;
@@ -9151,7 +9148,19 @@ if (!schoolDeskProfileHistory) {
   background: #f8ebc9;
   transform: translateY(-2px);
 }
+#tc-preview-download {
+  color: #ead7a5;
+  background: linear-gradient(145deg, #244b3b, #173b32);
+  border: 1px solid #b89a58;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+}
 
+#tc-preview-download:hover {
+  color: #fff2ce;
+  background: linear-gradient(145deg, #315d49, #204737);
+  border-color: #e0c47f;
+  transform: translateY(-2px);
+}
 #tc-preview-close-bottom {
   color: #e9e0cd;
   background: rgba(255, 255, 255, .035);
@@ -9277,6 +9286,7 @@ if (!schoolDeskProfileHistory) {
   }
 
   #tc-preview-print,
+  #tc-preview-download,
   #tc-preview-close-bottom {
     flex: 1 1 0;
     min-width: 0;
