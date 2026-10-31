@@ -5245,6 +5245,36 @@ header .profile small {
 <div id="markbook-dashboard" class="hidden">
   <h2 id="markbook-teacher-name"></h2>
   <p>Ki Subject ba shim phi</p>
+  
+<div id="markbook-selection">
+
+  <label for="markbook-class">Select Class</label>
+  <select id="markbook-class">
+    <option value="">Choose Class</option>
+  </select>
+
+  <label for="markbook-subject">Select Subject</label>
+  <select id="markbook-subject" disabled>
+    <option value="">Choose Subject</option>
+  </select>
+
+  <label for="markbook-exam">Select Examination</label>
+  <select id="markbook-exam">
+    <option value="">Choose Examination</option>
+    <option value="Unit Test 1">Unit Test 1</option>
+    <option value="Half-Yearly">Half-Yearly</option>
+    <option value="Unit Test 2">Unit Test 2</option>
+    <option value="Final Examination">Final Examination</option>
+  </select>
+
+  <button type="button" id="markbook-load-students">
+    Load Students
+  </button>
+
+</div>
+
+<div id="markbook-student-list"></div>
+
   <div id="markbook-assignments"></div>
 </div>
 
@@ -9545,12 +9575,48 @@ document.getElementById('markbook-login-btn').addEventListener('click', function
     const container = document.getElementById('markbook-assignments');
     container.innerHTML = '';
 
-    result.assignments.forEach(function(item) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.textContent = item.className + ' — ' + item.subjectName;
-      container.appendChild(card);
-    });
+   
+result.assignments.forEach(function(item) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.textContent = item.className + ' — ' + item.subjectName;
+  container.appendChild(card);
+});
+
+window.markbookTeacher = result.teacher;
+window.markbookAssignments = result.assignments;
+
+// Fill class selector
+const classSelect = document.getElementById('markbook-class');
+const subjectSelect = document.getElementById('markbook-subject');
+
+const assignedClasses = [...new Set(
+  result.assignments.map(item => item.className)
+)];
+
+classSelect.innerHTML =
+  '<option value="">Choose Class</option>' +
+  assignedClasses.map(className =>
+    '<option value="' + className + '">' + className + '</option>'
+  ).join('');
+
+// Update subjects when class changes
+classSelect.addEventListener('change', function() {
+  const selectedClass = this.value;
+
+  const subjects = result.assignments
+    .filter(item => item.className === selectedClass)
+    .map(item => item.subjectName);
+
+  subjectSelect.innerHTML =
+    '<option value="">Choose Subject</option>' +
+    subjects.map(subject =>
+      '<option value="' + subject + '">' + subject + '</option>'
+    ).join('');
+
+  subjectSelect.disabled = !selectedClass;
+});
+
 
   }, function(error) {
     button.disabled = false;
