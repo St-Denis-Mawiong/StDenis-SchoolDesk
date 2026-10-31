@@ -9594,11 +9594,9 @@ const assignedClasses = [...new Set(
   result.assignments.map(item => item.className)
 )];
 
-classSelect.innerHTML =
-  '<option value="">Choose Class</option>' +
-  assignedClasses.map(className =>
-    '<option value="' + className + '">' + className + '</option>'
-  ).join('');
+classSelect.innerHTML = assignedClasses.map(className =>
+  '<option value="' + className + '">' + className + '</option>'
+).join('');
 
 // Update subjects when class changes
 classSelect.addEventListener('change', function() {
@@ -9611,7 +9609,7 @@ classSelect.addEventListener('change', function() {
  subjectSelect.innerHTML = subjects.map(subject =>
   '<option value="' + subject + '">' + subject + '</option>'
 ).join('');
-  : '<option value="">Select a class first</option>';
+ '<option value="">Select a class first</option>';
 
 subjectSelect.disabled = !selectedClass;
 });
