@@ -9608,11 +9608,9 @@ classSelect.addEventListener('change', function() {
     .filter(item => item.className === selectedClass)
     .map(item => item.subjectName);
 
-  subjectSelect.innerHTML = selectedClass
-  ? '<option value="">Jied iaka Subject</option>' +
-    subjects.map(subject =>
-      '<option value="' + subject + '">' + subject + '</option>'
-    ).join('')
+ subjectSelect.innerHTML = subjects.map(subject =>
+  '<option value="' + subject + '">' + subject + '</option>'
+).join('');
   : '<option value="">Select a class first</option>';
 
 subjectSelect.disabled = !selectedClass;
