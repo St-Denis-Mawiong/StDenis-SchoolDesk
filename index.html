@@ -9608,13 +9608,14 @@ classSelect.addEventListener('change', function() {
     .filter(item => item.className === selectedClass)
     .map(item => item.subjectName);
 
-  subjectSelect.innerHTML =
-    '<option value="">Choose Subject</option>' +
+  subjectSelect.innerHTML = selectedClass
+  ? '<option value="">Choose Subject</option>' +
     subjects.map(subject =>
       '<option value="' + subject + '">' + subject + '</option>'
-    ).join('');
+    ).join('')
+  : '<option value="">Select a class first</option>';
 
-  subjectSelect.disabled = !selectedClass;
+subjectSelect.disabled = !selectedClass;
 });
 
 
