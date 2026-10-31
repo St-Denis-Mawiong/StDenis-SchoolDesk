@@ -9508,5 +9508,57 @@ if (!schoolDeskProfileHistory) {
   previewTC(null, window.lastIssuedTCRecord);
 };
 </script>
+  <script>
+// MARKBOOKS - TEACHER LOGIN
+
+document.getElementById('markbook-login-btn').addEventListener('click', function() {
+  const phoneInput = document.getElementById('markbook-phone');
+  const message = document.getElementById('markbook-login-message');
+  const button = this;
+
+  const phone = phoneInput.value.trim();
+
+  if (!phone) {
+    message.textContent = 'Please enter your phone number.';
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Checking...';
+  message.textContent = '';
+
+  callServer('getTeacherAccess', [phone], function(result) {
+    button.disabled = false;
+    button.textContent = 'Continue';
+
+    if (!result || !result.success) {
+      message.textContent = result?.message || 'Teacher login failed.';
+      return;
+    }
+
+    document.getElementById('markbook-login').classList.add('hidden');
+    document.getElementById('markbook-dashboard').classList.remove('hidden');
+
+    document.getElementById('markbook-teacher-name').textContent =
+      'Welcome, ' + result.teacher.teacherName;
+
+    const container = document.getElementById('markbook-assignments');
+    container.innerHTML = '';
+
+    result.assignments.forEach(function(item) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = item.className + ' — ' + item.subjectName;
+      container.appendChild(card);
+    });
+
+  }, function(error) {
+    button.disabled = false;
+    button.textContent = 'Continue';
+    message.textContent = error.message;
+  });
+});
+
+</script>
  </body>
 </html>
