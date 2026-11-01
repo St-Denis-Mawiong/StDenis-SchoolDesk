@@ -5257,7 +5257,13 @@ header .profile small {
   <select id="markbook-subject" disabled>
     <option value="">Choose Subject</option>
   </select>
-
+   <label for="markbook-academic-year">Academic Year</label>
+<input
+  type="text"
+  id="markbook-academic-year"
+  placeholder="e.g. 2026-2027"
+  value="2026-2027"
+>
   <label for="markbook-exam">Select Examination</label>
   <select id="markbook-exam">
     <option value="">Choose Examination</option>
@@ -9647,9 +9653,14 @@ document.getElementById('markbook-save-btn').onclick = function() {
 
     marksData.push(studentData);
   }
+const academicYear = document.getElementById('markbook-academic-year').value.trim();
 
+if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+  message.textContent = 'Please enter a valid academic year (e.g. 2026-2027).';
+  return;
+}
 const payload = {
-  academicYear: '2026-2027',
+  academicYear: academicYear,
   teacherId: window.markbookTeacher.teacherId,
   className: selectedClass,
   subjectName: selectedSubject,
