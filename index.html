@@ -10084,7 +10084,17 @@ function renderStudent(index) {
     subjectHeading.style.margin = '0 0 10px 0';
 
     subjectCard.appendChild(subjectHeading);
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.textContent = 'Edit';
+    editButton.style.marginBottom = '10px';
 
+    subjectCard.appendChild(editButton);
+    const editPanel = document.createElement('div');
+    editPanel.style.display = 'none';
+    editPanel.style.marginTop = '10px';
+
+    subjectCard.appendChild(editPanel);
     const examGrid = document.createElement('div');
     examGrid.style.display = 'grid';
     examGrid.style.gridTemplateColumns =
@@ -10097,7 +10107,87 @@ function renderStudent(index) {
       { name: 'Unit Test 2', label: 'UT2 /20' },
       { name: 'Final Examination', label: 'Final /80' }
     ];
+    editButton.addEventListener('click', function() {
 
+  const isMinor = subject.subjectType === 'Minor';
+
+  if (editPanel.style.display === 'none') {
+
+    editPanel.innerHTML = '';
+
+    exams.forEach(function(exam) {
+
+      if (isMinor &&
+          exam.name !== 'Half-Yearly' &&
+          exam.name !== 'Final Examination') {
+        return;
+      }
+
+      const saved = data.marks.find(function(mark) {
+        return mark.studentId === student.studentId &&
+               mark.subjectName === subject.subjectName &&
+               mark.examination === exam.name;
+      });
+
+      const fieldLabel = document.createElement('label');
+      fieldLabel.textContent = isMinor
+        ? exam.name
+        : exam.label;
+
+      fieldLabel.style.display = 'block';
+      fieldLabel.style.marginTop = '10px';
+
+      let field;
+
+      if (isMinor) {
+
+        field = document.createElement('select');
+
+        ['', 'A', 'B', 'C', 'D'].forEach(function(grade) {
+          const option = document.createElement('option');
+          option.value = grade;
+          option.textContent = grade || 'Choose Grade';
+          field.appendChild(option);
+        });
+
+        field.value = saved ? saved.grade || '' : '';
+
+      } else {
+
+        field = document.createElement('input');
+        field.type = 'number';
+        field.min = '0';
+        field.max =
+          exam.name === 'Unit Test 1' ||
+          exam.name === 'Unit Test 2' ? '20' : '80';
+
+        field.value = saved && saved.marks !== ''
+          ? saved.marks
+          : '';
+
+      }
+
+      field.dataset.examination = exam.name;
+      field.style.width = '100%';
+      field.style.boxSizing = 'border-box';
+      field.style.marginTop = '5px';
+
+      fieldLabel.appendChild(field);
+      editPanel.appendChild(fieldLabel);
+
+    });
+
+    editPanel.style.display = 'block';
+    editButton.textContent = 'Cancel';
+
+  } else {
+
+    editPanel.style.display = 'none';
+    editButton.textContent = 'Edit';
+
+  }
+
+});
     exams.forEach(function(exam) {
 
       const examBox = document.createElement('div');
