@@ -9680,15 +9680,71 @@ document.getElementById('markbook-load-students')
 
     studentContainer.appendChild(heading);
 
-    students.forEach(function(student, index) {
-      const row = document.createElement('div');
-      row.className = 'card';
+   const selectedAssignment = result.assignments.find(function(item) {
+  return item.className === selectedClass &&
+         item.subjectName === selectedSubject;
+});
 
-      row.textContent =
-        (student.RollNo || (index + 1)) + '. ' + student.Name;
+if (!selectedAssignment) {
+  studentContainer.textContent = 'Subject assignment not found.';
+  return;
+}
 
-      studentContainer.appendChild(row);
-    });
+const isMinor = selectedAssignment.subjectType === 'Minor';
+
+students.forEach(function(student, index) {
+
+  const row = document.createElement('div');
+  row.className = 'card';
+
+  row.style.display = 'flex';
+  row.style.alignItems = 'center';
+  row.style.justifyContent = 'space-between';
+  row.style.gap = '12px';
+
+  const name = document.createElement('span');
+
+  name.textContent =
+    (student.RollNo || (index + 1)) + '. ' + student.Name;
+
+  row.appendChild(name);
+
+  if (isMinor) {
+
+    const grade = document.createElement('select');
+    grade.className = 'markbook-grade';
+
+    grade.innerHTML = `
+      <option value="">Select Grade</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    `;
+
+    row.appendChild(grade);
+
+  } else {
+
+    const marks = document.createElement('input');
+    marks.type = 'number';
+    marks.className = 'markbook-marks';
+    marks.min = '0';
+    marks.step = '1';
+
+    const maxMarks =
+      selectedExam === 'Unit Test 1' ||
+      selectedExam === 'Unit Test 2' ? 20 : 80;
+
+    marks.max = maxMarks;
+    marks.placeholder = '0–' + maxMarks;
+    marks.style.width = '85px';
+
+    row.appendChild(marks);
+  }
+
+  studentContainer.appendChild(row);
+});
 
     const count = document.createElement('p');
     count.textContent = 'Total Students: ' + students.length;
