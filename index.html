@@ -10168,6 +10168,7 @@ function renderStudent(index) {
       }
 
       field.dataset.examination = exam.name;
+      field.dataset.originalValue = field.value;
       field.style.width = '100%';
       field.style.boxSizing = 'border-box';
       field.style.marginTop = '5px';
@@ -10194,7 +10195,8 @@ function renderStudent(index) {
     const value = field.value.trim();
 
     // Skip exams where no mark or grade has been entered.
-    if (value === '') return;
+    if (value === '' ||
+    value === field.dataset.originalValue) return;
 
     pendingSaves.push({
       examination: field.dataset.examination,
@@ -10204,7 +10206,7 @@ function renderStudent(index) {
   });
 
   if (pendingSaves.length === 0) {
-    alert('Please enter at least one mark or grade.');
+    alert('No changes to save.');
     return;
   }
 
