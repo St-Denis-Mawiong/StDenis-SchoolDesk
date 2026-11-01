@@ -9648,9 +9648,43 @@ document.getElementById('markbook-save-btn').onclick = function() {
     marksData.push(studentData);
   }
 
-  console.log('Prepared Markbook data:', marksData);
+const payload = {
+  academicYear: '2026-2027',
+  teacherId: window.markbookTeacher.teacherId,
+  className: selectedClass,
+  subjectName: selectedSubject,
+  examination: selectedExam,
+  students: marksData
+};
 
-  message.textContent = 'Marks prepared successfully.';
+const saveButton = document.getElementById('markbook-save-btn');
+
+saveButton.disabled = true;
+saveButton.textContent = 'Saving...';
+message.textContent = '';
+
+callServer('saveMarkbookMarks', [payload], function(result) {
+
+  saveButton.disabled = false;
+  saveButton.textContent = 'Save Marks';
+
+  if (!result || !result.success) {
+    message.textContent = result?.message || 'Unable to save marks.';
+    return;
+  }
+
+  message.textContent =
+    result.message + ' New: ' + result.savedCount +
+    ', Updated: ' + result.updatedCount;
+
+}, function(error) {
+
+  saveButton.disabled = false;
+  saveButton.textContent = 'Save Marks';
+
+  message.textContent = error.message || 'Unable to save marks.';
+
+});
 
 };
 // Fill class selector
