@@ -9994,87 +9994,184 @@ document.getElementById('markbook-view-load')
         ' | Subjects: ' + data.subjects.length;
 
       container.appendChild(summary);
+      // STUDENT-BY-STUDENT MARKBOOK DISPLAY
 
-      const table = document.createElement('table');
-      table.style.width = '100%';
-      table.style.borderCollapse = 'collapse';
+if (!data.students.length) {
+  container.textContent = 'No active students found in this class.';
+  return;
+}
 
-      const header = document.createElement('tr');
+let currentStudentIndex = 0;
 
-      ['Roll No.', 'Student Name', 'Subject', 'UT1 /20',
-       'Half-Yearly /80', 'UT2 /20', 'Final /80']
-        .forEach(function(label) {
-          const th = document.createElement('th');
-          th.textContent = label;
-          th.style.padding = '8px';
-          th.style.border = '1px solid #ccc';
-          header.appendChild(th);
-        });
+// Student navigation
+const navigation = document.createElement('div');
+navigation.style.display = 'flex';
+navigation.style.alignItems = 'center';
+navigation.style.gap = '10px';
+navigation.style.margin = '15px 0';
 
-      table.appendChild(header);
+const previousButton = document.createElement('button');
+previousButton.type = 'button';
+previousButton.textContent = '← Previous';
 
-      data.students.forEach(function(student) {
-        data.subjects.forEach(function(subject) {
+const studentSelect = document.createElement('select');
+studentSelect.style.flex = '1';
+studentSelect.style.minWidth = '0';
 
-          const row = document.createElement('tr');
+data.students.forEach(function(student, index) {
+  const option = document.createElement('option');
+  option.value = index;
+  option.textContent =
+    (student.rollNo || index + 1) + ' — ' + student.studentName;
+  studentSelect.appendChild(option);
+});
 
-          [
-            student.rollNo || '—',
-            student.studentName,
-            subject.subjectName
-          ].forEach(function(value) {
-            const td = document.createElement('td');
-            td.textContent = value;
-            td.style.padding = '8px';
-            td.style.border = '1px solid #ccc';
-            row.appendChild(td);
-          });
+const nextButton = document.createElement('button');
+nextButton.type = 'button';
+nextButton.textContent = 'Next →';
 
-          const exams = [
-            'Unit Test 1',
-            'Half-Yearly',
-            'Unit Test 2',
-            'Final Examination'
-          ];
+navigation.appendChild(previousButton);
+navigation.appendChild(studentSelect);
+navigation.appendChild(nextButton);
 
-          exams.forEach(function(exam) {
+container.appendChild(navigation);
 
-            const td = document.createElement('td');
-            td.style.padding = '8px';
-            td.style.border = '1px solid #ccc';
+// Student information
+const studentDisplay = document.createElement('div');
+container.appendChild(studentDisplay);
 
-            if (subject.subjectType === 'Minor' &&
-                exam !== 'Half-Yearly' &&
-                exam !== 'Final Examination') {
-              td.textContent = '—';
-            } else {
-              const saved = data.marks.find(function(mark) {
-                return mark.studentId === student.studentId &&
-                       mark.subjectName === subject.subjectName &&
-                       mark.examination === exam;
-              });
+function renderStudent(index) {
 
-              if (!saved) {
-                td.textContent = '—';
-              } else {
-                td.textContent = subject.subjectType === 'Minor'
-                  ? (saved.grade || '—')
-                  : (saved.marks !== null &&
-                     saved.marks !== undefined &&
-                     saved.marks !== ''
-                      ? saved.marks
-                      : '—');
-              }
-            }
+  currentStudentIndex = index;
 
-            row.appendChild(td);
-          });
+  const student = data.students[index];
 
-          table.appendChild(row);
-        });
+  studentSelect.value = index;
+
+  previousButton.disabled = index === 0;
+  nextButton.disabled = index === data.students.length - 1;
+
+  studentDisplay.innerHTML = '';
+
+  const studentCard = document.createElement('div');
+  studentCard.style.padding = '15px';
+  studentCard.style.marginBottom = '15px';
+  studentCard.style.border = '1px solid #ccc';
+  studentCard.style.borderRadius = '10px';
+
+  const name = document.createElement('h3');
+  name.textContent = student.studentName;
+  studentCard.appendChild(name);
+
+  const roll = document.createElement('p');
+  roll.textContent = 'Roll No.: ' +
+    (student.rollNo || '—') +
+    ' | Student ' + (index + 1) +
+    ' of ' + data.students.length;
+
+  studentCard.appendChild(roll);
+
+  data.subjects.forEach(function(subject) {
+
+    const subjectCard = document.createElement('div');
+    subjectCard.style.padding = '12px';
+    subjectCard.style.marginTop = '12px';
+    subjectCard.style.border = '1px solid #ddd';
+    subjectCard.style.borderRadius = '8px';
+
+    const subjectHeading = document.createElement('h4');
+    subjectHeading.textContent = subject.subjectName;
+    subjectHeading.style.margin = '0 0 10px 0';
+
+    subjectCard.appendChild(subjectHeading);
+
+    const examGrid = document.createElement('div');
+    examGrid.style.display = 'grid';
+    examGrid.style.gridTemplateColumns =
+      'repeat(2, minmax(0, 1fr))';
+    examGrid.style.gap = '8px';
+
+    const exams = [
+      { name: 'Unit Test 1', label: 'UT1 /20' },
+      { name: 'Half-Yearly', label: 'Half-Yearly /80' },
+      { name: 'Unit Test 2', label: 'UT2 /20' },
+      { name: 'Final Examination', label: 'Final /80' }
+    ];
+
+    exams.forEach(function(exam) {
+
+      const examBox = document.createElement('div');
+      examBox.style.padding = '10px';
+      examBox.style.background = '#f1f3f1';
+      examBox.style.borderRadius = '7px';
+
+      const isMinor = subject.subjectType === 'Minor';
+
+      if (isMinor &&
+          exam.name !== 'Half-Yearly' &&
+          exam.name !== 'Final Examination') {
+        return;
+      }
+
+      const saved = data.marks.find(function(mark) {
+        return mark.studentId === student.studentId &&
+               mark.subjectName === subject.subjectName &&
+               mark.examination === exam.name;
       });
 
-      container.appendChild(table);
+      const label = document.createElement('small');
+      label.textContent = isMinor
+        ? exam.name
+        : exam.label;
+
+      const value = document.createElement('h3');
+
+      if (!saved) {
+        value.textContent = '—';
+      } else if (isMinor) {
+        value.textContent = saved.grade || '—';
+      } else {
+        value.textContent =
+          saved.marks !== null &&
+          saved.marks !== undefined &&
+          saved.marks !== ''
+            ? saved.marks
+            : '—';
+      }
+
+      value.style.margin = '5px 0 0 0';
+
+      examBox.appendChild(label);
+      examBox.appendChild(value);
+
+      examGrid.appendChild(examBox);
+    });
+
+    subjectCard.appendChild(examGrid);
+    studentCard.appendChild(subjectCard);
+  });
+
+  studentDisplay.appendChild(studentCard);
+}
+
+// Navigation actions
+previousButton.addEventListener('click', function() {
+  if (currentStudentIndex > 0) {
+    renderStudent(currentStudentIndex - 1);
+  }
+});
+
+nextButton.addEventListener('click', function() {
+  if (currentStudentIndex < data.students.length - 1) {
+    renderStudent(currentStudentIndex + 1);
+  }
+});
+
+studentSelect.addEventListener('change', function() {
+  renderStudent(Number(this.value));
+});
+
+renderStudent(0);
 
     }, function(error) {
 
