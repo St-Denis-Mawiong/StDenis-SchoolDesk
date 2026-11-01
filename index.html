@@ -9610,6 +9610,7 @@ classSelect.addEventListener('change', function() {
   '<option value="' + subject + '">' + subject + '</option>'
 ).join('');
  subjectSelect.disabled = !selectedClass;
+ subjectSelect.dispatchEvent(new Event('change'));
 });
   // Update examinations based on subject type
 subjectSelect.addEventListener('change', function() {
@@ -9635,6 +9636,8 @@ subjectSelect.addEventListener('change', function() {
   }).join('');
 
 });
+    // Initialize the first assigned class automatically
+classSelect.dispatchEvent(new Event('change'));
 // LOAD STUDENTS
 document.getElementById('markbook-load-students')
   .addEventListener('click', function() {
