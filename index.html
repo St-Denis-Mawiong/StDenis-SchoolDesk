@@ -9619,6 +9619,26 @@ result.assignments.forEach(function(item) {
 window.markbookTeacher = result.teacher;
 window.markbookAssignments = result.assignments;
 window.markbookClassTeacherClasses = result.classTeacherClasses || [];
+    // Load current academic year for View / Edit
+callServer('getCurrentAcademicYear', [], function(yearData) {
+
+  if (yearData.success) {
+    document.getElementById('markbook-view-year').value =
+      yearData.academicYear;
+  } else {
+    document.getElementById('markbook-view-year').value = '';
+  }
+
+}, function(error) {
+
+  document.getElementById('markbook-view-year').value = '';
+
+  console.error(
+    'Unable to load current academic year:',
+    error.message
+  );
+
+});
     // Populate View / Edit class selector
 const viewClassSelect =
   document.getElementById('markbook-view-class');
