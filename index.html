@@ -9609,11 +9609,65 @@ classSelect.addEventListener('change', function() {
  subjectSelect.innerHTML = subjects.map(subject =>
   '<option value="' + subject + '">' + subject + '</option>'
 ).join('');
- '<option value="">Select a class first</option>';
-
-subjectSelect.disabled = !selectedClass;
+ subjectSelect.disabled = !selectedClass;
 });
+// LOAD STUDENTS
+document.getElementById('markbook-load-students')
+  .addEventListener('click', function() {
 
+    const selectedClass = classSelect.value;
+    const selectedSubject = subjectSelect.value;
+    const selectedExam = document.getElementById('markbook-exam').value;
+
+    const studentContainer =
+      document.getElementById('markbook-student-list');
+
+    studentContainer.innerHTML = '';
+
+    if (!selectedClass || !selectedSubject || !selectedExam) {
+      studentContainer.textContent =
+        'Please select a class, subject and examination.';
+      return;
+    }
+
+    if (!state.students || !state.students.length) {
+      studentContainer.textContent =
+        'Student data is not loaded yet. Please refresh the app.';
+      return;
+    }
+
+    const students = state.students.filter(function(student) {
+      return student.Class === selectedClass &&
+             String(student.Status).toLowerCase() === 'active';
+    });
+
+    if (!students.length) {
+      studentContainer.textContent =
+        'No active students found in this class.';
+      return;
+    }
+
+    const heading = document.createElement('h3');
+    heading.textContent =
+      selectedClass + ' — ' + selectedSubject + ' — ' + selectedExam;
+
+    studentContainer.appendChild(heading);
+
+    students.forEach(function(student, index) {
+      const row = document.createElement('div');
+      row.className = 'card';
+
+      row.textContent =
+        (student.RollNo || (index + 1)) + '. ' + student.Name;
+
+      studentContainer.appendChild(row);
+    });
+
+    const count = document.createElement('p');
+    count.textContent = 'Total Students: ' + students.length;
+
+    studentContainer.appendChild(count);
+  });
 
   }, function(error) {
     button.disabled = false;
