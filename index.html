@@ -9589,7 +9589,7 @@ window.markbookAssignments = result.assignments;
 // Fill class selector
 const classSelect = document.getElementById('markbook-class');
 const subjectSelect = document.getElementById('markbook-subject');
-
+const examSelect = document.getElementById('markbook-exam');
 const assignedClasses = [...new Set(
   result.assignments.map(item => item.className)
 )];
@@ -9610,6 +9610,30 @@ classSelect.addEventListener('change', function() {
   '<option value="' + subject + '">' + subject + '</option>'
 ).join('');
  subjectSelect.disabled = !selectedClass;
+});
+  // Update examinations based on subject type
+subjectSelect.addEventListener('change', function() {
+
+  const selectedClass = classSelect.value;
+  const selectedSubject = this.value;
+
+  const selectedAssignment = result.assignments.find(function(item) {
+    return item.className === selectedClass &&
+           item.subjectName === selectedSubject;
+  });
+
+  if (!selectedAssignment) return;
+
+  const isMinor = selectedAssignment.subjectType === 'Minor';
+
+  const examinations = isMinor
+    ? ['Half-Yearly', 'Final Examination']
+    : ['Unit Test 1', 'Half-Yearly', 'Unit Test 2', 'Final Examination'];
+
+  examSelect.innerHTML = examinations.map(function(exam) {
+    return '<option value="' + exam + '">' + exam + '</option>';
+  }).join('');
+
 });
 // LOAD STUDENTS
 document.getElementById('markbook-load-students')
