@@ -5274,7 +5274,10 @@ header .profile small {
 </div>
 
 <div id="markbook-student-list"></div>
-
+<button type="button" id="markbook-save-btn" class="hidden">
+  Save Marks
+</button>
+<p id="markbook-save-message"></p>
   <div id="markbook-assignments"></div>
 </div>
 
@@ -9585,7 +9588,71 @@ result.assignments.forEach(function(item) {
 
 window.markbookTeacher = result.teacher;
 window.markbookAssignments = result.assignments;
+document.getElementById('markbook-save-btn').onclick = function() {
 
+  const message = document.getElementById('markbook-save-message');
+  const rows = document.querySelectorAll('#markbook-student-list .card');
+
+  const selectedClass = document.getElementById('markbook-class').value;
+  const selectedSubject = document.getElementById('markbook-subject').value;
+  const selectedExam = document.getElementById('markbook-exam').value;
+
+  const assignment = window.markbookAssignments.find(function(item) {
+    return item.className === selectedClass &&
+           item.subjectName === selectedSubject;
+  });
+
+  if (!assignment) {
+    message.textContent = 'Subject assignment not found.';
+    return;
+  }
+
+  const isMinor = assignment.subjectType === 'Minor';
+
+  const marksData = [];
+
+  for (const row of rows) {
+
+    if (!row.dataset.studentId) continue;
+
+    const studentData = {
+      studentId: row.dataset.studentId,
+      studentName: row.dataset.studentName,
+      rollNo: row.dataset.rollNo
+    };
+
+    if (isMinor) {
+      const grade = row.querySelector('.markbook-grade').value;
+
+      if (!grade) {
+        message.textContent = 'Please enter grades for all students.';
+        return;
+      }
+
+      studentData.grade = grade;
+
+    } else {
+      const input = row.querySelector('.markbook-marks');
+      const marks = input.value;
+      const maxMarks = Number(input.max);
+
+      if (marks === '' || Number(marks) < 0 ||
+          Number(marks) > maxMarks || !Number.isInteger(Number(marks))) {
+        message.textContent = 'Please enter valid marks for all students.';
+        return;
+      }
+
+      studentData.marks = Number(marks);
+    }
+
+    marksData.push(studentData);
+  }
+
+  console.log('Prepared Markbook data:', marksData);
+
+  message.textContent = 'Marks prepared successfully.';
+
+};
 // Fill class selector
 const classSelect = document.getElementById('markbook-class');
 const subjectSelect = document.getElementById('markbook-subject');
@@ -9696,7 +9763,9 @@ students.forEach(function(student, index) {
 
   const row = document.createElement('div');
   row.className = 'card';
-
+  row.dataset.studentId = student.StudentID;
+  row.dataset.studentName = student.Name;
+  row.dataset.rollNo = student.RollNo || (index + 1);
   row.style.display = 'flex';
   row.style.alignItems = 'center';
   row.style.justifyContent = 'space-between';
@@ -9750,6 +9819,10 @@ students.forEach(function(student, index) {
     count.textContent = 'Total Students: ' + students.length;
 
     studentContainer.appendChild(count);
+    document.getElementById('markbook-save-btn')
+  .classList.remove('hidden');
+
+document.getElementById('markbook-save-message').textContent = '';
   });
 
   }, function(error) {
