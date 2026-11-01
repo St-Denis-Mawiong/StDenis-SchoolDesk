@@ -10179,8 +10179,114 @@ function renderStudent(index) {
 
     editPanel.style.display = 'block';
     editButton.textContent = 'Cancel';
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.textContent = 'Save Marks';
+    saveButton.style.marginTop = '12px';
+    editPanel.appendChild(saveButton);
+    saveButton.addEventListener('click', function() {
 
-  } else {
+  const fields = editPanel.querySelectorAll('input, select');
+  const pendingSaves = [];
+
+  fields.forEach(function(field) {
+
+    const value = field.value.trim();
+
+    // Skip exams where no mark or grade has been entered.
+    if (value === '') return;
+
+    pendingSaves.push({
+      examination: field.dataset.examination,
+      value: value
+    });
+
+  });
+
+  if (pendingSaves.length === 0) {
+    alert('Please enter at least one mark or grade.');
+    return;
+  }
+
+  saveButton.disabled = true;
+  saveButton.textContent = 'Saving...';
+
+  let saveIndex = 0;
+
+  function saveNext() {
+
+    if (saveIndex >= pendingSaves.length) {
+      alert('Marks saved successfully.');
+
+      editPanel.style.display = 'none';
+      renderStudent(currentStudentIndex);
+      return;
+    }
+
+    const item = pendingSaves[saveIndex];
+
+    const payload = {
+      teacherId: window.markbookTeacher.teacherId,
+      academicYear: data.academicYear,
+      className: data.className,
+      subjectName: subject.subjectName,
+      examination: item.examination,
+      students: [{
+        studentId: student.studentId,
+        rollNo: student.rollNo,
+        marks: subject.subjectType === 'Minor' ? '' : item.value,
+        grade: subject.subjectType === 'Minor' ? item.value : ''
+      }]
+    };
+
+    callServer('saveMarkbookMarks', [payload], function(result) {
+
+      if (!result.success) {
+        alert(result.message || 'Unable to save marks.');
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save Marks';
+        return;
+      }
+
+      const existingMark = data.marks.find(function(mark) {
+  return mark.studentId === student.studentId &&
+         mark.subjectName === subject.subjectName &&
+         mark.examination === item.examination;
+});
+
+if (existingMark) {
+  existingMark.marks =
+    subject.subjectType === 'Minor' ? '' : Number(item.value);
+
+  existingMark.grade =
+    subject.subjectType === 'Minor' ? item.value : '';
+} else {
+  data.marks.push({
+    studentId: student.studentId,
+    subjectName: subject.subjectName,
+    examination: item.examination,
+    marks: subject.subjectType === 'Minor' ? '' : Number(item.value),
+    grade: subject.subjectType === 'Minor' ? item.value : ''
+  });
+}
+
+saveIndex++;
+saveNext();
+
+    }, function(error) {
+
+      alert(error.message || 'Unable to save marks.');
+      saveButton.disabled = false;
+      saveButton.textContent = 'Save Marks';
+
+    });
+
+  }
+
+  saveNext();
+
+});
+    } else {
 
     editPanel.style.display = 'none';
     editButton.textContent = 'Edit';
