@@ -10397,7 +10397,13 @@ navigation.style.margin = '15px 0';
 const previousButton = document.createElement('button');
 previousButton.type = 'button';
 previousButton.textContent = '← Previous';
-
+previousButton.style.width = 'auto';
+previousButton.style.minWidth = '85px';
+previousButton.style.flexShrink = '0';
+previousButton.style.padding = '7px 9px';
+previousButton.style.minHeight = '36px';
+previousButton.style.fontSize = '12px';
+previousButton.style.whiteSpace = 'nowrap';
 const studentSelect = document.createElement('select');
 studentSelect.style.flex = '1';
 studentSelect.style.minWidth = '0';
@@ -10413,7 +10419,13 @@ data.students.forEach(function(student, index) {
 const nextButton = document.createElement('button');
 nextButton.type = 'button';
 nextButton.textContent = 'Next →';
-
+nextButton.style.width = 'auto';
+nextButton.style.minWidth = '75px';
+nextButton.style.flexShrink = '0';
+nextButton.style.padding = '7px 9px';
+nextButton.style.minHeight = '36px';
+nextButton.style.fontSize = '12px';
+nextButton.style.whiteSpace = 'nowrap';
 navigation.appendChild(previousButton);
 navigation.appendChild(studentSelect);
 navigation.appendChild(nextButton);
