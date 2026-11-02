@@ -4986,27 +4986,117 @@ header .profile small {
   margin-top: 18px;
 }
 
-/* MOBILE RESPONSIVE */
+/* =================================
+   MARKBOOK — MOBILE FIRST LAYOUT
+================================= */
 
 @media (max-width: 600px) {
 
   #page-markbooks {
-    padding: 10px;
+    padding: 8px 12px 24px;
   }
 
+  /* Reduce unnecessary top spacing */
+  #page-markbooks .attendance-hero {
+    margin-top: 10px;
+    margin-bottom: 18px;
+    padding: 10px 0;
+  }
+
+  #page-markbooks .attendance-hero h1 {
+    font-size: 25px;
+    line-height: 1.2;
+    margin: 8px 0;
+  }
+
+  #page-markbooks .attendance-khasi {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Dashboard spacing */
+  #page-markbooks #markbook-dashboard {
+    margin: 14px auto;
+  }
+
+  #page-markbooks #markbook-teacher-name {
+    font-size: 21px;
+  }
+
+  /* Compact cards */
   #page-markbooks #markbook-login,
   #page-markbooks #markbook-selection,
   #page-markbooks #markbook-view-container {
-    padding: 15px;
-    border-radius: 11px;
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 12px;
+  }
+
+  /* Compact labels */
+  #page-markbooks label {
+    font-size: 13px;
+    margin: 11px 0 5px;
+  }
+
+  /* Comfortable but smaller controls */
+  #page-markbooks input,
+  #page-markbooks select {
+    min-height: 44px;
+    padding: 9px 11px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  /* Stop making every button huge */
+  #page-markbooks button {
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 14px;
+    border-radius: 8px;
+    width: auto;
+  }
+
+  #page-markbooks #markbook-load-students,
+  #page-markbooks #markbook-view-load {
+    width: auto;
+    min-width: 145px;
+    margin-top: 14px;
+  }
+
+  #page-markbooks #markbook-login-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Student register */
+  #page-markbooks #markbook-register-display {
+    margin-top: 12px;
   }
 
   #page-markbooks #markbook-register-display div[style*="display: grid"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  #page-markbooks #markbook-register-display div[style*="border"] {
+    padding: 11px !important;
+  }
+
+  #page-markbooks #markbook-register-display h3 {
+    font-size: 19px;
+  }
+
+  #page-markbooks #markbook-register-display h4 {
+    font-size: 15px;
   }
 
   #page-markbooks #markbook-register-display button {
-    min-height: 40px;
+    min-width: 0;
+  }
+
+  #page-markbooks #markbook-register-display input,
+  #page-markbooks #markbook-register-display select {
+    min-height: 42px;
   }
 
 }
