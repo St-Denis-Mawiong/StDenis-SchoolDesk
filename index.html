@@ -4713,7 +4713,303 @@ header .profile small {
 #tc-success-view:active {
   transform: scale(0.98);
 }
+/* ================================
+   MARKBOOK DESIGN
+================================ */
 
+#page-markbooks {
+  padding: 16px;
+}
+
+#page-markbooks #markbook-login,
+#page-markbooks #markbook-dashboard {
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+#page-markbooks #markbook-login,
+#page-markbooks #markbook-selection,
+#page-markbooks #markbook-view-container {
+  background: #f8f6ef;
+  border: 1px solid #ded6c2;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(23, 59, 50, 0.07);
+}
+
+#page-markbooks #markbook-login h2,
+#page-markbooks #markbook-dashboard h2 {
+  color: #173b32;
+}
+
+#page-markbooks label {
+  display: block;
+  margin: 14px 0 6px;
+  color: #40564b;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+#page-markbooks input,
+#page-markbooks select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d5d0c2;
+  border-radius: 9px;
+  background: #fffefa;
+  color: #243b32;
+  font-size: 15px;
+}
+
+#page-markbooks input:focus,
+#page-markbooks select:focus {
+  outline: none;
+  border-color: #a88948;
+  box-shadow: 0 0 0 3px rgba(168, 137, 72, 0.13);
+}
+
+#page-markbooks button {
+  min-height: 42px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 9px;
+  background: #173b32;
+  color: #fffaf0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#page-markbooks button:active {
+  transform: scale(0.98);
+}
+
+#page-markbooks button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#page-markbooks #markbook-login-message,
+#page-markbooks #markbook-save-message {
+  font-size: 13px;
+  margin-top: 10px;
+}
+/* MARKBOOK DASHBOARD HEADER */
+
+#page-markbooks #markbook-teacher-name {
+  font-size: 23px;
+  margin-bottom: 5px;
+  color: #173b32;
+}
+
+#page-markbooks #markbook-dashboard > p {
+  color: #8a7548;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+#page-markbooks #markbook-selection > label:first-child,
+#page-markbooks #markbook-view-container > h3 {
+  margin-top: 0;
+}
+
+#page-markbooks #markbook-view-container {
+  margin-top: 22px;
+  border-top: 3px solid #a88948;
+}
+
+#page-markbooks #markbook-view-container h3 {
+  color: #173b32;
+  font-size: 19px;
+  margin-bottom: 16px;
+}
+
+#page-markbooks #markbook-load-students,
+#page-markbooks #markbook-view-load {
+  width: 100%;
+  margin-top: 18px;
+}
+/* MARKBOOK STUDENT REGISTER */
+
+#page-markbooks #markbook-register-display {
+  margin-top: 20px;
+}
+
+#page-markbooks #markbook-register-display > h3 {
+  color: #173b32;
+  font-size: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #a88948;
+}
+
+#page-markbooks #markbook-register-display button {
+  min-width: 90px;
+}
+
+#page-markbooks #markbook-register-display select {
+  margin: 10px 0;
+}
+
+#page-markbooks #markbook-register-display > div {
+  margin-top: 15px;
+}
+
+#page-markbooks #markbook-register-display h3 {
+  color: #173b32;
+}
+
+#page-markbooks #markbook-register-display h4 {
+  color: #285849;
+}
+
+#page-markbooks #markbook-register-display small {
+  color: #786b50;
+  font-weight: 600;
+}
+/* STUDENT AND SUBJECT CARDS */
+
+#page-markbooks #markbook-register-display div[style*="border"] {
+  background: #fffefa !important;
+  border: 1px solid #d9d1bd !important;
+  border-radius: 12px !important;
+  box-shadow: 0 3px 10px rgba(23, 59, 50, 0.06);
+}
+
+#page-markbooks #markbook-register-display h4 {
+  font-size: 16px;
+  font-weight: 700;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e0d0;
+}
+
+/* EXAM MARK BOXES */
+
+#page-markbooks #markbook-register-display div[style*="background"] {
+  background: #f1f3ed !important;
+  border: 1px solid #e1e5d9;
+  border-radius: 9px !important;
+}
+
+#page-markbooks #markbook-register-display div[style*="background"] h3 {
+  font-size: 21px;
+  color: #173b32;
+}
+/* MARKBOOK EDIT MODE */
+
+#page-markbooks #markbook-register-display input,
+#page-markbooks #markbook-register-display select {
+  min-height: 42px;
+  border: 1px solid #cfc6b2;
+  border-radius: 8px;
+  background: #fffefa;
+  padding: 9px 11px;
+}
+
+#page-markbooks #markbook-register-display input:focus,
+#page-markbooks #markbook-register-display select:focus {
+  border-color: #a88948;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(168, 137, 72, 0.12);
+}
+
+#page-markbooks #markbook-register-display button {
+  transition: background 0.2s ease;
+}
+
+#page-markbooks #markbook-register-display button:hover {
+  background: #285849;
+}
+
+#page-markbooks #markbook-register-display button:disabled {
+  opacity: 0.6;
+}
+
+#page-markbooks #markbook-register-display h4 {
+  letter-spacing: 0.2px;
+}
+/* PREPARE MARKS SECTION */
+
+#page-markbooks #markbook-selection {
+  border-top: 3px solid #173b32;
+}
+
+#page-markbooks #markbook-selection > label {
+  margin-top: 16px;
+}
+
+#page-markbooks #markbook-selection > label:first-child {
+  margin-top: 0;
+}
+
+#page-markbooks #markbook-load-students {
+  background: #a88948;
+  color: #fffefa;
+}
+
+#page-markbooks #markbook-load-students:hover {
+  background: #8f7138;
+}
+
+#page-markbooks #markbook-save-btn {
+  margin-top: 15px;
+  width: 100%;
+}
+
+#page-markbooks #markbook-student-list {
+  margin-top: 18px;
+}
+/* TEACHER LOGIN */
+
+#page-markbooks #markbook-login {
+  max-width: 430px;
+  margin: 35px auto;
+  padding: 25px;
+  border-top: 4px solid #a88948;
+}
+
+#page-markbooks #markbook-login h2 {
+  font-size: 23px;
+  margin-top: 0;
+}
+
+#page-markbooks #markbook-login > p:first-of-type {
+  color: #756e60;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#page-markbooks #markbook-login-btn {
+  width: 100%;
+  margin-top: 18px;
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  #page-markbooks {
+    padding: 10px;
+  }
+
+  #page-markbooks #markbook-login,
+  #page-markbooks #markbook-selection,
+  #page-markbooks #markbook-view-container {
+    padding: 15px;
+    border-radius: 11px;
+  }
+
+  #page-markbooks #markbook-register-display div[style*="display: grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #page-markbooks #markbook-register-display button {
+    min-height: 40px;
+  }
+
+}
   </style>
 </head>
 <body>
@@ -6950,303 +7246,7 @@ body {
     box-shadow: none;
   }
 }
-/* ================================
-   MARKBOOK DESIGN
-================================ */
 
-#page-markbooks {
-  padding: 16px;
-}
-
-#page-markbooks #markbook-login,
-#page-markbooks #markbook-dashboard {
-  max-width: 900px;
-  margin: 20px auto;
-}
-
-#page-markbooks #markbook-login,
-#page-markbooks #markbook-selection,
-#page-markbooks #markbook-view-container {
-  background: #f8f6ef;
-  border: 1px solid #ded6c2;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 4px 14px rgba(23, 59, 50, 0.07);
-}
-
-#page-markbooks #markbook-login h2,
-#page-markbooks #markbook-dashboard h2 {
-  color: #173b32;
-}
-
-#page-markbooks label {
-  display: block;
-  margin: 14px 0 6px;
-  color: #40564b;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-#page-markbooks input,
-#page-markbooks select {
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid #d5d0c2;
-  border-radius: 9px;
-  background: #fffefa;
-  color: #243b32;
-  font-size: 15px;
-}
-
-#page-markbooks input:focus,
-#page-markbooks select:focus {
-  outline: none;
-  border-color: #a88948;
-  box-shadow: 0 0 0 3px rgba(168, 137, 72, 0.13);
-}
-
-#page-markbooks button {
-  min-height: 42px;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 9px;
-  background: #173b32;
-  color: #fffaf0;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-#page-markbooks button:active {
-  transform: scale(0.98);
-}
-
-#page-markbooks button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-#page-markbooks #markbook-login-message,
-#page-markbooks #markbook-save-message {
-  font-size: 13px;
-  margin-top: 10px;
-}
-/* MARKBOOK DASHBOARD HEADER */
-
-#page-markbooks #markbook-teacher-name {
-  font-size: 23px;
-  margin-bottom: 5px;
-  color: #173b32;
-}
-
-#page-markbooks #markbook-dashboard > p {
-  color: #8a7548;
-  font-size: 13px;
-  font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 18px;
-}
-
-#page-markbooks #markbook-selection > label:first-child,
-#page-markbooks #markbook-view-container > h3 {
-  margin-top: 0;
-}
-
-#page-markbooks #markbook-view-container {
-  margin-top: 22px;
-  border-top: 3px solid #a88948;
-}
-
-#page-markbooks #markbook-view-container h3 {
-  color: #173b32;
-  font-size: 19px;
-  margin-bottom: 16px;
-}
-
-#page-markbooks #markbook-load-students,
-#page-markbooks #markbook-view-load {
-  width: 100%;
-  margin-top: 18px;
-}
-/* MARKBOOK STUDENT REGISTER */
-
-#page-markbooks #markbook-register-display {
-  margin-top: 20px;
-}
-
-#page-markbooks #markbook-register-display > h3 {
-  color: #173b32;
-  font-size: 20px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #a88948;
-}
-
-#page-markbooks #markbook-register-display button {
-  min-width: 90px;
-}
-
-#page-markbooks #markbook-register-display select {
-  margin: 10px 0;
-}
-
-#page-markbooks #markbook-register-display > div {
-  margin-top: 15px;
-}
-
-#page-markbooks #markbook-register-display h3 {
-  color: #173b32;
-}
-
-#page-markbooks #markbook-register-display h4 {
-  color: #285849;
-}
-
-#page-markbooks #markbook-register-display small {
-  color: #786b50;
-  font-weight: 600;
-}
-/* STUDENT AND SUBJECT CARDS */
-
-#page-markbooks #markbook-register-display div[style*="border"] {
-  background: #fffefa !important;
-  border: 1px solid #d9d1bd !important;
-  border-radius: 12px !important;
-  box-shadow: 0 3px 10px rgba(23, 59, 50, 0.06);
-}
-
-#page-markbooks #markbook-register-display h4 {
-  font-size: 16px;
-  font-weight: 700;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e8e0d0;
-}
-
-/* EXAM MARK BOXES */
-
-#page-markbooks #markbook-register-display div[style*="background"] {
-  background: #f1f3ed !important;
-  border: 1px solid #e1e5d9;
-  border-radius: 9px !important;
-}
-
-#page-markbooks #markbook-register-display div[style*="background"] h3 {
-  font-size: 21px;
-  color: #173b32;
-}
-/* MARKBOOK EDIT MODE */
-
-#page-markbooks #markbook-register-display input,
-#page-markbooks #markbook-register-display select {
-  min-height: 42px;
-  border: 1px solid #cfc6b2;
-  border-radius: 8px;
-  background: #fffefa;
-  padding: 9px 11px;
-}
-
-#page-markbooks #markbook-register-display input:focus,
-#page-markbooks #markbook-register-display select:focus {
-  border-color: #a88948;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(168, 137, 72, 0.12);
-}
-
-#page-markbooks #markbook-register-display button {
-  transition: background 0.2s ease;
-}
-
-#page-markbooks #markbook-register-display button:hover {
-  background: #285849;
-}
-
-#page-markbooks #markbook-register-display button:disabled {
-  opacity: 0.6;
-}
-
-#page-markbooks #markbook-register-display h4 {
-  letter-spacing: 0.2px;
-}
-/* PREPARE MARKS SECTION */
-
-#page-markbooks #markbook-selection {
-  border-top: 3px solid #173b32;
-}
-
-#page-markbooks #markbook-selection > label {
-  margin-top: 16px;
-}
-
-#page-markbooks #markbook-selection > label:first-child {
-  margin-top: 0;
-}
-
-#page-markbooks #markbook-load-students {
-  background: #a88948;
-  color: #fffefa;
-}
-
-#page-markbooks #markbook-load-students:hover {
-  background: #8f7138;
-}
-
-#page-markbooks #markbook-save-btn {
-  margin-top: 15px;
-  width: 100%;
-}
-
-#page-markbooks #markbook-student-list {
-  margin-top: 18px;
-}
-/* TEACHER LOGIN */
-
-#page-markbooks #markbook-login {
-  max-width: 430px;
-  margin: 35px auto;
-  padding: 25px;
-  border-top: 4px solid #a88948;
-}
-
-#page-markbooks #markbook-login h2 {
-  font-size: 23px;
-  margin-top: 0;
-}
-
-#page-markbooks #markbook-login > p:first-of-type {
-  color: #756e60;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-#page-markbooks #markbook-login-btn {
-  width: 100%;
-  margin-top: 18px;
-}
-
-/* MOBILE RESPONSIVE */
-
-@media (max-width: 600px) {
-
-  #page-markbooks {
-    padding: 10px;
-  }
-
-  #page-markbooks #markbook-login,
-  #page-markbooks #markbook-selection,
-  #page-markbooks #markbook-view-container {
-    padding: 15px;
-    border-radius: 11px;
-  }
-
-  #page-markbooks #markbook-register-display div[style*="display: grid"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  #page-markbooks #markbook-register-display button {
-    min-height: 40px;
-  }
-
-}
       </style>
     </head>
     <body>   
