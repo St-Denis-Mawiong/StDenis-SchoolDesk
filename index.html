@@ -10404,31 +10404,92 @@ previousButton.style.padding = '4px 6px';
 previousButton.style.minHeight = '30px';
 previousButton.style.fontSize = '10px';
 previousButton.style.whiteSpace = 'nowrap';
-const studentSelect = document.createElement('input');
-studentSelect.type = 'text';
-studentSelect.placeholder = 'Search student name or roll no.';
-studentSelect.setAttribute('list', 'markbook-student-options');
+const studentSearchWrapper = document.createElement('div');
+studentSearchWrapper.style.flex = '1';
+studentSearchWrapper.style.minWidth = '0';
+studentSearchWrapper.style.position = 'relative';
 
-studentSelect.style.flex = '1';
+const studentSelect = document.createElement('input');
+studentSelect.type = 'search';
+studentSelect.placeholder = 'Search student...';
+studentSelect.style.width = '100%';
 studentSelect.style.minWidth = '0';
-studentSelect.style.padding = '6px 8px';
+studentSelect.style.boxSizing = 'border-box';
+studentSelect.style.padding = '6px 9px';
 studentSelect.style.minHeight = '32px';
 studentSelect.style.fontSize = '13px';
 
-const studentOptions = document.createElement('datalist');
-studentOptions.id = 'markbook-student-options';
+const studentSuggestions = document.createElement('div');
+studentSuggestions.style.display = 'none';
+studentSuggestions.style.position = 'absolute';
+studentSuggestions.style.top = '100%';
+studentSuggestions.style.left = '0';
+studentSuggestions.style.right = '0';
+studentSuggestions.style.maxHeight = '220px';
+studentSuggestions.style.overflowY = 'auto';
+studentSuggestions.style.background = '#ffffff';
+studentSuggestions.style.border = '1px solid #ccc';
+studentSuggestions.style.borderRadius = '8px';
+studentSuggestions.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+studentSuggestions.style.zIndex = '999';
 
-data.students.forEach(function(student, index) {
-  const option = document.createElement('option');
+studentSearchWrapper.appendChild(studentSelect);
+studentSearchWrapper.appendChild(studentSuggestions);
+ function showStudentSuggestions(searchText) {
 
-  option.value =
-    (student.rollNo || index + 1) + ' — ' + student.studentName;
+  studentSuggestions.innerHTML = '';
 
-  studentOptions.appendChild(option);
+  const query = searchText.trim().toLowerCase();
+
+  const matches = data.students
+    .map(function(student, index) {
+      return { student: student, index: index };
+    })
+    .filter(function(item) {
+      const name = item.student.studentName.toLowerCase();
+      const roll = String(item.student.rollNo || item.index + 1);
+
+      return name.includes(query) || roll.includes(query);
+    });
+
+  if (matches.length === 0) {
+    const empty = document.createElement('div');
+    empty.textContent = 'No student found';
+    empty.style.padding = '10px';
+    empty.style.color = '#777';
+    studentSuggestions.appendChild(empty);
+  }
+
+  matches.forEach(function(item) {
+
+    const option = document.createElement('div');
+
+    option.textContent =
+      (item.student.rollNo || item.index + 1) +
+      ' — ' + item.student.studentName;
+
+    option.style.padding = '10px';
+    option.style.cursor = 'pointer';
+    option.style.borderBottom = '1px solid #eee';
+    option.style.fontSize = '13px';
+
+    option.addEventListener('click', function() {
+      studentSuggestions.style.display = 'none';
+      renderStudent(item.index);
+    });
+
+    studentSuggestions.appendChild(option);
+  });
+
+  studentSuggestions.style.display = 'block';
+}     
+studentSelect.addEventListener('input', function() {
+  showStudentSuggestions(this.value);
 });
 
-container.appendChild(studentOptions);
-
+studentSelect.addEventListener('focus', function() {
+  showStudentSuggestions(this.value);
+});
 const nextButton = document.createElement('button');
 nextButton.type = 'button';
 nextButton.textContent = 'Next →';
@@ -10440,7 +10501,7 @@ nextButton.style.minHeight = '30px';
 nextButton.style.fontSize = '10px';
 nextButton.style.whiteSpace = 'nowrap';
 navigation.appendChild(previousButton);
-navigation.appendChild(studentSelect);
+navigation.appendChild(studentSearchWrapper);
 navigation.appendChild(nextButton);
 
 container.appendChild(navigation);
@@ -10455,8 +10516,10 @@ function renderStudent(index) {
 
   const student = data.students[index];
 
-  studentSelect.value =
+ studentSelect.value = '';
+studentSelect.placeholder =
   (student.rollNo || index + 1) + ' — ' + student.studentName;
+studentSuggestions.style.display = 'none';
 
   previousButton.disabled = index === 0;
   nextButton.disabled = index === data.students.length - 1;
@@ -10773,25 +10836,6 @@ nextButton.addEventListener('click', function() {
   if (currentStudentIndex < data.students.length - 1) {
     renderStudent(currentStudentIndex + 1);
   }
-});
-
-studentSelect.addEventListener('change', function() {
-
-  const selectedIndex = data.students.findIndex(function(student, index) {
-    return this.value ===
-      (student.rollNo || index + 1) + ' — ' + student.studentName;
-  }, this);
-
-  if (selectedIndex !== -1) {
-    renderStudent(selectedIndex);
-  } else {
-    this.value =
-      (data.students[currentStudentIndex].rollNo ||
-       currentStudentIndex + 1) +
-      ' — ' +
-      data.students[currentStudentIndex].studentName;
-  }
-
 });
 
 renderStudent(0);
