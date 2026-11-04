@@ -10488,6 +10488,11 @@ studentSelect.addEventListener('input', function() {
 studentSelect.addEventListener('focus', function() {
   showStudentSuggestions(this.value);
 });
+      document.addEventListener('click', function(event) {
+  if (!studentSearchWrapper.contains(event.target)) {
+    studentSuggestions.style.display = 'none';
+  }
+});
 const nextButton = document.createElement('button');
 nextButton.type = 'button';
 nextButton.textContent = 'Next →';
@@ -10515,8 +10520,7 @@ function renderStudent(index) {
   const student = data.students[index];
 
  studentSelect.value = '';
-studentSelect.placeholder =
-  (student.rollNo || index + 1) + ' — ' + student.studentName;
+studentSelect.placeholder = student.studentName;
 studentSuggestions.style.display = 'none';
 
   previousButton.disabled = index === 0;
