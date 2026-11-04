@@ -10075,14 +10075,6 @@ document.getElementById('markbook-login-btn').addEventListener('click', function
     const container = document.getElementById('markbook-assignments');
     container.innerHTML = '';
 
-   
-result.assignments.forEach(function(item) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.textContent = item.className + ' — ' + item.subjectName;
-  container.appendChild(card);
-});
-
 window.markbookTeacher = result.teacher;
 window.markbookAssignments = result.assignments;
 window.markbookClassTeacherClasses = result.classTeacherClasses || [];
