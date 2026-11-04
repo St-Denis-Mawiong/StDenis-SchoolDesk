@@ -10464,9 +10464,7 @@ studentSearchWrapper.appendChild(studentSuggestions);
 
     const option = document.createElement('div');
 
-    option.textContent =
-      (item.student.rollNo || item.index + 1) +
-      ' — ' + item.student.studentName;
+    option.textContent = item.student.studentName;
 
     option.style.padding = '10px';
     option.style.cursor = 'pointer';
