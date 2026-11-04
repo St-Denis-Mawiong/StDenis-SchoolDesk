@@ -10404,17 +10404,30 @@ previousButton.style.padding = '4px 6px';
 previousButton.style.minHeight = '30px';
 previousButton.style.fontSize = '10px';
 previousButton.style.whiteSpace = 'nowrap';
-const studentSelect = document.createElement('select');
+const studentSelect = document.createElement('input');
+studentSelect.type = 'text';
+studentSelect.placeholder = 'Search student name or roll no.';
+studentSelect.setAttribute('list', 'markbook-student-options');
+
 studentSelect.style.flex = '1';
 studentSelect.style.minWidth = '0';
+studentSelect.style.padding = '6px 8px';
+studentSelect.style.minHeight = '32px';
+studentSelect.style.fontSize = '13px';
+
+const studentOptions = document.createElement('datalist');
+studentOptions.id = 'markbook-student-options';
 
 data.students.forEach(function(student, index) {
   const option = document.createElement('option');
-  option.value = index;
-  option.textContent =
+
+  option.value =
     (student.rollNo || index + 1) + ' — ' + student.studentName;
-  studentSelect.appendChild(option);
+
+  studentOptions.appendChild(option);
 });
+
+container.appendChild(studentOptions);
 
 const nextButton = document.createElement('button');
 nextButton.type = 'button';
@@ -10442,7 +10455,8 @@ function renderStudent(index) {
 
   const student = data.students[index];
 
-  studentSelect.value = index;
+  studentSelect.value =
+  (student.rollNo || index + 1) + ' — ' + student.studentName;
 
   previousButton.disabled = index === 0;
   nextButton.disabled = index === data.students.length - 1;
@@ -10762,7 +10776,22 @@ nextButton.addEventListener('click', function() {
 });
 
 studentSelect.addEventListener('change', function() {
-  renderStudent(Number(this.value));
+
+  const selectedIndex = data.students.findIndex(function(student, index) {
+    return this.value ===
+      (student.rollNo || index + 1) + ' — ' + student.studentName;
+  }, this);
+
+  if (selectedIndex !== -1) {
+    renderStudent(selectedIndex);
+  } else {
+    this.value =
+      (data.students[currentStudentIndex].rollNo ||
+       currentStudentIndex + 1) +
+      ' — ' +
+      data.students[currentStudentIndex].studentName;
+  }
+
 });
 
 renderStudent(0);
