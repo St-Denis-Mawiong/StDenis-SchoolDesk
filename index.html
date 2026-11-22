@@ -10815,6 +10815,8 @@ studentSuggestions.style.display = 'none';
       const box = document.createElement('div');
       box.style.padding = '5px 7px';
       box.style.display = 'flex';
+      box.style.width = '100%';
+      box.style.boxSizing = 'border-box';
       box.style.justifyContent = 'space-between';
       box.style.alignItems = 'center';
       box.style.gap = '3px';
@@ -10823,15 +10825,17 @@ studentSuggestions.style.display = 'none';
 
       const small = document.createElement('small');
       small.textContent = label;
-      small.style.fontSize = '10px';
       small.style.color = '#666';
+      small.style.minWidth = '0';
+      small.style.flex = '1';
       small.style.fontSize = '10px';
       const strong = document.createElement('strong');
       strong.textContent = value;
       strong.style.fontSize = '12px';
       strong.style.marginTop = '0';
       strong.style.textAlign = 'right';
-
+      strong.style.minWidth = '0';
+      strong.style.flexShrink = '0';
       box.appendChild(small);
       box.appendChild(strong);
       grid.appendChild(box);
