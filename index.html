@@ -10865,21 +10865,30 @@ studentSuggestions.style.display = 'none';
     return item.studentId === student.studentId;
   }).result;
 
-  studentCard.appendChild(
-    createResultSection(
-      'Half-Yearly Result',
-      halfResult,
-      getPosition(student.studentId, halfResults)
-    )
-  );
+ const resultGrid = document.createElement('div');
 
-  studentCard.appendChild(
-    createResultSection(
-      'Final Result',
-      finalResult,
-      getPosition(student.studentId, finalResults)
-    )
-  );
+resultGrid.style.display = 'grid';
+resultGrid.style.gridTemplateColumns =
+  'repeat(2, minmax(0, 1fr))';
+resultGrid.style.gap = '8px';
+
+resultGrid.appendChild(
+  createResultSection(
+    'Half-Yearly',
+    halfResult,
+    getPosition(student.studentId, halfResults)
+  )
+);
+
+resultGrid.appendChild(
+  createResultSection(
+    'Final',
+    finalResult,
+    getPosition(student.studentId, finalResults)
+  )
+);
+
+studentCard.appendChild(resultGrid);
 
   data.subjects.forEach(function(subject) {
 
