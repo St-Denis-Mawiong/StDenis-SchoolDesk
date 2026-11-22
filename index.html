@@ -10846,18 +10846,14 @@ studentSuggestions.style.display = 'none';
     }
 
     addResult(
-      'Total Marks',
-      result.complete
-        ? result.total + ' / ' + result.maximum
-        : '--'
-    );
+  'Total Marks',
+  result.total + ' / ' + result.maximum
+);
 
-    addResult(
-      'Percentage',
-      result.complete
-        ? result.percentage.toFixed(2) + '%'
-        : '--'
-    );
+addResult(
+  'Percentage',
+  result.percentage.toFixed(2) + '%'
+);
 
     section.appendChild(grid);
 
