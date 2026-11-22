@@ -10765,7 +10765,7 @@ studentSuggestions.style.display = 'none';
   function getPosition(studentId, results) {
 
     if (!classResultsComplete(results)) {
-      return 'Pending';
+      return '--';
     }
 
     const current = results.find(function(item) {
@@ -10831,10 +10831,10 @@ studentSuggestions.style.display = 'none';
       small.style.color = '#666';
       small.style.minWidth = '0';
       small.style.flex = '1';
-      small.style.fontSize = 'clamp(9px, 1.1vw, 11px)';
+      small.style.fontSize = 'clamp(10px, 1.1vw, 11px)';
       const strong = document.createElement('strong');
       strong.textContent = value;
-      strong.style.fontSize = 'clamp(8px, 1.2vw, 12px)';
+      strong.style.fontSize = 'clamp(12px, 1.2vw, 12px)';
       strong.style.whiteSpace = 'nowrap';
       strong.style.marginTop = '0';
       strong.style.textAlign = 'right';
@@ -10849,14 +10849,14 @@ studentSuggestions.style.display = 'none';
       'Total Marks',
       result.complete
         ? result.total + ' / ' + result.maximum
-        : 'Pending'
+        : '--'
     );
 
     addResult(
       'Percentage',
       result.complete
         ? result.percentage.toFixed(2) + '%'
-        : 'Pending'
+        : '--'
     );
 
     section.appendChild(grid);
