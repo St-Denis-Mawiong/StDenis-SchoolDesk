@@ -10733,9 +10733,9 @@ studentSuggestions.style.display = 'none';
     return {
       total: total,
       maximum: maximum,
-      percentage: complete && maximum > 0
-        ? (total / maximum) * 100
-        : null,
+     percentage: maximum > 0
+      ? (total / maximum) * 100
+      : null,
       complete: complete,
       eligible: complete && !failedMajor && !minorD
     };
