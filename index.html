@@ -10650,6 +10650,237 @@ studentSuggestions.style.display = 'none';
 
   studentCard.appendChild(roll);
 
+  // RESULT CALCULATION AND DISPLAY
+
+  function getStudentResult(targetStudent, period) {
+
+    const majorSubjects = data.subjects.filter(function(subject) {
+      return String(subject.subjectType).trim().toUpperCase() !== 'MINOR';
+    });
+
+    const minorSubjects = data.subjects.filter(function(subject) {
+      return String(subject.subjectType).trim().toUpperCase() === 'MINOR';
+    });
+
+    const examinations = period === 'Half-Yearly'
+      ? ['Unit Test 1', 'Half-Yearly']
+      : ['Unit Test 1', 'Half-Yearly', 'Unit Test 2', 'Final Examination'];
+
+    const minorExaminations = period === 'Half-Yearly'
+      ? ['Half-Yearly']
+      : ['Half-Yearly', 'Final Examination'];
+
+    let total = 0;
+    let complete = majorSubjects.length > 0;
+    let failedMajor = false;
+    let minorD = false;
+
+    majorSubjects.forEach(function(subject) {
+
+      let subjectTotal = 0;
+
+      examinations.forEach(function(exam) {
+
+        const mark = data.marks.find(function(item) {
+          return item.studentId === targetStudent.studentId &&
+                 item.subjectName === subject.subjectName &&
+                 item.examination === exam;
+        });
+
+        if (!mark || mark.marks === '' ||
+            mark.marks === null || mark.marks === undefined ||
+            !Number.isFinite(Number(mark.marks))) {
+          complete = false;
+        } else {
+          subjectTotal += Number(mark.marks);
+        }
+
+      });
+
+      total += subjectTotal;
+
+      const passMark = period === 'Half-Yearly' ? 35 : 70;
+
+      if (subjectTotal < passMark) {
+        failedMajor = true;
+      }
+
+    });
+
+    minorSubjects.forEach(function(subject) {
+
+      minorExaminations.forEach(function(exam) {
+
+        const mark = data.marks.find(function(item) {
+          return item.studentId === targetStudent.studentId &&
+                 item.subjectName === subject.subjectName &&
+                 item.examination === exam;
+        });
+
+        if (!mark || !mark.grade) {
+          complete = false;
+        } else if (String(mark.grade).trim().toUpperCase() === 'D') {
+          minorD = true;
+        }
+
+      });
+
+    });
+
+    const maximum = majorSubjects.length *
+      (period === 'Half-Yearly' ? 100 : 200);
+
+    return {
+      total: total,
+      maximum: maximum,
+      percentage: complete && maximum > 0
+        ? (total / maximum) * 100
+        : null,
+      complete: complete,
+      eligible: complete && !failedMajor && !minorD
+    };
+
+  }
+
+  const halfResults = data.students.map(function(item) {
+    return {
+      studentId: item.studentId,
+      result: getStudentResult(item, 'Half-Yearly')
+    };
+  });
+
+  const finalResults = data.students.map(function(item) {
+    return {
+      studentId: item.studentId,
+      result: getStudentResult(item, 'Final')
+    };
+  });
+
+  function classResultsComplete(results) {
+    return results.every(function(item) {
+      return item.result.complete;
+    });
+  }
+
+  function getPosition(studentId, results) {
+
+    if (!classResultsComplete(results)) {
+      return 'Pending';
+    }
+
+    const current = results.find(function(item) {
+      return item.studentId === studentId;
+    });
+
+    if (!current || !current.result.eligible) {
+      return 'Not eligible';
+    }
+
+    const higherScores = results.filter(function(item) {
+      return item.result.eligible &&
+             item.result.total > current.result.total;
+    }).length;
+
+    const position = higherScores + 1;
+
+    if (position === 1) return '1st';
+    if (position === 2) return '2nd';
+    if (position === 3) return '3rd';
+
+    return position + 'th';
+  }
+
+  function createResultSection(title, result, position) {
+
+    const section = document.createElement('div');
+    section.style.padding = '12px';
+    section.style.marginBottom = '12px';
+    section.style.border = '1px solid #ddd';
+    section.style.borderRadius = '10px';
+    section.style.background = '#f8f6ef';
+
+    const heading = document.createElement('h4');
+    heading.textContent = title;
+    heading.style.margin = '0 0 12px 0';
+    section.appendChild(heading);
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+    grid.style.gap = '8px';
+
+    function addResult(label, value) {
+
+      const box = document.createElement('div');
+      box.style.padding = '10px';
+      box.style.background = '#ffffff';
+      box.style.borderRadius = '8px';
+
+      const small = document.createElement('small');
+      small.textContent = label;
+      small.style.display = 'block';
+      small.style.color = '#666';
+
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+      strong.style.display = 'block';
+      strong.style.fontSize = '18px';
+      strong.style.marginTop = '5px';
+
+      box.appendChild(small);
+      box.appendChild(strong);
+      grid.appendChild(box);
+    }
+
+    addResult(
+      'Total Marks',
+      result.complete
+        ? result.total + ' / ' + result.maximum
+        : 'Pending'
+    );
+
+    addResult(
+      'Percentage',
+      result.complete
+        ? result.percentage.toFixed(2) + '%'
+        : 'Pending'
+    );
+
+    section.appendChild(grid);
+
+    const positionText = document.createElement('p');
+    positionText.style.margin = '12px 0 0 0';
+    positionText.textContent = 'Position: ' + position;
+
+    section.appendChild(positionText);
+
+    return section;
+  }
+
+  const halfResult = halfResults.find(function(item) {
+    return item.studentId === student.studentId;
+  }).result;
+
+  const finalResult = finalResults.find(function(item) {
+    return item.studentId === student.studentId;
+  }).result;
+
+  studentCard.appendChild(
+    createResultSection(
+      'Half-Yearly Result',
+      halfResult,
+      getPosition(student.studentId, halfResults)
+    )
+  );
+
+  studentCard.appendChild(
+    createResultSection(
+      'Final Result',
+      finalResult,
+      getPosition(student.studentId, finalResults)
+    )
+  );
+
   data.subjects.forEach(function(subject) {
 
     const subjectCard = document.createElement('div');
