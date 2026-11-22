@@ -10802,6 +10802,7 @@ studentSuggestions.style.display = 'none';
     const heading = document.createElement('h4');
     heading.textContent = title;
     heading.style.margin = '0 0 12px 0';
+    heading.style.fontSize = '14px';
     section.appendChild(heading);
 
     const grid = document.createElement('div');
@@ -10820,11 +10821,11 @@ studentSuggestions.style.display = 'none';
       small.textContent = label;
       small.style.display = 'block';
       small.style.color = '#666';
-
+      small.style.fontSize = '10px';
       const strong = document.createElement('strong');
       strong.textContent = value;
       strong.style.display = 'block';
-      strong.style.fontSize = '18px';
+      strong.style.fontSize = '13px';
       strong.style.marginTop = '5px';
 
       box.appendChild(small);
@@ -10851,7 +10852,7 @@ studentSuggestions.style.display = 'none';
     const positionText = document.createElement('p');
     positionText.style.margin = '12px 0 0 0';
     positionText.textContent = 'Position: ' + position;
-
+    positionText.style.fontSize = '11px';
     section.appendChild(positionText);
 
     return section;
