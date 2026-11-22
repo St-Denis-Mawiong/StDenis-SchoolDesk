@@ -10945,7 +10945,10 @@ nextButton.addEventListener('click', function() {
 });
 
 renderStudent(0);
-
+navigation.scrollIntoView({
+  behavior: 'smooth',
+  block: 'start'
+});
     }, function(error) {
 
       button.disabled = false;
