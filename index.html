@@ -10793,6 +10793,7 @@ studentSuggestions.style.display = 'none';
   function createResultSection(title, result, position) {
 
     const section = document.createElement('div');
+    section.style.minWidth = '0';
     section.style.padding = '12px';
     section.style.marginBottom = '12px';
     section.style.border = '1px solid #ddd';
@@ -10806,6 +10807,7 @@ studentSuggestions.style.display = 'none';
     section.appendChild(heading);
 
     const grid = document.createElement('div');
+    grid.style.minWidth = '0';
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = '1fr';
     grid.style.gap = '8px';
