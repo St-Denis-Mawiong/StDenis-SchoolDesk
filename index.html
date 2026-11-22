@@ -10793,9 +10793,6 @@ studentSuggestions.style.display = 'none';
   function createResultSection(title, result, position) {
 
     const section = document.createElement('div');
-    section.style.width = '100%';
-    section.style.minWidth = '0';
-    section.style.boxSizing = 'border-box';
     section.style.padding = '12px';
     section.style.marginBottom = '12px';
     section.style.border = '1px solid #ddd';
@@ -10809,9 +10806,6 @@ studentSuggestions.style.display = 'none';
     section.appendChild(heading);
 
     const grid = document.createElement('div');
-    grid.style.width = '100%';
-    grid.style.minWidth = '0';
-    grid.style.boxSizing = 'border-box';
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = '1fr';
     grid.style.gap = '8px';
@@ -10881,9 +10875,6 @@ studentSuggestions.style.display = 'none';
   }).result;
 
  const resultGrid = document.createElement('div');
-  resultGrid.style.width = '100%';
-  resultGrid.style.minWidth = '0';
-  resultGrid.style.boxSizing = 'border-box';
   resultGrid.style.display = 'grid';
   resultGrid.style.gridTemplateColumns =
   'repeat(2, minmax(0, 1fr))';
