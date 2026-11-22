@@ -10852,7 +10852,9 @@ studentSuggestions.style.display = 'none';
 
 addResult(
   'Percentage',
-  result.percentage.toFixed(2) + '%'
+  result.percentage !== null && result.percentage !== undefined
+    ? result.percentage.toFixed(2) + '%'
+    : '--'
 );
 
     section.appendChild(grid);
