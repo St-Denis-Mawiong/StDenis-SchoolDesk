@@ -10877,11 +10877,28 @@ studentSuggestions.style.display = 'none';
   }).result;
 
  const resultGrid = document.createElement('div');
+  resultGrid.className = 'student-result-grid';
   resultGrid.style.display = 'grid';
-  resultGrid.style.gridTemplateColumns =
-  'repeat(2, minmax(0, 1fr))';
-resultGrid.style.gap = '8px';
+  resultGrid.style.gap = '8px';
+if (!document.getElementById('student-result-responsive-style')) {
 
+  const style = document.createElement('style');
+  style.id = 'student-result-responsive-style';
+
+  style.textContent = `
+    .student-result-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 399px) {
+      .student-result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
 resultGrid.appendChild(
   createResultSection(
     'Half-Yearly',
