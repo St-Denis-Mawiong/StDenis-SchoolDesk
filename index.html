@@ -10812,38 +10812,31 @@ studentSuggestions.style.display = 'none';
     grid.style.gridTemplateColumns = 'minmax(0, 1fr)';
     grid.style.gap = '8px';
 
-    function addResult(label, value) {
+  function addResult(label, value) {
 
-      const box = document.createElement('div');
-      box.style.padding = '5px 7px';
-      box.style.display = 'flex';
-      box.style.width = '100%';
-      box.style.minWidth = '0';
-      box.style.boxSizing = 'border-box';
-      box.style.justifyContent = 'space-between';
-      box.style.alignItems = 'center';
-      box.style.gap = '3px';
-      box.style.background = '#ffffff';
-      box.style.borderRadius = '8px';
+  const line = document.createElement('div');
+  line.style.display = 'flex';
+  line.style.flexDirection = 'column';
+  line.style.alignItems = 'flex-start';
+  line.style.gap = '2px';
+  line.style.marginBottom = '6px';
+  line.style.minWidth = '0';
 
-      const small = document.createElement('small');
-      small.textContent = label;
-      small.style.color = '#666';
-      small.style.minWidth = '0';
-      small.style.flex = '1';
-      small.style.fontSize = 'clamp(10px, 1.1vw, 11px)';
-      const strong = document.createElement('strong');
-      strong.textContent = value;
-      strong.style.fontSize = 'clamp(12px, 1.2vw, 12px)';
-      strong.style.whiteSpace = 'nowrap';
-      strong.style.marginTop = '0';
-      strong.style.textAlign = 'right';
-      strong.style.minWidth = '0';
-      strong.style.flexShrink = '0';
-      box.appendChild(small);
-      box.appendChild(strong);
-      grid.appendChild(box);
-    }
+  const small = document.createElement('small');
+  small.textContent = label;
+  small.style.color = '#666';
+  small.style.fontSize = 'clamp(9px, 1.1vw, 11px)';
+
+  const strong = document.createElement('strong');
+  strong.textContent = value;
+  strong.style.fontSize = 'clamp(10px, 1.2vw, 12px)';
+  strong.style.textAlign = 'left';
+  strong.style.whiteSpace = 'normal';
+
+  line.appendChild(small);
+  line.appendChild(strong);
+  grid.appendChild(line);
+}
 
     addResult(
   'Total Marks',
