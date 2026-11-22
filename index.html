@@ -10807,26 +10807,30 @@ studentSuggestions.style.display = 'none';
 
     const grid = document.createElement('div');
     grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+    grid.style.gridTemplateColumns = '1fr';
     grid.style.gap = '8px';
 
     function addResult(label, value) {
 
       const box = document.createElement('div');
-      box.style.padding = '10px';
+      box.style.padding = '5px 7px';
+      box.style.display = 'flex';
+      box.style.justifyContent = 'space-between';
+      box.style.alignItems = 'center';
+      box.style.gap = '3px';
       box.style.background = '#ffffff';
       box.style.borderRadius = '8px';
 
       const small = document.createElement('small');
       small.textContent = label;
-      small.style.display = 'block';
+      small.style.fontSize = '10px';
       small.style.color = '#666';
       small.style.fontSize = '10px';
       const strong = document.createElement('strong');
       strong.textContent = value;
-      strong.style.display = 'block';
-      strong.style.fontSize = '13px';
-      strong.style.marginTop = '5px';
+      strong.style.fontSize = '12px';
+      strong.style.marginTop = '0';
+      strong.style.textAlign = 'right';
 
       box.appendChild(small);
       box.appendChild(strong);
