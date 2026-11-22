@@ -10945,9 +10945,13 @@ nextButton.addEventListener('click', function() {
 });
 
 renderStudent(0);
-navigation.scrollIntoView({
-  behavior: 'smooth',
-  block: 'start'
+const scrollPosition =
+  navigation.getBoundingClientRect().top +
+  window.scrollY - 80;
+
+window.scrollTo({
+  top: scrollPosition,
+  behavior: 'smooth'
 });
     }, function(error) {
 
