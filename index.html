@@ -6750,6 +6750,9 @@ script.remove();
 }
   window[callbackName] = function(result) {
     if (fn === 'saveMarkbookMarks') {
+  console.log('FULL MARKBOOK SERVER RESPONSE:', result);
+}
+    if (fn === 'saveMarkbookMarks') {
       console.log(
         'Markbook browser request: ' +
         (Date.now() - requestStartedAt) + ' ms'
