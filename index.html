@@ -6714,6 +6714,7 @@ function initializeSchoolDeskPageHistory() {
 
 initializeSchoolDeskPageHistory();
  function callServer(fn, args, success, failure) {
+   const requestStartedAt = Date.now();
   const endpoint = 'https://script.google.com/macros/s/AKfycbxsYjpgS7Dz_MbUcN-tfhTtdClTI9XUuVlSaxSL_KYb7FZqKNd0JtuTsb6dhtuQKwt-/exec';
 
   const callbackName =
@@ -6748,6 +6749,12 @@ delete window[callbackName];
 script.remove();
 }
   window[callbackName] = function(result) {
+    if (fn === 'saveMarkbookMarks') {
+      console.log(
+        'Markbook browser request: ' +
+        (Date.now() - requestStartedAt) + ' ms'
+      );
+    }
     cleanup();
 
     if (result && result.success === false) {
