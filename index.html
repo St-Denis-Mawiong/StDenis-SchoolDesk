@@ -10222,7 +10222,6 @@ saveButton.textContent = 'Saving...';
 message.textContent = '';
 
 callServer('saveMarkbookMarks', [payload], function(result) {
-
   saveButton.disabled = false;
   saveButton.textContent = 'Save Marks';
 
@@ -10230,7 +10229,7 @@ callServer('saveMarkbookMarks', [payload], function(result) {
     message.textContent = result?.message || 'Unable to save marks.';
     return;
   }
-
+console.log('Markbook timing breakdown:', result.timings);
   message.textContent =
     result.message + ' New: ' + result.savedCount +
     ', Updated: ' + result.updatedCount;
