@@ -11419,7 +11419,7 @@ document.getElementById('markbook-new-load')
       className: selectedClass,
       academicYear: academicYear
     };
-
+    console.log('Markbook request:', payload);
     callServer('getMarkbookRegister', [payload], function(data) {
 
       button.disabled = false;
