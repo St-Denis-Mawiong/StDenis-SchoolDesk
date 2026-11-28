@@ -5737,13 +5737,17 @@ header .profile small {
 <div id="markbook-dashboard" class="hidden">
   <h2 id="markbook-teacher-name"></h2>
   <p>Ki Subject ba shim phi</p>
-  <div class="markbook-workflow-nav">
+<div class="markbook-workflow-nav">
   <button type="button" id="markbook-open-new-entry">
     Enter New Marks
   </button>
+
+  <button type="button" id="markbook-open-existing">
+    View / Edit Markbook
+  </button>
 </div>
 <!-- NEW MULTI-SUBJECT MARK ENTRY -->
-<div id="markbook-new-entry">
+<div id="markbook-new-entry" class="hidden">
 
   <h3>Enter New Marks</h3>
   <p>Enter marks for all assigned subjects in one session.</p>
@@ -5796,7 +5800,7 @@ header .profile small {
 </div>
 <!-- END NEW MULTI-SUBJECT MARK ENTRY -->
 
-<div id="markbook-selection">
+<div id="markbook-selection" class="hidden">
    <label for="markbook-academic-year">Academic Year</label>
 <input
   type="text"
@@ -11355,7 +11359,17 @@ document.getElementById('markbook-open-new-entry')
       .classList.remove('hidden');
 
   });
+// Open existing Markbook interface
+document.getElementById('markbook-open-existing')
+  .addEventListener('click', function() {
 
+    document.getElementById('markbook-new-entry')
+      .classList.add('hidden');
+
+    document.getElementById('markbook-selection')
+      .classList.remove('hidden');
+
+  });
 </script>
  </body>
 </html>
