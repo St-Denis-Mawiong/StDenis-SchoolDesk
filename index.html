@@ -11370,6 +11370,277 @@ document.getElementById('markbook-open-existing')
       .classList.remove('hidden');
 
   });
+    
+/* =========================================
+   NEW MULTI-SUBJECT MARK ENTRY
+========================================= */
+
+window.markbookNewEntryState = null;
+window.markbookNewEntryIndex = 0;
+
+// Load students from the existing backend
+document.getElementById('markbook-new-load')
+  .addEventListener('click', function() {
+
+    const button = this;
+
+    const academicYear =
+      document.getElementById('markbook-new-year').value.trim();
+
+    const selectedClass =
+      document.getElementById('markbook-new-class').value;
+
+    const selectedExam =
+      document.getElementById('markbook-new-exam').value;
+
+    const workspace =
+      document.getElementById('markbook-new-workspace');
+
+    const message =
+      document.getElementById('markbook-new-message');
+
+    if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+      message.textContent = 'Please enter a valid academic year.';
+      return;
+    }
+
+    if (!selectedClass || !selectedExam) {
+      message.textContent = 'Please select a class and examination.';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Loading...';
+    message.textContent = '';
+    workspace.classList.add('hidden');
+
+    const payload = {
+      teacherId: window.markbookTeacher.teacherId,
+      className: selectedClass,
+      academicYear: academicYear
+    };
+
+    callServer('getMarkbookRegister', [payload], function(data) {
+
+      button.disabled = false;
+      button.textContent = 'Load Students';
+
+      if (!data || !data.success) {
+        message.textContent =
+          data?.message || 'Unable to load students.';
+        return;
+      }
+
+      const isUnitTest =
+        selectedExam === 'Unit Test 1' ||
+        selectedExam === 'Unit Test 2';
+
+      const eligibleSubjects = data.subjects.filter(function(subject) {
+
+        const isMinor =
+          String(subject.subjectType).trim().toUpperCase() === 'MINOR';
+
+        return !isUnitTest || !isMinor;
+
+      });
+
+      if (!data.students.length) {
+        message.textContent = 'No active students found in this class.';
+        return;
+      }
+
+      if (!eligibleSubjects.length) {
+        message.textContent = 'No eligible subjects found.';
+        return;
+      }
+
+      // Store loaded data and temporary entries
+      window.markbookNewEntryState = {
+        data: data,
+        academicYear: academicYear,
+        className: selectedClass,
+        examination: selectedExam,
+        subjects: eligibleSubjects,
+        values: {}
+      };
+
+      window.markbookNewEntryIndex = 0;
+
+      workspace.classList.remove('hidden');
+
+      renderNewEntryStudent(0);
+
+    }, function(error) {
+
+      button.disabled = false;
+      button.textContent = 'Load Students';
+
+      message.textContent =
+        error.message || 'Unable to load students.';
+
+    });
+
+  });
+
+
+// Render one student and all eligible subjects
+function renderNewEntryStudent(index) {
+
+  const state = window.markbookNewEntryState;
+
+  if (!state) return;
+
+  const students = state.data.students;
+
+  if (index < 0 || index >= students.length) return;
+
+  window.markbookNewEntryIndex = index;
+
+  const student = students[index];
+
+  const studentContainer =
+    document.getElementById('markbook-new-student');
+
+  const progress =
+    document.getElementById('markbook-new-progress');
+
+  const previousButton =
+    document.getElementById('markbook-new-previous');
+
+  const nextButton =
+    document.getElementById('markbook-new-next');
+
+  studentContainer.innerHTML = '';
+
+  progress.textContent =
+    'Student ' + (index + 1) + ' of ' + students.length;
+
+  previousButton.disabled = index === 0;
+  nextButton.disabled = index === students.length - 1;
+
+  const heading = document.createElement('h3');
+
+  heading.textContent =
+    (student.rollNo || '') + ' ' + student.studentName;
+
+  studentContainer.appendChild(heading);
+
+  state.subjects.forEach(function(subject) {
+
+    const isMinor =
+      String(subject.subjectType).trim().toUpperCase() === 'MINOR';
+
+    const key = student.studentId + '|' + subject.subjectName;
+
+    const savedMark = state.data.marks.find(function(mark) {
+
+      return String(mark.studentId) === String(student.studentId) &&
+        mark.subjectName === subject.subjectName &&
+        mark.examination === state.examination;
+
+    });
+
+    // Use temporary value first, otherwise use saved value
+    let value = state.values[key];
+
+    if (value === undefined) {
+      value = isMinor
+        ? (savedMark ? savedMark.grade || '' : '')
+        : (savedMark ? savedMark.marks ?? '' : '');
+    }
+
+    const subjectRow = document.createElement('div');
+
+    subjectRow.style.padding = '12px 0';
+    subjectRow.style.borderBottom = '1px solid #ddd';
+
+    const label = document.createElement('label');
+
+    label.textContent = subject.subjectName;
+    label.style.display = 'block';
+    label.style.fontWeight = '600';
+    label.style.marginBottom = '8px';
+
+    let field;
+
+    if (isMinor) {
+
+      field = document.createElement('select');
+
+      ['', 'A', 'B', 'C', 'D'].forEach(function(grade) {
+
+        const option = document.createElement('option');
+
+        option.value = grade;
+        option.textContent = grade || 'Select Grade';
+
+        field.appendChild(option);
+
+      });
+
+      field.value = value;
+
+    } else {
+
+      field = document.createElement('input');
+
+      field.type = 'number';
+      field.min = '0';
+      field.step = '1';
+
+      const maxMarks =
+        state.examination === 'Unit Test 1' ||
+        state.examination === 'Unit Test 2' ? 20 : 80;
+
+      field.max = String(maxMarks);
+      field.placeholder = 'Enter marks / ' + maxMarks;
+      field.value = value;
+
+    }
+
+    field.style.width = '100%';
+    field.style.boxSizing = 'border-box';
+
+    function rememberValue() {
+      state.values[key] = field.value;
+    }
+
+    field.addEventListener('input', rememberValue);
+    field.addEventListener('change', rememberValue);
+
+    label.appendChild(field);
+    subjectRow.appendChild(label);
+
+    studentContainer.appendChild(subjectRow);
+
+  });
+
+  document.getElementById('markbook-new-message').textContent = '';
+
+}
+
+
+// Previous student
+document.getElementById('markbook-new-previous')
+  .addEventListener('click', function() {
+
+    renderNewEntryStudent(
+      window.markbookNewEntryIndex - 1
+    );
+
+  });
+
+
+// Next student
+document.getElementById('markbook-new-next')
+  .addEventListener('click', function() {
+
+    renderNewEntryStudent(
+      window.markbookNewEntryIndex + 1
+    );
+
+  });
+
 </script>
  </body>
 </html>
