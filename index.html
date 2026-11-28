@@ -11431,6 +11431,8 @@ document.getElementById('markbook-new-load')
         return;
       }
     console.log('New Mark Entry Data:', data);
+      console.log('Live students count:', data.students?.length);
+      console.log('Live student records:', data.students);
     console.log('Students:', data.students);
     console.log('Subjects:', data.subjects);
       const isUnitTest =
