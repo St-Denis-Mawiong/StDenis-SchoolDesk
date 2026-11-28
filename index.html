@@ -5738,6 +5738,60 @@ header .profile small {
   <h2 id="markbook-teacher-name"></h2>
   <p>Ki Subject ba shim phi</p>
   
+<!-- NEW MULTI-SUBJECT MARK ENTRY -->
+<div id="markbook-new-entry">
+
+  <h3>Enter New Marks</h3>
+  <p>Enter marks for all assigned subjects in one session.</p>
+
+  <label for="markbook-new-year">Academic Year</label>
+  <input
+    type="text"
+    id="markbook-new-year"
+    placeholder="e.g. 2026-2027"
+  >
+
+  <label for="markbook-new-class">Select Class</label>
+  <select id="markbook-new-class">
+    <option value="">Choose Class</option>
+  </select>
+
+  <label for="markbook-new-exam">Select Examination</label>
+  <select id="markbook-new-exam" disabled>
+    <option value="">Choose Examination</option>
+  </select>
+
+  <button type="button" id="markbook-new-load">
+    Load Students
+  </button>
+
+  <div id="markbook-new-workspace" class="hidden">
+
+    <div id="markbook-new-progress"></div>
+
+    <div id="markbook-new-student"></div>
+
+    <div id="markbook-new-navigation">
+      <button type="button" id="markbook-new-previous">
+        Previous
+      </button>
+
+      <button type="button" id="markbook-new-next">
+        Next
+      </button>
+    </div>
+
+    <button type="button" id="markbook-new-save">
+      Save Progress
+    </button>
+
+    <p id="markbook-new-message"></p>
+
+  </div>
+
+</div>
+<!-- END NEW MULTI-SUBJECT MARK ENTRY -->
+
 <div id="markbook-selection">
    <label for="markbook-academic-year">Academic Year</label>
 <input
@@ -10108,6 +10162,54 @@ document.getElementById('markbook-login-btn').addEventListener('click', function
 window.markbookTeacher = result.teacher;
 window.markbookAssignments = result.assignments;
 window.markbookClassTeacherClasses = result.classTeacherClasses || [];
+
+// Populate the new multi-subject entry class selector
+const newClassSelect = document.getElementById('markbook-new-class');
+
+const newEntryClasses = new Set();
+
+(window.markbookAssignments || []).forEach(function (assignment) {
+  if (assignment.className) {
+    newEntryClasses.add(String(assignment.className).trim());
+  }
+});
+
+(window.markbookClassTeacherClasses || []).forEach(function (item) {
+  const className = typeof item === 'string'
+    ? item
+    : item.className || item.Class || '';
+
+  if (className) {
+    newEntryClasses.add(String(className).trim());
+  }
+});
+
+newClassSelect.innerHTML = '<option value="">Choose Class</option>';
+
+Array.from(newEntryClasses).sort().forEach(function (className) {
+  const option = document.createElement('option');
+  option.value = className;
+  option.textContent = className;
+  newClassSelect.appendChild(option);
+});
+
+// Populate examination choices
+const newExamSelect = document.getElementById('markbook-new-exam');
+
+newExamSelect.innerHTML = `
+  <option value="">Choose Examination</option>
+  <option value="Unit Test 1">Unit Test 1</option>
+  <option value="Half-Yearly">Half-Yearly</option>
+  <option value="Unit Test 2">Unit Test 2</option>
+  <option value="Final Examination">Final Examination</option>
+`;
+
+newExamSelect.disabled = false;
+
+// Copy the academic year already loaded by the existing Markbook
+document.getElementById('markbook-new-year').value =
+  document.getElementById('markbook-academic-year').value;
+
     // Load current academic year for View / Edit
 callServer('getCurrentAcademicYear', [], function(yearData) {
 
