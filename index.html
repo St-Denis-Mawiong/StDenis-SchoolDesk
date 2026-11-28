@@ -11430,7 +11430,9 @@ document.getElementById('markbook-new-load')
           data?.message || 'Unable to load students.';
         return;
       }
-
+    console.log('New Mark Entry Data:', data);
+    console.log('Students:', data.students);
+    console.log('Subjects:', data.subjects);
       const isUnitTest =
         selectedExam === 'Unit Test 1' ||
         selectedExam === 'Unit Test 2';
