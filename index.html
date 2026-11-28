@@ -5737,7 +5737,11 @@ header .profile small {
 <div id="markbook-dashboard" class="hidden">
   <h2 id="markbook-teacher-name"></h2>
   <p>Ki Subject ba shim phi</p>
-  
+  <div class="markbook-workflow-nav">
+  <button type="button" id="markbook-open-new-entry">
+    Enter New Marks
+  </button>
+</div>
 <!-- NEW MULTI-SUBJECT MARK ENTRY -->
 <div id="markbook-new-entry">
 
@@ -11333,6 +11337,24 @@ window.scrollTo({
     message.textContent = error.message;
   });
 });
+
+// Open the new multi-subject mark entry page
+document.getElementById('markbook-open-new-entry')
+  .addEventListener('click', function() {
+
+    document.getElementById('markbook-selection')
+      .classList.add('hidden');
+
+    document.getElementById('markbook-student-list')
+      .classList.add('hidden');
+
+    document.getElementById('markbook-save-btn')
+      .classList.add('hidden');
+
+    document.getElementById('markbook-new-entry')
+      .classList.remove('hidden');
+
+  });
 
 </script>
  </body>
