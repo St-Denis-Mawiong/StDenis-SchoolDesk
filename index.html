@@ -11642,7 +11642,176 @@ document.getElementById('markbook-new-next')
     renderNewEntryStudent(
       window.markbookNewEntryIndex + 1
     );
+  });
 
+// Save Progress - New Multi-Subject Mark Entry
+document.getElementById('markbook-new-save')
+  .addEventListener('click', function() {
+
+    const button = this;
+    const message = document.getElementById('markbook-new-message');
+    const state = window.markbookNewEntryState;
+
+    if (!state) return;
+
+    const saveJobs = [];
+
+    // Prepare one save request per subject.
+    for (const subject of state.subjects) {
+
+      const isMinor =
+        String(subject.subjectType).trim().toUpperCase() === 'MINOR';
+
+      const studentsToSave = [];
+
+      for (const student of state.data.students) {
+
+        const key = student.studentId + '|' + subject.subjectName;
+        const value = state.values[key];
+
+        // Ignore untouched or blank fields.
+        if (value === undefined || String(value).trim() === '') {
+          continue;
+        }
+
+        const studentData = {
+          studentId: student.studentId,
+          studentName: student.studentName,
+          rollNo: student.rollNo
+        };
+
+        if (isMinor) {
+
+          const grade = String(value).trim().toUpperCase();
+
+          if (!['A', 'B', 'C', 'D'].includes(grade)) {
+            message.textContent =
+              'Invalid grade for ' + student.studentName;
+            return;
+          }
+
+          studentData.grade = grade;
+
+        } else {
+
+          const marks = Number(value);
+          const maxMarks =
+            state.examination === 'Unit Test 1' ||
+            state.examination === 'Unit Test 2' ? 20 : 80;
+
+          if (!Number.isInteger(marks) ||
+              marks < 0 || marks > maxMarks) {
+
+            message.textContent =
+              'Invalid marks for ' + student.studentName +
+              ' in ' + subject.subjectName;
+            return;
+          }
+
+          studentData.marks = marks;
+        }
+
+        studentsToSave.push(studentData);
+      }
+
+      if (studentsToSave.length > 0) {
+        saveJobs.push({
+          subjectName: subject.subjectName,
+          students: studentsToSave
+        });
+      }
+    }
+
+    if (saveJobs.length === 0) {
+      message.textContent = 'No new marks to save.';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Saving...';
+
+    let savedCount = 0;
+    let updatedCount = 0;
+
+    function finishSaving(text) {
+      button.disabled = false;
+      button.textContent = 'Save Progress';
+      message.textContent = text;
+    }
+
+    // Save subjects one by one.
+    function saveNext(index) {
+
+      if (index >= saveJobs.length) {
+        finishSaving(
+          'Progress saved successfully! New: ' +
+          savedCount + ', Updated: ' + updatedCount
+        );
+        return;
+      }
+
+      const job = saveJobs[index];
+
+      message.textContent =
+        'Saving ' + job.subjectName +
+        ' (' + (index + 1) + ' of ' + saveJobs.length + ')...';
+
+      const payload = {
+        academicYear: state.academicYear,
+        teacherId: window.markbookTeacher.teacherId,
+        className: state.className,
+        subjectName: job.subjectName,
+        examination: state.examination,
+        students: job.students
+      };
+
+      callServer('saveMarkbookMarks', [payload], function(result) {
+
+        savedCount += result.savedCount || 0;
+        updatedCount += result.updatedCount || 0;
+
+        // Update local saved marks and clear successfully saved edits.
+        job.students.forEach(function(student) {
+
+          const key = student.studentId + '|' + job.subjectName;
+
+          const existingIndex = state.data.marks.findIndex(function(mark) {
+            return String(mark.studentId) === String(student.studentId) &&
+              mark.subjectName === job.subjectName &&
+              mark.examination === state.examination;
+          });
+
+          const savedMark = {
+            studentId: student.studentId,
+            subjectName: job.subjectName,
+            examination: state.examination,
+            marks: student.marks ?? '',
+            grade: student.grade ?? ''
+          };
+
+          if (existingIndex >= 0) {
+            state.data.marks[existingIndex] = savedMark;
+          } else {
+            state.data.marks.push(savedMark);
+          }
+
+          delete state.values[key];
+        });
+
+        saveNext(index + 1);
+
+      }, function(error) {
+
+        finishSaving(
+          'Saving stopped: ' + error.message +
+          '. Already saved — New: ' + savedCount +
+          ', Updated: ' + updatedCount
+        );
+
+      });
+    }
+
+    saveNext(0);
   });
 
 </script>
